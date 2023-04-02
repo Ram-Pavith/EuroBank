@@ -13,15 +13,15 @@ namespace EuroBankAPI.Models
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid AccountId { get; set; } = Guid.NewGuid(); 
+        public Guid AccountId { get; set; } = Guid.NewGuid();
 
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; set; } = DateTime.Now;
 
         public double Balance { get; set; }
 
-        public virtual AccountType AccountTypeId { get; set; };
+        public virtual AccountType AccountType { get; set; }
 
-        public virtual Customer CustomerId { get; set; }
+        //public virtual Customer CustomerId { get; set; }
 
     }
 }

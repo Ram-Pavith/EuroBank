@@ -6,6 +6,6 @@
         
         public string Message { get; set; } = string.Empty;
 
-        public Account AccountId { get; set; }
+        public Account Account { get; set; }
     }
 }
