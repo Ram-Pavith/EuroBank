@@ -1,6 +1,7 @@
 ﻿using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
+using EuroBankAPI.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,11 +13,11 @@ namespace EuroBankAPI.Service.AuthService
 {
     public class AuthService : IAuthService
     {
-        private readonly EuroBankContext _context;
+        private readonly IUnitOfWork _context;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(EuroBankContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IUnitOfWork context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _configuration = configuration;
@@ -25,7 +26,7 @@ namespace EuroBankAPI.Service.AuthService
 
         public async Task<UserAuthResponseDTO> Login(UserAuthLoginDTO request)
         {
-            var user = await _context.UsersAuth.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
             if (user == null)
             {
                 return new UserAuthResponseDTO { Message = "User not found." };
@@ -42,7 +43,7 @@ namespace EuroBankAPI.Service.AuthService
 
             string token = GenerateJWT(user);
             var refreshToken = CreateRefreshToken();
-            SetRefreshToken(refreshToken, user);
+            await SetRefreshToken(refreshToken, user);
 
             return new UserAuthResponseDTO
             {
@@ -65,8 +66,8 @@ namespace EuroBankAPI.Service.AuthService
                 Role = request.Role,
             };
 
-            _context.UsersAuth.Add(user);
-            await _context.SaveChangesAsync();
+            await _context.UserAuths.CreateAsync(user);
+            _context.Save();
 
             return user;
         }
@@ -74,7 +75,7 @@ namespace EuroBankAPI.Service.AuthService
         public async Task<UserAuthResponseDTO> RefreshToken()
         {
             var refreshToken = _httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"];
-            var user = await _context.UsersAuth.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            var user = await _context.UserAuths.GetAsync(u => u.RefreshToken == refreshToken);
             if (user == null)
             {
                 return new UserAuthResponseDTO { Message = "Invalid Refresh Token" };
@@ -86,7 +87,7 @@ namespace EuroBankAPI.Service.AuthService
 
             string token = CreateToken(user);
             var newRefreshToken = CreateRefreshToken();
-            SetRefreshToken(newRefreshToken, user);
+            await SetRefreshToken(newRefreshToken, user);
 
             return new UserAuthResponseDTO
             {
@@ -169,7 +170,7 @@ namespace EuroBankAPI.Service.AuthService
             return refreshToken;
         }
 
-        private async void SetRefreshToken(RefreshToken refreshToken, UserAuth user)
+        private async Task SetRefreshToken(RefreshToken refreshToken, UserAuth user)
         {
             var cookieOptions = new CookieOptions
             {
@@ -183,7 +184,7 @@ namespace EuroBankAPI.Service.AuthService
             user.TokenCreated = refreshToken.Created;
             user.TokenExpires = refreshToken.Expires;
 
-            await _context.SaveChangesAsync();
+            _context.Save();
         }
     }
 }
