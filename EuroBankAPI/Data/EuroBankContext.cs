@@ -13,8 +13,6 @@ namespace EuroBankAPI.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerCreationStatus> CustomerCreationStatuses { get; set; }
 
-        //Context Configuring
-
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    if (!optionsBuilder.IsConfigured)
@@ -22,7 +20,6 @@ namespace EuroBankAPI.Data
         //        optionsBuilder.UseSqlServer("Server=.;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
         //    }
         //}
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
