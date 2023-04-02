@@ -18,8 +18,8 @@ namespace EuroBankAPI.Models
         public double Balance { get; set; }
 
         public virtual AccountType AccountType { get; set; } = null!;
-
-        //public virtual Customer Customer { get; set; } = null!;
+        
+        public virtual Customer Customer { get; set; } = null!;
 
     }
 }

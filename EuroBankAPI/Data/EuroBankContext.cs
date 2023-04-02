@@ -11,14 +11,28 @@ namespace EuroBankAPI.Data
         //DbSet Tables For the Context
         public DbSet<UserAuth> UsersAuth { get; set; }
 
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer("Server=.;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
+        //    }
+        //}
         //Accounts Microservice Entities
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<AccountCreationStatus> AccountCreationStatuses { get; set; }
         public DbSet<Statement> Statements { get; set; }
         public DbSet<TransactionStatus> TransactionStatuses { get; set; }
-
-        
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerCreationStatus> CustomerCreationStatuses { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Transaction> Transactions { get; set;}
+        public DbSet<RefPaymentMethod> RefPaymentMethods { get; set; }
+        public DbSet<RefTransactionStatus> RefTransactionStatuses { get; set; }
+        public DbSet<RefTransactionType> RefTransactionType { get; set; }
+        public DbSet<CounterParty> CounterParties { get; set; }
+        public DbSet<Service> Services { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,6 +47,7 @@ namespace EuroBankAPI.Data
                 entity.Property(e => e.DateCreated).HasDefaultValue(DateTime.Now);
 
                 entity.HasCheckConstraint("Balance_check", "Balance >= 0");
+
 
 
             });
