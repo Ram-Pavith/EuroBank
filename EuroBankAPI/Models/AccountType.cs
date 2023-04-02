@@ -2,7 +2,7 @@
 {
     public class AccountType
     {
-        public int Id { get; set; }
+        public int AccountTypeId { get; set; }
         public string Type { get; set; } = string.Empty;
     }
 }
