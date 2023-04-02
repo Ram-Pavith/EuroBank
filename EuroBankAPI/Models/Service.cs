@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EuroBankAPI.Models
 {
-    public class Services
+    public class Service
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int ServiceId { get; set; } 
         public DateOnly DateServiceProvided { get; set; }
 

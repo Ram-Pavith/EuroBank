@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EuroBankAPI.Models
 {
-    public class RefPaymentMethods
+    public class RefPaymentMethod
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PaymentMethodCode { get; set; } 
