@@ -1,5 +1,7 @@
 using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
+using EuroBankAPI.Repository;
+using EuroBankAPI.Repository.IRepository;
 using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,8 @@ builder.Services.AddControllers();
 
 //AuthService Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 //Serilog Logger Setup
 // Serilog DB Logging
