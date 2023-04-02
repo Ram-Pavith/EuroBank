@@ -9,7 +9,7 @@ namespace EuroBankAPI.Data
         public EuroBankContext(DbContextOptions<EuroBankContext> options) : base(options) { }
 
         //DbSet Tables For the Context
-        public DbSet<UserAuth> UsersAuth { get; set; }
+        public DbSet<UserAuth> UserAuths { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
