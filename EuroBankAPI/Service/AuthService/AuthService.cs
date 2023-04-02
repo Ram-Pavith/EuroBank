@@ -1,14 +1,16 @@
 ﻿using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace EuroBankAPI.Service.AuthService
 {
-    /*public class AuthService:IAuthService
+    public class AuthService : IAuthService
     {
         private readonly EuroBankContext _context;
         private readonly IConfiguration _configuration;
@@ -23,7 +25,7 @@ namespace EuroBankAPI.Service.AuthService
 
         public async Task<UserAuthResponseDTO> Login(UserAuthLoginDTO request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var user = await _context.UsersAuth.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
             {
                 return new UserAuthResponseDTO { Message = "User not found." };
@@ -33,8 +35,12 @@ namespace EuroBankAPI.Service.AuthService
             {
                 return new UserAuthResponseDTO { Message = "Wrong Password." };
             }
+            if(request.Role != user.Role)
+            {
+                return new UserAuthResponseDTO { Message = "Authorization Error" };
+            }
 
-            string token = CreateToken(user);
+            string token = GenerateJWT(user);
             var refreshToken = CreateRefreshToken();
             SetRefreshToken(refreshToken, user);
 
@@ -47,18 +53,19 @@ namespace EuroBankAPI.Service.AuthService
             };
         }
 
-        public async Task<UserAuthDTO> RegisterUser(UserAuthLoginDTO request)
+        public async Task<UserAuth> RegisterUser(UserAuthLoginDTO request)
         {
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            var user = new UserAuthDTO
+            var user = new UserAuth
             {
                 Username = request.Username,
                 PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt
+                PasswordSalt = passwordSalt,
+                Role = request.Role,
             };
 
-            _context.Users.Add(user);
+            _context.UsersAuth.Add(user);
             await _context.SaveChangesAsync();
 
             return user;
@@ -67,7 +74,7 @@ namespace EuroBankAPI.Service.AuthService
         public async Task<UserAuthResponseDTO> RefreshToken()
         {
             var refreshToken = _httpContextAccessor?.HttpContext?.Request.Cookies["refreshToken"];
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            var user = await _context.UsersAuth.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user == null)
             {
                 return new UserAuthResponseDTO { Message = "Invalid Refresh Token" };
@@ -89,7 +96,25 @@ namespace EuroBankAPI.Service.AuthService
                 TokenExpires = newRefreshToken.Expires
             };
         }
-
+        public string GenerateJWT(UserAuth userInfo)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userInfo.Username ),
+                new Claim(ClaimTypes.Role,userInfo.Role),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: credentials
+            );
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
         private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
@@ -108,7 +133,7 @@ namespace EuroBankAPI.Service.AuthService
             }
         }
 
-        private string CreateToken(UserAuthDTO user)
+        private string CreateToken(UserAuth user)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -144,7 +169,7 @@ namespace EuroBankAPI.Service.AuthService
             return refreshToken;
         }
 
-        private async void SetRefreshToken(RefreshToken refreshToken, UserAuthDTO user)
+        private async void SetRefreshToken(RefreshToken refreshToken, UserAuth user)
         {
             var cookieOptions = new CookieOptions
             {
@@ -160,6 +185,6 @@ namespace EuroBankAPI.Service.AuthService
 
             await _context.SaveChangesAsync();
         }
-    }*/
+    }
 }
 
