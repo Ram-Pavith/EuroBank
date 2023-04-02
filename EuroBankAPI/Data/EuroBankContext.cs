@@ -19,13 +19,6 @@ namespace EuroBankAPI.Data
             }
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Account>(entity =>
-            {
-                entity.Property(e => e.AccountId).HasMaxLength(10);
-
-            });
-        }
+        
     }
 }
