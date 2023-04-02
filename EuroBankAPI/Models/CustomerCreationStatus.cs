@@ -7,9 +7,10 @@ namespace EuroBankAPI.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey(nameof(Customer.CustomerId))]
         public string CustomerId { get; set; }
         public string Message { get; set; }
+        public virtual Customer Customer { get; set; }
+
 
     }
 }
