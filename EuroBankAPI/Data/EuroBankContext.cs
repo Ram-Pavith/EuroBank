@@ -10,8 +10,8 @@ namespace EuroBankAPI.Data
 
         //DbSet Tables For the Context
         public DbSet<UserAuth> UsersAuth { get; set; }
-
       
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
