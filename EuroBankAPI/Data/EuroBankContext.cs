@@ -31,6 +31,7 @@ namespace EuroBankAPI.Data
                 entity.Property(e => e.AccountId).HasMaxLength(10);
 
 
+            });
         }
     }
 }
