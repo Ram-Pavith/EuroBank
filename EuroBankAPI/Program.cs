@@ -1,5 +1,6 @@
 using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
+using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
+
+//AuthService Injection
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 //Serilog Logger Setup
 // Serilog DB Logging
@@ -70,7 +74,7 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
