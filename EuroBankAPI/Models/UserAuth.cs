@@ -1,6 +1,6 @@
-﻿namespace EuroBankAPI.DTOs
+﻿namespace EuroBankAPI.Models
 {
-    public class UserAuthDTO
+    public class UserAuth
     {
         public int Id { get; set; }
         public string Username { get; set; } = string.Empty;

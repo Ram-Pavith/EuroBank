@@ -1,10 +1,11 @@
 ﻿using EuroBankAPI.DTOs;
+using EuroBankAPI.Models;
 
 namespace EuroBankAPI.Service.AuthService
 {
     public interface IAuthService
     {
-        Task<UserAuthDTO> RegisterUser(UserAuthLoginDTO request);
+        Task<UserAuth> RegisterUser(UserAuthLoginDTO request);
         Task<UserAuthResponseDTO> Login(UserAuthLoginDTO request);
         Task<UserAuthResponseDTO> RefreshToken();
     }

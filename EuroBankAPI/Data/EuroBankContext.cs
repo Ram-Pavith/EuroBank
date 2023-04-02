@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EuroBankAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EuroBankAPI.Data
 {
@@ -8,6 +9,7 @@ namespace EuroBankAPI.Data
         public EuroBankContext(DbContextOptions<EuroBankContext> options) : base(options) { }
 
         //DbSet Tables For the Context
+        public DbSet<UserAuth> UsersAuth { get; set; }
 
         //Context Configuring
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
