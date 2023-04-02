@@ -10,6 +10,14 @@ namespace EuroBankAPI.Data
 
         //DbSet Tables For the Context
         public DbSet<UserAuth> UsersAuth { get; set; }
+
+        //Accounts Microservice Entities
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountType> AccountTypes { get; set; }
+        public DbSet<AccountCreationStatus> AccountCreationStatuses { get; set; }
+        public DbSet<Statement> Statements { get; set; }
+        public DbSet<TransactionStatus> TransactionStatuses { get; set; }
+
         
 
 

@@ -13,7 +13,7 @@ namespace EuroBankAPI.Models
 
         public string CustomerId { get; set; } 
 
-        public DateTime DateCreated { get; set; };
+        public DateTime DateCreated { get; set; }
 
         public double Balance { get; set; }
 
