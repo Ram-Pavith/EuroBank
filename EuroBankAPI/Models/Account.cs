@@ -19,7 +19,7 @@ namespace EuroBankAPI.Models
 
         public double Balance { get; set; }
 
-        public virtual AccountType AccountTypeId { get; set; };
+        public virtual AccountType AccountTypeId { get; set; }
 
         public virtual Customer CustomerId { get; set; }
 
