@@ -10,15 +10,17 @@ namespace EuroBankAPI.Data
 
         //DbSet Tables For the Context
         public DbSet<UserAuth> UsersAuth { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerCreationStatus> CustomerCreationStatuses { get; set; }
 
         //Context Configuring
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
-            }
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    if (!optionsBuilder.IsConfigured)
+        //    {
+        //        optionsBuilder.UseSqlServer("Server=.;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
+        //    }
+        //}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
