@@ -60,6 +60,7 @@ namespace EuroBankAPI.Migrations
 
                     b.ToTable("UsersAuth");
                 });
+
 #pragma warning restore 612, 618
         }
     }

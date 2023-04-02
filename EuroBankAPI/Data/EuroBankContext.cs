@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EuroBankAPI.Data
 {
-    public class EuroBankContext:DbContext
+    public class EuroBankContext : DbContext
     {
         public EuroBankContext() { }
         public EuroBankContext(DbContextOptions<EuroBankContext> options) : base(options) { }
@@ -14,6 +14,7 @@ namespace EuroBankAPI.Data
         public DbSet<CustomerCreationStatus> CustomerCreationStatuses { get; set; }
 
         //Context Configuring
+
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
         //    if (!optionsBuilder.IsConfigured)
@@ -22,9 +23,14 @@ namespace EuroBankAPI.Data
         //    }
         //}
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Account>(entity =>
+            {
+                entity.Property(e => e.AccountId).HasMaxLength(10);
 
+            });
         }
     }
 }
