@@ -144,7 +144,7 @@ namespace EuroBankAPI.Service.AuthService
             return refreshToken;
         }
 
-        private async void SetRefreshToken(RefreshToken refreshToken, UserAuthDTO user)
+        private async Task SetRefreshToken(RefreshToken refreshToken, UserAuthDTO user)
         {
             var cookieOptions = new CookieOptions
             {
