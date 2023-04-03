@@ -51,6 +51,11 @@ namespace EuroBankAPI.Data
                         .HasForeignKey(ci => ci.CustomerId)
                         .IsRequired();
 
+                entity.HasOne(t => t.AccountCreationStatus)
+                .WithOne(s => s.Account)
+                .HasForeignKey<Account>(t => t.AccountCreationStatusId)
+                .HasConstraintName("FK_Account_AccountCreationStatus");
+
                 entity.Property(e => e.DateCreated).HasDefaultValue(DateTime.Now);
 
                 entity.HasCheckConstraint("Balance_check", "Balance >= 0");
@@ -70,9 +75,6 @@ namespace EuroBankAPI.Data
                 entity.HasKey(e => e.AccountCreationStatusId).HasName("PK_Account_Creation_Status");
 
                 entity.Property(e => e.Message).HasMaxLength(50);
-                entity.HasOne(a => a.Account)
-                        .WithOne(acs => acs.AccountCreationStatus)
-                        .HasForeignKey<Account>(a => a.AccountId);
 
                 entity.Property(e => e.Message).HasMaxLength(50).IsRequired();
             });
@@ -81,12 +83,10 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.StatementId).HasName("PK_Statement_ID");
 
-                /*account id foreign key*/
-
                 entity.Property(e => e.Narration).HasMaxLength(35);
                 entity.HasOne(s => s.Account)
-                    .WithOne(a => a.Statement)
-                    .HasForeignKey<Account>(a => a.AccountId);
+                    .WithMany(a => a.Statements)
+                    .HasForeignKey(a => a.AccountId);
 
                 entity.Property(e => e.Date).IsRequired();
 
@@ -95,7 +95,7 @@ namespace EuroBankAPI.Data
                 entity.Property(e => e.RefNo).IsRequired();
 
                 entity.Property(e => e.ValueDate).IsRequired();
-                
+
                 entity.HasCheckConstraint("Withdrawal_Check", "Withdrawal >= 0");
                 entity.Property(e => e.ClosingBalance).IsRequired();
                 entity.HasCheckConstraint("ClosingBalance_Check", "ClosingBalance >= 0");
@@ -128,23 +128,23 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Lastname).HasMaxLength(50).IsUnicode(true);
 
-                entity.Property(e=>e.Address).HasMaxLength(200);
+                entity.Property(e => e.Address).HasMaxLength(200);
 
                 entity.Property(e => e.Phone).HasMaxLength(10).IsUnicode(true);
 
-                entity.Property(e=>e.PanNumber).HasMaxLength(15).IsUnicode(true);
+                entity.Property(e => e.PanNumber).HasMaxLength(15).IsUnicode(true);
 
                 entity.Property(e => e.DOB).IsUnicode(false);
+
+                entity.HasOne(e => e.CustomerCreationStatus)
+                .WithOne(p => p.Customer)
+                .HasForeignKey<Customer>(e => e.CustomerCreationStatusId);
 
             });
 
             modelBuilder.Entity<CustomerCreationStatus>(entity =>
             {
-                entity.HasIndex(e => e.Id, "CustomerCreationStatusId");
-
-                entity.HasOne(e => e.Customer)
-                .WithOne(p => p.CustomerCreationStatus)
-                .HasForeignKey<Customer>(e => e.CustomerId);
+                entity.HasIndex(e => e.CustomerCreationId, "CustomerCreationStatusId");
 
                 entity.Property(e => e.Message).HasMaxLength(100).IsUnicode(false);
 
@@ -153,7 +153,7 @@ namespace EuroBankAPI.Data
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasIndex(e => e.EmployeeId, "EmployeeId");
-                
+
                 entity.HasIndex(e => e.EmailId, "EmailId");
 
                 entity.Property(e => e.EmailId).IsRequired();
@@ -166,7 +166,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Lastname).HasMaxLength(50);
             });
-        
+
 
             modelBuilder.Entity<Transaction>(entity =>
             {
@@ -198,23 +198,19 @@ namespace EuroBankAPI.Data
             modelBuilder.Entity<RefTransactionStatus>(entity =>
             {
                 entity.HasKey(t => t.TransactionStatusCode);
-                entity.Property(t => t.TransactionStatusDescriptions).HasColumnType("Transaction Status Descriptions");
 
             });
             modelBuilder.Entity<RefTransactionType>(entity =>
             {
                 entity.HasKey(t => t.TransactionTypeCode);
-                entity.Property(t => t.TransactionTypeDescriptions).HasColumnType("Transaction Type Descriptions");
             });
             modelBuilder.Entity<CounterParty>(entity =>
             {
                 entity.HasKey(t => t.CounterPartyId);
-                entity.Property(t => t.CounterPartyName).HasColumnName("Counter Party Name");
             });
             modelBuilder.Entity<Models.Service>(entity =>
             {
                 entity.HasKey(t => t.ServiceId);
-                entity.Property(t => t.DateServiceProvided).HasColumnName("Date Service Provided");
 
             });
         }
