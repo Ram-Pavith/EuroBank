@@ -80,6 +80,58 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Employee, Customer")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<AccountBalanceDTO>> getAccount(Guid AccountId)
+        {
+            //Checking is account exist
+            Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
+            if(targetAccount == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                AccountBalanceDTO targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
+                return targetAccountDTO;
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<StatementDTO>>> getAccountStatement(Guid AccountId,DateTime? from_date,DateTime? to_date )
+        {
+            //Checking is account exist
+            Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
+            if (targetAccount == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                if (from_date != null && to_date != null)
+                {
+                    IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == AccountId &&
+                                                                        x.Date >= from_date && x.Date <= to_date);
+                    List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
+                    return AccountStatement;
+                }
+                else
+                {
+                    IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == AccountId &&
+                                                                        x.Date.Month == DateTime.Now.Month);
+                    List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
+                    return AccountStatement;
+                }
+            }
+
+        }
+
+
 
     }
 }
