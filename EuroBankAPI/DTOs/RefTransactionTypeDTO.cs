@@ -1,15 +1,13 @@
+﻿using EuroBankAPI.Models;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EuroBankAPI.Models
+namespace EuroBankAPI.DTOs
 {
-    public class RefTransactionType
+    public class RefTransactionTypeDTO
     {
-        
         [Key]
-        public int TransactionTypeCode { get; set; } 
+        public int TransactionTypeCode { get; set; }
         public string TransactionTypeDescriptions { get; set; }
         public virtual Transaction Transaction { get; set; }
-
     }
 }

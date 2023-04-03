@@ -4,7 +4,7 @@ namespace EuroBankAPI.Models
     {
         public CounterParty()
         {
-
+            Transactions=new HashSet<Transaction>();
         }
         public string CounterPartyId { get; set; }
         public string CounterPartyName { get; set;}
