@@ -1,3 +1,4 @@
+using AutoMapper;
 using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Repository;
@@ -32,7 +33,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 //AutoMapper
-builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddAutoMapper(typeof(EuroBankAPI.DTOs.Mapper));
 
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -14,7 +14,8 @@ namespace EuroBankAPI.Models
         public Guid AccountId { get; set; } = Guid.NewGuid();
 
         public int AccountTypeId { get; set; }
-
+        [ForeignKey("AccountCreationStatus")]
+        public int AccountCreationStatusId { get; set; }
         public string CustomerId { get; set; } 
 
         public DateTime DateCreated { get; set; }
@@ -27,7 +28,7 @@ namespace EuroBankAPI.Models
 
         public virtual AccountCreationStatus AccountCreationStatus { get; set; }
 
-        public virtual Statement Statement { get; set; }
+        public virtual ICollection<Statement> Statements { get; set; }
 
         public virtual ICollection<TransactionStatus> TransactionStatuses { get; set; }
     }

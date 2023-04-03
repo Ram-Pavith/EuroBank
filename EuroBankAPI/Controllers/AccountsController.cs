@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EuroBankAPI.Controllers
 {
-    [Route("api/[controller]")]
+    /*[Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -17,5 +17,5 @@ namespace EuroBankAPI.Controllers
 
         [HttpPost]
         public 
-    }
+    }*/
 }

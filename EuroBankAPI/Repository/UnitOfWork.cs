@@ -14,10 +14,21 @@ namespace EuroBankAPI.Repository
             _db = db;
             Employees = new EmployeeRepository(db);
             UserAuths = new UserAuthRepository(db);
-
+            Transactions=new TransactionRepository(db);
+            CounterParty=new CounterPartyRepository(db);
+            RefTransactionType=new RefTransactionTypeRepository(db);
+            RefTransactionStatus=new RefTransactionStatusRepository(db);
+            Service=new ServiceRepository(db);
+            RefPaymentMethod=new RefPaymentMethodRepository(db);
         }
         public IEmployeeRepository Employees { get; }
         public IUserAuthRepository UserAuths { get; }
+        public ITransactionRepository Transactions { get; }
+        public ICounterPartyRepository CounterParty { get; }
+        public IRefTransactionTypeRepository RefTransactionType { get; }
+        public IRefTransactionStatusRepository RefTransactionStatus { get; }
+        public IServiceRepository Service { get; }
+        public IRefPaymentMethodRepository RefPaymentMethod { get; }
 
         public void Save()
         {
