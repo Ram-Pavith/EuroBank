@@ -19,7 +19,7 @@ namespace EuroBankAPI.Data
                 optionsBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
-        //Accounts Microservice Entities
+         //Accounts Microservice Entities
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountType> AccountTypes { get; set; }
         public DbSet<AccountCreationStatus> AccountCreationStatuses { get; set; }
