@@ -4,6 +4,7 @@ using EuroBankAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroBankAPI.Migrations
 {
     [DbContext(typeof(EuroBankContext))]
-    partial class EuroBankContextModelSnapshot : ModelSnapshot
+    [Migration("20230402100245_guid")]
+    partial class guid
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +26,7 @@ namespace EuroBankAPI.Migrations
 
             modelBuilder.Entity("EuroBankAPI.Models.Customer", b =>
                 {
-                    b.Property<string>("CustomerId")
+                    b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -34,25 +36,6 @@ namespace EuroBankAPI.Migrations
 
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
-                    b.Property<string>("PanNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CustomerId");
-
-                    b.ToTable("Customers");
-                });
-
-
-            modelBuilder.Entity("EuroBankAPI.Models.Employee", b =>
-                {
-                    b.Property<Guid>("EmployeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EmailId")
                         .IsRequired()
@@ -65,6 +48,11 @@ namespace EuroBankAPI.Migrations
                     b.Property<string>("Lastname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PanNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -72,11 +60,15 @@ namespace EuroBankAPI.Migrations
                     b.Property<string>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-                    b.HasKey("EmployeeId");
 
-                    b.ToTable("Employees");
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
                 });
-                   
 
             modelBuilder.Entity("EuroBankAPI.Models.CustomerCreationStatus", b =>
                 {
@@ -135,7 +127,7 @@ namespace EuroBankAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAuths");
+                    b.ToTable("UsersAuth");
                 });
 #pragma warning restore 612, 618
         }
