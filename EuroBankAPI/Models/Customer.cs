@@ -4,6 +4,10 @@ namespace EuroBankAPI.Models
 {
     public class Customer
     {
+        public Customer()
+        {
+            Accounts = new HashSet<Account>();
+        }
         public string CustomerId { get; set; }
         [DataType(DataType.EmailAddress)]
         [Required]
