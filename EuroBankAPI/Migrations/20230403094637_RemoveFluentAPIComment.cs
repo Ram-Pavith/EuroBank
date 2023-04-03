@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EuroBankAPI.Migrations
 {
-    public partial class FluentAPIFixed : Migration
+    public partial class RemoveFluentAPIComment : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +40,7 @@ namespace EuroBankAPI.Migrations
                 columns: table => new
                 {
                     CounterPartyId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CounterPartyName = table.Column<string>(name: "Counter Party Name", type: "nvarchar(max)", nullable: false)
+                    CounterPartyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,7 +94,7 @@ namespace EuroBankAPI.Migrations
                 columns: table => new
                 {
                     TransactionStatusCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TransactionStatusDescriptions = table.Column<string>(type: "Transaction Status Descriptions", nullable: false)
+                    TransactionStatusDescriptions = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -107,7 +107,7 @@ namespace EuroBankAPI.Migrations
                 {
                     TransactionTypeCode = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TransactionTypeDescriptions = table.Column<string>(type: "Transaction Type Descriptions", nullable: false)
+                    TransactionTypeDescriptions = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,7 +120,7 @@ namespace EuroBankAPI.Migrations
                 {
                     ServiceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DateServiceProvided = table.Column<DateTime>(name: "Date Service Provided", type: "datetime2", nullable: false)
+                    DateServiceProvided = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -222,7 +222,7 @@ namespace EuroBankAPI.Migrations
                     AccountTypeId = table.Column<int>(type: "int", nullable: false),
                     AccountCreationStatusId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 4, 3, 14, 50, 1, 332, DateTimeKind.Local).AddTicks(8456)),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 4, 3, 15, 16, 37, 205, DateTimeKind.Local).AddTicks(178)),
                     Balance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>

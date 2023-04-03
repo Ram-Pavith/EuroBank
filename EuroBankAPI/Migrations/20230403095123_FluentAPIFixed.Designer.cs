@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroBankAPI.Migrations
 {
     [DbContext(typeof(EuroBankContext))]
-    [Migration("20230403092001_FluentAPIFixed")]
+    [Migration("20230403095123_FluentAPIFixed")]
     partial class FluentAPIFixed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 3, 14, 50, 1, 332, DateTimeKind.Local).AddTicks(8456));
+                        .HasDefaultValue(new DateTime(2023, 4, 3, 15, 21, 23, 102, DateTimeKind.Local).AddTicks(7275));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");
@@ -108,8 +108,7 @@ namespace EuroBankAPI.Migrations
 
                     b.Property<string>("CounterPartyName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Counter Party Name");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CounterPartyId");
 
@@ -265,7 +264,7 @@ namespace EuroBankAPI.Migrations
 
                     b.Property<string>("TransactionStatusDescriptions")
                         .IsRequired()
-                        .HasColumnType("Transaction Status Descriptions");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TransactionStatusCode");
 
@@ -282,7 +281,7 @@ namespace EuroBankAPI.Migrations
 
                     b.Property<string>("TransactionTypeDescriptions")
                         .IsRequired()
-                        .HasColumnType("Transaction Type Descriptions");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TransactionTypeCode");
 
@@ -298,8 +297,7 @@ namespace EuroBankAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceId"), 1L, 1);
 
                     b.Property<DateTime>("DateServiceProvided")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("Date Service Provided");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("ServiceId");
 

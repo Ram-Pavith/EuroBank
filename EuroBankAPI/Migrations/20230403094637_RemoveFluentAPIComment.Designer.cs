@@ -4,6 +4,7 @@ using EuroBankAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroBankAPI.Migrations
 {
     [DbContext(typeof(EuroBankContext))]
-    partial class EuroBankContextModelSnapshot : ModelSnapshot
+    [Migration("20230403094637_RemoveFluentAPIComment")]
+    partial class RemoveFluentAPIComment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 3, 15, 21, 23, 102, DateTimeKind.Local).AddTicks(7275));
+                        .HasDefaultValue(new DateTime(2023, 4, 3, 15, 16, 37, 205, DateTimeKind.Local).AddTicks(178));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");

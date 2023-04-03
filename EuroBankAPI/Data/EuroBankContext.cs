@@ -84,8 +84,6 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.StatementId).HasName("PK_Statement_ID");
 
-/*                account id foreign key
-*/
                 entity.Property(e => e.Narration).HasMaxLength(35);
                 entity.HasOne(s => s.Account)
                     .WithMany(a => a.Statements)
@@ -201,23 +199,19 @@ namespace EuroBankAPI.Data
             modelBuilder.Entity<RefTransactionStatus>(entity =>
             {
                 entity.HasKey(t => t.TransactionStatusCode);
-                entity.Property(t => t.TransactionStatusDescriptions).HasColumnType("Transaction Status Descriptions");
 
             });
             modelBuilder.Entity<RefTransactionType>(entity =>
             {
                 entity.HasKey(t => t.TransactionTypeCode);
-                entity.Property(t => t.TransactionTypeDescriptions).HasColumnType("Transaction Type Descriptions");
             });
             modelBuilder.Entity<CounterParty>(entity =>
             {
                 entity.HasKey(t => t.CounterPartyId);
-                entity.Property(t => t.CounterPartyName).HasColumnName("Counter Party Name");
             });
             modelBuilder.Entity<Models.Service>(entity =>
             {
                 entity.HasKey(t => t.ServiceId);
-                entity.Property(t => t.DateServiceProvided).HasColumnName("Date Service Provided");
 
             });
         }
