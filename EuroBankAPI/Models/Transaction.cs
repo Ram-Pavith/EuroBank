@@ -9,14 +9,14 @@ namespace EuroBankAPI.Models
         
         public string CounterPartyId { get; set; }
         public int ServiceId { get; set; }
-        public  string TransactionStatusCode { get; set; }
-        public int TransactionTypeCode { get; set; }
+        public string RefTransactionStatusId { get; set; }
+        public int RefTransactionTypeId { get; set; }
         public DateTime DateOfTransaction { get; set; }
         public double AmountOfTransaction { get; set; }
-        public virtual CounterParties CounterParties { get; set; }
-        public virtual Services Services { get; set; }
+        public virtual CounterParty CounterParty { get; set; }
+        public virtual Service Service { get; set; }
         public virtual RefTransactionStatus RefTransactionStatus { get; set; }
-        public virtual RefTransactionTypes RefTransactionTypes { get; set; }
+        public virtual RefTransactionType RefTransactionType { get; set; }
 
 
     }
