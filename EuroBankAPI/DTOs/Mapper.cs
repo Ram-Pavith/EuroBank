@@ -7,7 +7,6 @@ namespace EuroBankAPI.DTOs
         public Mapper()
         {
             CreateMap<Employee, EmployeeDTO>();
-
         }
     }
 }

@@ -33,4 +33,4 @@ namespace EuroBankAPI.DTOs
         public virtual ICollection<Account> Accounts { get; set; }
     }
 }
-}
+
