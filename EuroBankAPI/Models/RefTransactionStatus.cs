@@ -4,7 +4,7 @@ namespace EuroBankAPI.Models
 {
     public class RefTransactionStatus
     {
-        public RefTransactionStatus() { }
+        
         public string TransactionStatusCode { get; set; } 
         public string TransactionStatusDescriptions { get; set; }
 

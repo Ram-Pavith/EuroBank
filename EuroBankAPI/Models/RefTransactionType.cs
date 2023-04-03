@@ -5,7 +5,7 @@ namespace EuroBankAPI.Models
 {
     public class RefTransactionType
     {
-        public RefTransactionType() { }
+        
         [Key]
         public int TransactionTypeCode { get; set; } 
         public string TransactionTypeDescriptions { get; set; }

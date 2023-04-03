@@ -6,7 +6,7 @@ namespace EuroBankAPI.Models
     public class Service
     {
         
-        public Service() { }
+        
         [Key]
         public int ServiceId { get; set; } 
         public DateTime DateServiceProvided { get; set; }
