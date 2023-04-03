@@ -9,9 +9,11 @@ namespace EuroBankAPI.DTOs
         {
             //Employee Mapper
             CreateMap<Employee, EmployeeDTO>().ReverseMap();
+            CreateMap<EmployeeRegisterDTO, EmployeeDTO>();
             //Customer Mapper
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<CustomerCreationStatus, CustomerCreationStatusDTO>().ReverseMap();
+            CreateMap<CustomerRegisterDTO, CustomerDTO>();
             //Transaction Mapper
             CreateMap<Transaction, TransactionDTO>().ReverseMap();
             CreateMap<RefTransactionStatus,RefTransactionStatusDTO>().ReverseMap();
@@ -25,6 +27,15 @@ namespace EuroBankAPI.DTOs
             CreateMap<TransactionStatus,TransactionStatusDTO>().ReverseMap();
             CreateMap<AccountCreationStatus, AccountCreationStatusDTO>().ReverseMap();
             CreateMap<Statement,StatementDTO>().ReverseMap();
+            //EmployeeLoginDTO and UserAuthDTO
+            CreateMap<EmployeeLoginDTO, UserAuthLoginDTO>()
+                .ForMember(dest => dest.Role, map=> map.MapFrom(src => "Employee"/*src.EmployeeId is string ?"Employee":"Employee"*/  ))
+                .ForMember(dest => dest.Username, map => map.MapFrom(src => src.EmailId));
+            //CustomerLoginDTO and UserAuthDTO
+            CreateMap<CustomerLoginDTO, UserAuthLoginDTO>()
+                .ForMember(dest => dest.Role, map => map.MapFrom(src => "Customer"))
+                .ForMember(dest => dest.Username, map=>map.MapFrom(src => src.EmailId));
+
         }
     }
 }
