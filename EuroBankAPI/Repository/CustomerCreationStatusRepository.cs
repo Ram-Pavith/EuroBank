@@ -13,9 +13,11 @@ namespace EuroBankAPI.Repository
             _db = db;
         }
 
-        public Task<CustomerCreationStatus> UpdateAsync(CustomerCreationStatus customerCreationStatus)
+        public async Task<CustomerCreationStatus> UpdateAsync(CustomerCreationStatus customerCreationStatus)
         {
-            throw new NotImplementedException();
+            _db.Update(customerCreationStatus);
+            await _db.SaveChangesAsync();
+            return customerCreationStatus;
         }
     }
 }
