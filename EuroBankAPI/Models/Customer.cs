@@ -23,5 +23,6 @@ namespace EuroBankAPI.Models
         public string PasswordSalt { get; set; }
         public string PanNumber { get; set; }
         public DateTime DOB { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }
