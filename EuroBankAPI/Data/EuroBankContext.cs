@@ -11,11 +11,12 @@ namespace EuroBankAPI.Data
         //DbSet Tables For the Context
         public DbSet<UserAuth> UserAuths { get; set; }
 
+        //Context Configuring
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-B2NAR03\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
         //Accounts Microservice Entities
