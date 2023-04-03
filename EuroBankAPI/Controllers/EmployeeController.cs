@@ -97,5 +97,14 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        public async Task<IEnumerable<TransactionDTO>> ViewAllTransaction()
+        {
+            var Transactions = await _context.Transactions.GetAllAsync();
+
+            List<TransactionDTO> transactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
+
+            return transactionDTOs;
+        }
+
     }
 }
