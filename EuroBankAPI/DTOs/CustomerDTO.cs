@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using EuroBankAPI.Models;
 
-namespace EuroBankAPI.Models
+namespace EuroBankAPI.DTOs
 {
     public class CustomerDTO
     {

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EuroBankAPI.DTOs;
 
 namespace EuroBankAPI.Models
 {
