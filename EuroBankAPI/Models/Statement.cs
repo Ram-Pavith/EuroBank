@@ -1,8 +1,11 @@
-﻿namespace EuroBankAPI.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace EuroBankAPI.Models
 {
     public class Statement
     {
         public int StatementId { get; set; }
+        [ForeignKey("Account")]
         public Guid AccountId { get; set; }
         public DateTime Date { get; set; }
         public string Narration { get; set; } = string.Empty;

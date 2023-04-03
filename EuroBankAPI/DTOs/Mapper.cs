@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EuroBankAPI.Models;
+
 namespace EuroBankAPI.DTOs
 {
     public class Mapper:Profile
@@ -7,6 +8,8 @@ namespace EuroBankAPI.DTOs
         public Mapper()
         {
             CreateMap<Employee, EmployeeDTO>();
+            CreateMap<Customer, CustomerDTO>().ReverseMap();
+            CreateMap<CustomerCreationStatus, CustomerCreationStatusDTO>().ReverseMap();
         }
     }
 }
