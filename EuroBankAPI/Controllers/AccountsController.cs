@@ -15,7 +15,7 @@ namespace EuroBankAPI.Controllers
             _uw = uw;
         }
 
-        [HttpPost]
-        public 
+        //[HttpPost]
+        //public 
     }
 }
