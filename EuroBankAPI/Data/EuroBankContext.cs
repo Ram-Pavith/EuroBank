@@ -112,7 +112,9 @@ namespace EuroBankAPI.Data
             {
                 entity.HasIndex(e => e.Id, "CustomerCreationStatusId");
 
-                entity.HasOne(e=>e.Customer).WithOne(p=>p.)
+                entity.HasOne(e => e.Customer)
+                .WithOne(p => p.CustomerCreationStatus)
+                .HasForeignKey<Customer>(e => e.CustomerId);
 
                 entity.Property(e => e.Message).HasMaxLength(100).IsUnicode(false);
 
