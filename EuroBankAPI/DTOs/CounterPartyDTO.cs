@@ -6,10 +6,10 @@ namespace EuroBankAPI.DTOs
     {
         public CounterPartyDTO()
         {
-            Transactions = new HashSet<Transaction>();
+            Transactions = new HashSet<TransactionDTO>();
         }
         public string CounterPartyId { get; set; }
         public string CounterPartyName { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<TransactionDTO> Transactions { get; set; }
     }
 }

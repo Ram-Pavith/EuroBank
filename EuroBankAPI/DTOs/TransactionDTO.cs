@@ -15,9 +15,9 @@ namespace EuroBankAPI.DTOs
         public int RefTransactionTypeId { get; set; }
         public DateTime DateOfTransaction { get; set; }
         public double AmountOfTransaction { get; set; }
-        public virtual CounterParty CounterParty { get; set; }
-        public virtual Models.Service Service { get; set; }
-        public virtual RefTransactionStatus RefTransactionStatus { get; set; }
-        public virtual RefTransactionType RefTransactionType { get; set; }
+        public virtual CounterPartyDTO CounterParty { get; set; }
+        public virtual ServiceDTO Service { get; set; }
+        public virtual RefTransactionStatusDTO RefTransactionStatus { get; set; }
+        public virtual RefTransactionTypeDTO RefTransactionType { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace EuroBankAPI.DTOs
         [Key]
         public int TransactionTypeCode { get; set; }
         public string TransactionTypeDescriptions { get; set; }
-        public virtual Transaction Transaction { get; set; }
+        public virtual TransactionDTO Transaction { get; set; }
     }
 }

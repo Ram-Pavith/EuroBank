@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Transactions;
 
 namespace EuroBankAPI.DTOs
 {
@@ -7,6 +8,6 @@ namespace EuroBankAPI.DTOs
         [Key]
         public int ServiceId { get; set; }
         public DateTime DateServiceProvided { get; set; }
-        public virtual Transaction Transaction { get; set; }
+        public virtual TransactionDTO Transaction { get; set; }
     }
 }
