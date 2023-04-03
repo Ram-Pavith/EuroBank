@@ -22,6 +22,16 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+builder.Services.AddScoped<IAccountRepository,AccountRepository>();
+builder.Services.AddScoped<IAccountTypeRepository,AccountTypeRepository>();
+builder.Services.AddScoped<IAccountCreationStatusRepository, AccountCreationStatusRepository>();
+builder.Services.AddScoped<ITransactionStatusRepository,TransactionStatusRepository>();
+builder.Services.AddScoped<IStatementRepository,StatementRepository>();
+builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
+builder.Services.AddScoped<ICounterPartyRepository,CounterPartyRepository>();
+builder.Services.AddScoped<IRefTransactionTypeRepository,RefTransactionTypeRepository>();
+builder.Services.AddScoped<IRefTransactionStatusRepository,RefTransactionStatusRepository>();
+builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
