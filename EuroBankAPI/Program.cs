@@ -32,6 +32,7 @@ builder.Services.AddScoped<ICounterPartyRepository,CounterPartyRepository>();
 builder.Services.AddScoped<IRefTransactionTypeRepository,RefTransactionTypeRepository>();
 builder.Services.AddScoped<IRefTransactionStatusRepository,RefTransactionStatusRepository>();
 builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
+builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
