@@ -20,8 +20,7 @@ builder.Services.AddControllers();
 //AuthService Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-
+builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();

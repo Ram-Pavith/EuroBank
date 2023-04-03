@@ -32,7 +32,7 @@ namespace EuroBankAPI.Data
         public DbSet<RefTransactionStatus> RefTransactionStatuses { get; set; }
         public DbSet<RefTransactionType> RefTransactionType { get; set; }
         public DbSet<CounterParty> CounterParties { get; set; }
-        public DbSet<Service> Services { get; set; }
+        public DbSet<Models.Service> Services { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -88,6 +88,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Message).HasMaxLength(35);
             });
+
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasIndex(e => e.CustomerId, "CustomerId").IsUnique();
@@ -120,10 +121,22 @@ namespace EuroBankAPI.Data
 
             });
 
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.HasIndex(e => e.EmployeeId, "EmployeeId");
+                
+                entity.HasIndex(e => e.EmailId, "EmailId");
 
+                entity.Property(e => e.EmailId).IsRequired();
+
+                entity.Property(e => e.PasswordHash).IsRequired();
+
+                entity.Property(e => e.PasswordSalt).IsRequired();
+
+                entity.Property(e => e.Firstname).HasMaxLength(50);
+
+                entity.Property(e => e.Lastname).HasMaxLength(50);
+            });
         }
-    
-
-
     }
 }
