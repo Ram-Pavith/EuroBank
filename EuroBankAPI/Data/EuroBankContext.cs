@@ -27,7 +27,7 @@ namespace EuroBankAPI.Data
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerCreationStatus> CustomerCreationStatuses { get; set; }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Transaction> Transactions { get; set;}
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<RefPaymentMethod> RefPaymentMethods { get; set; }
         public DbSet<RefTransactionStatus> RefTransactionStatuses { get; set; }
         public DbSet<RefTransactionType> RefTransactionType { get; set; }
@@ -62,9 +62,9 @@ namespace EuroBankAPI.Data
 
             modelBuilder.Entity<AccountCreationStatus>(entity =>
             {
-                    entity.HasKey(e => e.AccountCreationStatusId).HasName("PK_Account_Creation_Status");
+                entity.HasKey(e => e.AccountCreationStatusId).HasName("PK_Account_Creation_Status");
 
-                    entity.Property(e => e.Message).HasMaxLength(50);
+                entity.Property(e => e.Message).HasMaxLength(50);
             });
 
             modelBuilder.Entity<Statement>(entity =>
@@ -72,11 +72,11 @@ namespace EuroBankAPI.Data
                 entity.HasKey(e => e.StatementId).HasName("PK_Statement_ID");
 
                 /*account id foreign key*/
-                
+
                 entity.Property(e => e.Narration).HasMaxLength(35);
 
                 entity.HasCheckConstraint("Withdrawal_Check", "Withdrawal >= 0");
-          
+
 
             });
 
@@ -88,6 +88,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Message).HasMaxLength(35);
             });
+
 
             modelBuilder.Entity<Customer>(entity =>
             {
@@ -137,6 +138,62 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Lastname).HasMaxLength(50);
             });
+        
+
+            modelBuilder.Entity<Transaction>(entity =>
+            {
+                entity.HasKey(e => e.TransactionId);
+
+                entity.HasIndex(e => e.TransactionId);
+
+                entity.HasOne(e => e.CounterParty)
+                .WithMany(c => c.Transactions)
+                .HasForeignKey(c => c.CounterPartyId)
+                .HasConstraintName("FK_Transaction_CounterParty");
+
+                entity.HasOne(t => t.Service)
+                .WithOne(s => s.Transaction)
+                .HasForeignKey<Transaction>(t => t.ServiceId)
+                .HasConstraintName("FK_Transaction_Service");
+
+                entity.HasOne(t => t.RefTransactionType)
+                .WithOne(s => s.Transaction)
+                .HasForeignKey<Transaction>(t => t.RefTransactionTypeId)
+                .HasConstraintName("FK_Transaction_RefTransactionType");
+
+                entity.HasOne(t => t.RefTransactionStatus)
+                .WithOne(s => s.Transaction)
+                .HasForeignKey<Transaction>(t => t.RefTransactionStatusId)
+                .HasConstraintName("FK_Transaction_RefTransactionStatus");
+
+            });
+            modelBuilder.Entity<RefTransactionStatus>(entity =>
+            {
+                entity.HasKey(t => t.TransactionStatusCode);
+                entity.Property(t => t.TransactionStatusDescriptions).HasColumnType("Transaction Status Descriptions");
+
+            });
+            modelBuilder.Entity<RefTransactionType>(entity =>
+            {
+                entity.HasKey(t => t.TransactionTypeCode);
+                entity.Property(t => t.TransactionTypeDescriptions).HasColumnType("Transaction Type Descriptions");
+            });
+            modelBuilder.Entity<CounterParty>(entity =>
+            {
+                entity.HasKey(t => t.CounterPartyId);
+                entity.Property(t => t.CounterPartyName).HasColumnName("Counter Party Name");
+            });
+            modelBuilder.Entity<Models.Service>(entity =>
+            {
+                entity.HasKey(t => t.ServiceId);
+                entity.Property(t => t.DateServiceProvided).HasColumnName("Date Service Provided");
+
+            });
         }
-    }
+
+
+    } 
+
 }
+
+
