@@ -4,7 +4,6 @@ namespace EuroBankAPI.Models
 {
     public class Customer
     {
-        [Key]
         public string CustomerId { get; set; }
         [DataType(DataType.EmailAddress)]
         [Required]
@@ -28,6 +27,7 @@ namespace EuroBankAPI.Models
        public string PanNumber { get; set; }
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
+        public int CustomerCreationStatusId { get; set; }
         public virtual CustomerCreationStatus CustomerCreationStatus { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }  
     }
