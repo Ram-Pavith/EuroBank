@@ -21,7 +21,11 @@ namespace EuroBankAPI.Models
         public string Phone { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
+        [Required]
+        [StringLength(10,MinimumLength =10)]
         public string PanNumber { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
     }
 }

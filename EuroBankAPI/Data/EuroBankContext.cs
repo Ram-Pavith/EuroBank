@@ -78,6 +78,37 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Message).HasMaxLength(35);
             });
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasIndex(e => e.CustomerId, "CustomerId").IsUnique();
+
+                entity.HasIndex(e => e.EmailId, "EmailId");
+
+                entity.Property(e => e.Firstname).HasMaxLength(50).IsUnicode(true);
+
+                entity.Property(e => e.Lastname).HasMaxLength(50).IsUnicode(true);
+
+                entity.Property(e=>e.Address).HasMaxLength(200);
+
+                entity.Property(e => e.Phone).HasMaxLength(10).IsUnicode(true);
+
+                entity.Property(e=>e.PanNumber).HasMaxLength(15).IsUnicode(true);
+
+                entity.Property(e => e.DOB).IsUnicode(false);
+
+            });
+
+            modelBuilder.Entity<CustomerCreationStatus>(entity =>
+            {
+                entity.HasIndex(e => e.Id, "CustomerCreationStatusId");
+
+                entity.HasIndex(e => e.CustomerId, "CustomerId");
+
+                entity.Property(e => e.Message).HasMaxLength(100).IsUnicode(false);
+
+            });
+
+
         }
     
 
