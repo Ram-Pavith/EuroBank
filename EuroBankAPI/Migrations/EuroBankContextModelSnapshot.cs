@@ -44,7 +44,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 3, 15, 32, 57, 461, DateTimeKind.Local).AddTicks(1899));
+                        .HasDefaultValue(new DateTime(2023, 4, 3, 23, 12, 34, 213, DateTimeKind.Local).AddTicks(7918));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");

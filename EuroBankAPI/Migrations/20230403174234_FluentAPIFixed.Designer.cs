@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EuroBankAPI.Migrations
 {
     [DbContext(typeof(EuroBankContext))]
-    [Migration("20230403100257_Fixedfluentapi")]
-    partial class Fixedfluentapi
+    [Migration("20230403174234_FluentAPIFixed")]
+    partial class FluentAPIFixed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,7 +46,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 3, 15, 32, 57, 461, DateTimeKind.Local).AddTicks(1899));
+                        .HasDefaultValue(new DateTime(2023, 4, 3, 23, 12, 34, 213, DateTimeKind.Local).AddTicks(7918));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");

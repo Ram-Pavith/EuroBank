@@ -37,7 +37,7 @@ namespace EuroBankAPI.Service.AuthService
             }
             if(request.Role == "Customer")
             {
-                user = await _context.Customers.GetAsync(c => c.EmailId == request.Username);
+                 user = await _context.Customers.GetAsync(c => c.EmailId == request.Username);
             }
             else
             {

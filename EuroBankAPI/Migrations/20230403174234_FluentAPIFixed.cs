@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EuroBankAPI.Migrations
 {
-    public partial class Fixedfluentapi : Migration
+    public partial class FluentAPIFixed : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -222,7 +222,7 @@ namespace EuroBankAPI.Migrations
                     AccountTypeId = table.Column<int>(type: "int", nullable: false),
                     AccountCreationStatusId = table.Column<int>(type: "int", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 4, 3, 15, 32, 57, 461, DateTimeKind.Local).AddTicks(1899)),
+                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2023, 4, 3, 23, 12, 34, 213, DateTimeKind.Local).AddTicks(7918)),
                     Balance = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
