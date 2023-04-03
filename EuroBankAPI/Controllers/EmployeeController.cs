@@ -13,9 +13,9 @@ namespace EuroBankAPI.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IUnitOfWork _context;
-        private readonly ILogger _logger;
+        private readonly ILogger<EmployeeController> _logger;
         private readonly IMapper _mapper;
-        public EmployeeController(IUnitOfWork context,ILogger logger,IMapper mapper) { 
+        public EmployeeController(IUnitOfWork context,ILogger<EmployeeController> logger ,IMapper mapper) { 
             _context= context;
             _logger= logger;
             _mapper= mapper;
@@ -23,11 +23,13 @@ namespace EuroBankAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee")]
-        public async Task<EmployeeDTO> Register(EmployeeDTO employeeDTO)
+        public async Task<Employee> Register(EmployeeDTO employeeDTO)
         {
             Employee employee = _mapper.Map<Employee>(employeeDTO);
             await _context.Employees.CreateAsync(employee);
-            return employeeDTO;
+            return employee;
         }
+
+
     }
 }

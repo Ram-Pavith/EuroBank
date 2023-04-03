@@ -7,7 +7,7 @@ namespace EuroBankAPI.DTOs
     {
         public Mapper()
         {
-            CreateMap<Employee, EmployeeDTO>();
+            CreateMap<Employee, EmployeeDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<CustomerCreationStatus, CustomerCreationStatusDTO>().ReverseMap();
         }
