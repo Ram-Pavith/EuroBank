@@ -41,15 +41,20 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.AccountId).HasName("PK_Account");
 
-                /*entity.HasOne(d => d.AccountType)
-                    .*/
+                entity.HasOne(at => at.AccountType)
+                        .WithMany(a => a.Accounts)
+                        .HasForeignKey(at => at.AccountTypeId)
+                        .IsRequired();
+
+                entity.HasOne(ci => ci.Customer)
+                        .WithMany(a => a.Accounts)
+                        .HasForeignKey(ci => ci.CustomerId)
+                        .IsRequired();
 
                 entity.Property(e => e.DateCreated).HasDefaultValue(DateTime.Now);
 
                 entity.HasCheckConstraint("Balance_check", "Balance >= 0");
-
-
-
+                entity.Property(e => e.Balance).IsRequired();
             });
 
 
@@ -57,7 +62,7 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.AccountTypeId).HasName("PK_Account_Type");
 
-                entity.Property(e => e.Type).HasMaxLength(7);
+                entity.Property(e => e.Type).HasMaxLength(7).IsRequired();    //"Savings" or "Current"
             });
 
             modelBuilder.Entity<AccountCreationStatus>(entity =>
@@ -65,6 +70,11 @@ namespace EuroBankAPI.Data
                 entity.HasKey(e => e.AccountCreationStatusId).HasName("PK_Account_Creation_Status");
 
                 entity.Property(e => e.Message).HasMaxLength(50);
+                entity.HasOne(a => a.Account)
+                        .WithOne(acs => acs.AccountCreationStatus)
+                        .HasForeignKey<Account>(a => a.AccountId);
+
+                entity.Property(e => e.Message).HasMaxLength(50).IsRequired();
             });
 
             modelBuilder.Entity<Statement>(entity =>
@@ -74,9 +84,21 @@ namespace EuroBankAPI.Data
                 /*account id foreign key*/
 
                 entity.Property(e => e.Narration).HasMaxLength(35);
+                entity.HasOne(s => s.Account)
+                    .WithOne(a => a.Statement)
+                    .HasForeignKey<Account>(a => a.AccountId);
 
+                entity.Property(e => e.Date).IsRequired();
+
+                entity.Property(e => e.Narration).HasMaxLength(35).IsRequired();
+
+                entity.Property(e => e.RefNo).IsRequired();
+
+                entity.Property(e => e.ValueDate).IsRequired();
+                
                 entity.HasCheckConstraint("Withdrawal_Check", "Withdrawal >= 0");
-
+                entity.Property(e => e.ClosingBalance).IsRequired();
+                entity.HasCheckConstraint("ClosingBalance_Check", "ClosingBalance >= 0");
 
             });
 
@@ -84,9 +106,15 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.TransactionStatusId).HasName("PK_Transaction_Status");
 
-                //account id foreign key
+                entity.HasOne(t => t.Account)
+                    .WithMany(a => a.TransactionStatuses)
+                    .HasForeignKey(t => t.AccountId);
 
                 entity.Property(e => e.Message).HasMaxLength(35);
+
+                entity.HasCheckConstraint("SourceBalance_Check", "SourceBalance >= 0");
+                entity.Property(e => e.SourceBalance).IsRequired();
+
             });
 
 

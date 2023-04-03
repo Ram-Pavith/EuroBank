@@ -8,5 +8,6 @@
         public string Message { get; set; } = string.Empty;
 
         public virtual Account Account { get; set; } = null!;
+
     }
 }
