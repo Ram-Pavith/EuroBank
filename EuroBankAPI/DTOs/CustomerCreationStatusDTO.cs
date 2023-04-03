@@ -6,8 +6,7 @@ namespace EuroBankAPI.DTOs
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        public string CustomerId { get; set; }
+        
         [Required]
         public string Message { get; set; }
         public virtual CustomerDTO Customer { get; set; }

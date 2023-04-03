@@ -26,17 +26,76 @@ namespace EuroBankAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Employee")]
-        public async Task<Employee> Register(EmployeeRegisterDTO employeeRegisterDTO)
+        public async Task<ActionResult<Employee>> Register(EmployeeRegisterDTO employeeRegisterDTO)
         {
-            var employeeDTO = _mapper.Map<EmployeeDTO>(employeeRegisterDTO);
-            _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            employeeDTO.PasswordHash = Convert.ToString(passwordHash);
-            employeeDTO.PasswordSalt = Convert.ToString(passwordSalt);
-            Employee employee = _mapper.Map<Employee>(employeeDTO);
-            await _context.Employees.CreateAsync(employee);
-            return employee;
+            try
+            {
+                var employeeDTO = _mapper.Map<EmployeeDTO>(employeeRegisterDTO);
+                _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                employeeDTO.PasswordHash = Convert.ToString(passwordHash);
+                employeeDTO.PasswordSalt = Convert.ToString(passwordSalt);
+                Employee employee = _mapper.Map<Employee>(employeeDTO);
+                await _context.Employees.CreateAsync(employee);
+                return employee;
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
+        public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
+        {
+            var customerDTO = _mapper.Map<EmployeeDTO>(customerRegisterDTO);
+            _authService.CreatePasswordHash(customerRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            customerDTO.PasswordHash = Convert.ToString(passwordHash);
+            customerDTO.PasswordSalt = Convert.ToString(passwordSalt);
+            try
+            {
+                Customer customer = _mapper.Map<Customer>(customerDTO);
+                CustomerCreationStatus customerCreationStatus;
+                try
+                {
+                    await _context.Customers.CreateAsync(customer);
+                    Account account = new Account()
+                    {
+                        AccountTypeId = 1,
+                        CustomerId = customer.CustomerId,
+                        DateCreated = DateTime.Now,
+                        Balance = 10000
+                    };
+                    customerCreationStatus = new CustomerCreationStatus() { 
+                        Message = "Success"
+                    };
+                    try
+                    {
+                        await _context.Accounts.CreateAsync(account);
+                        AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
+                        {
+                            Message = "Success"
+                        };
+                    }
+                    catch(Exception ex)
+                    {
+                        AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
+                        {
+                            Message = "Failure"
+                        };
+                    }
+                }catch(Exception ex) {
+                    customerCreationStatus = new CustomerCreationStatus()
+                    {
+                        Message = "Failure"
+                    };
+                }
+                CustomerCreationStatusDTO customerCreationStatusDTO = _mapper.Map<CustomerCreationStatusDTO>(customerCreationStatus);
+                return customerCreationStatusDTO;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }
