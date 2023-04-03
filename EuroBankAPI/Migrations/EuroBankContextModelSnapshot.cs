@@ -135,7 +135,7 @@ namespace EuroBankAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UsersAuth");
+                    b.ToTable("UserAuths");
                 });
 #pragma warning restore 612, 618
         }
