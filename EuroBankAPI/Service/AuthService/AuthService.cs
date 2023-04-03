@@ -1,4 +1,5 @@
-﻿using EuroBankAPI.Data;
+﻿using AutoMapper;
+using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
@@ -16,17 +17,32 @@ namespace EuroBankAPI.Service.AuthService
         private readonly IUnitOfWork _context;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMapper _mapper;
 
-        public AuthService(IUnitOfWork context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IUnitOfWork context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor,IMapper mapper)
         {
             _context = context;
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
         }
 
         public async Task<UserAuthResponseDTO> Login(UserAuthLoginDTO request)
         {
-            var user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
+            //var user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
+            dynamic user;
+            if(request.Role == "Employee")
+            {
+                user = await _context.Employees.GetAsync(e => e.EmailId == request.Username);
+            }
+            if(request.Role == "Customer")
+            {
+                user = await _context.Customers.GetAsync(c => c.EmailId == request.Username);
+            }
+            else
+            {
+                user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
+            }
             if (user == null)
             {
                 return new UserAuthResponseDTO { Message = "User not found." };
@@ -36,10 +52,10 @@ namespace EuroBankAPI.Service.AuthService
             {
                 return new UserAuthResponseDTO { Message = "Wrong Password." };
             }
-            if(request.Role != user.Role)
+           /* if(request.Role != user.Role)
             {
                 return new UserAuthResponseDTO { Message = "Authorization Error" };
-            }
+            }*/
 
             string token = GenerateJWT(user);
             var refreshToken = CreateRefreshToken();
@@ -97,7 +113,7 @@ namespace EuroBankAPI.Service.AuthService
                 TokenExpires = newRefreshToken.Expires
             };
         }
-        public string GenerateJWT(UserAuth userInfo)
+        public string GenerateJWT(UserAuthLoginDTO userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -116,7 +132,7 @@ namespace EuroBankAPI.Service.AuthService
             );
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512(passwordSalt))
             {
@@ -125,7 +141,7 @@ namespace EuroBankAPI.Service.AuthService
             }
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        public void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new HMACSHA512())
             {
