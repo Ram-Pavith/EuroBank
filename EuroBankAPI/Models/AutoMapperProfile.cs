@@ -1,0 +1,13 @@
+﻿using AutoMapper;
+
+namespace EuroBankAPI.Models
+{
+    public class AutoMapperProfile:Profile
+    {
+        public AutoMapperProfile() 
+        {
+            CreateMap<Customer, CustomerDTO>().ReverseMap();
+            CreateMap<CustomerCreationStatus, CustomerCreationStatusDTO>().ReverseMap();
+        }
+    }
+}

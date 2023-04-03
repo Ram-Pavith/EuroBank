@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EuroBankAPI.Models
 {
-    public class CustomerCreationStatus
+    public class CustomerCreationStatusDTO
     {
         [Key]
         public int Id { get; set; }
@@ -11,8 +10,7 @@ namespace EuroBankAPI.Models
         public string CustomerId { get; set; }
         [Required]
         public string Message { get; set; }
-        public virtual Customer Customer { get; set; }
-
+        public virtual CustomerDTO Customer { get; set; }
 
     }
 }
