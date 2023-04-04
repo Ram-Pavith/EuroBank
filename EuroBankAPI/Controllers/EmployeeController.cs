@@ -59,7 +59,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("CreateCustomer")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
             var customerDTO = _mapper.Map<CustomerDTO>(customerRegisterDTO);
@@ -170,6 +170,7 @@ namespace EuroBankAPI.Controllers
 
            
         [HttpGet("ViewAllTransactions")]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
         {
             try
@@ -198,6 +199,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpGet("ViewAllBankAccounts")]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
         {
             try
@@ -225,6 +227,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAllCustomers")]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
         {
             try
@@ -232,6 +235,39 @@ namespace EuroBankAPI.Controllers
                 var Customers = await _context.Customers.GetAllAsync();
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
                 return CustomersDTOs;
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("ResetPassword")]
+        public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email,string Password)
+        {
+            try
+            {
+                Employee employee = await _context.Employees.GetAsync(x => x.EmailId == Email);
+                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
+                
+                employee.PasswordHash = passwordHash;
+                employee.PasswordSalt = passwordSalt;
+                await _context.Employees.UpdateAsync(employee);
+
+                EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
+                return employeeDTO;
             }
             catch (DbUpdateException ex)
             {
