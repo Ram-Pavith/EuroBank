@@ -29,6 +29,7 @@ namespace EuroBankAPI.DTOs
         public virtual AccountCreationStatusDTO? AccountCreationStatus { get; set; }
 
         public virtual ICollection<StatementDTO>? Statements { get; set; }
+        public virtual ICollection<Transaction>? Transactions { get; }
 
         public virtual ICollection<TransactionStatusDTO>? TransactionStatuses { get; set; }
     }

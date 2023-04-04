@@ -10,7 +10,5 @@ namespace EuroBankAPI.Models
         [Required]
         public string Message { get; set; }
         //public virtual Customer Customer { get; set; }
-
-
     }
 }

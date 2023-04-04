@@ -72,11 +72,8 @@ namespace EuroBankAPI.Controllers
                 CustomerCreationStatus customerCreationStatus;
                 try
                 {
-                    await _context.Customers.CreateAsync(customer);
                     Account account = new Account()
                     {
-                        AccountTypeId = 1,
-                        CustomerId = customer.CustomerId,
                         DateCreated = DateTime.Now,
                         Balance = 10000
                     };
@@ -85,13 +82,27 @@ namespace EuroBankAPI.Controllers
                     };
                     try
                     {
-                        await _context.Accounts.CreateAsync(account);
                         AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
                         {
                             Message = "Success"
                         };
                         account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
                         customer.Accounts.Add(account);
+                        AccountType accountType = new AccountType()
+                        {
+                            Type= "Savings"
+                        };
+
+                        await _context.AccountCreationStatuses.CreateAsync(accountCreationStatus);
+                        account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
+                        await _context.AccountTypes.CreateAsync(accountType);
+                        account.AccountTypeId = accountType.AccountTypeId;
+                        account.CustomerId = customer.CustomerId;
+                        await _context.CustomerCreationStatuses.CreateAsync(customerCreationStatus);
+                        customer.CustomerCreationStatusId = customerCreationStatus.CustomerCreationId;
+                        customer.CustomerCreationStatusId = 1;
+                        await _context.Customers.CreateAsync(customer);
+                        await _context.Accounts.CreateAsync(account);
 
                     }
                     catch (Exception ex)
@@ -129,14 +140,6 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        /* [HttpPost]
-         [Authorize(Roles = "Employee")]
-         public async Task<Employee> Register(EmployeeDTO employeeDTO)
-         {
-             Employee employee = _mapper.Map<Employee>(employeeDTO);
-             await _context.Employees.CreateAsync(employee);
-             return employee;
-         }*/
         [HttpPost("EmployeeLogin")]
         public async Task<ActionResult<UserAuthResponseDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
         {
@@ -168,10 +171,10 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-           
+
         [HttpGet("ViewAllTransactions")]
         [Authorize(Roles = "Employee")]
-        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions()
         {
             try
             {
@@ -261,7 +264,6 @@ namespace EuroBankAPI.Controllers
             {
                 Employee employee = await _context.Employees.GetAsync(x => x.EmailId == Email);
                 _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                
                 employee.PasswordHash = passwordHash;
                 employee.PasswordSalt = passwordSalt;
                 await _context.Employees.UpdateAsync(employee);

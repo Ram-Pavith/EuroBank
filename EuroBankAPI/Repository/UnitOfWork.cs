@@ -26,6 +26,7 @@ namespace EuroBankAPI.Repository
             Statements = new StatementRepository(db);
             TransactionStatuses = new TransactionStatusRepository(db);
             Customers = new CustomerRepository(db);
+            CustomerCreationStatuses = new CustomerCreationStatusRepository(db);
         }
         public IEmployeeRepository Employees { get; }
         public IUserAuthRepository UserAuths { get; }

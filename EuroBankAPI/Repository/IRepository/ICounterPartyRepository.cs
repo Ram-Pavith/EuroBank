@@ -2,7 +2,7 @@
 
 namespace EuroBankAPI.Repository.IRepository
 {
-    public interface ICounterPartyRepository:IGenericRepository<CounterPartyRepository>
+    public interface ICounterPartyRepository:IGenericRepository<CounterParty>
     {
         Task<CounterParty> UpdateAsync(CounterParty counterParty);
     }

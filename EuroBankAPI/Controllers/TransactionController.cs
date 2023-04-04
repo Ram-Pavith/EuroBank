@@ -21,65 +21,15 @@ namespace EuroBankAPI.Controllers
 
         public TransactionController(IUnitOfWork uw, IMapper mapper, ILogger<TransactionController> logger)
         {
-            _uw =uw ;
+            _uw = uw;
             _logger = logger;
             _mapper = mapper;
         }
 
         [HttpPost]
-        [Route("withdraw")]
-        [Authorize(Roles ="Customer")]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId,double amount,Account inacc )
-        {
-            var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
-            if(AccountExists == null )
-            {
-                return BadRequest("account does not exists");
-            }
-            else 
-            {
-                try
-                {
-                    Transaction Transaction = new();
-                    Account newacc = new();
-                    //check for rule microservice
-                    if (inacc.Balance > amount)
-                    {
-                        newacc.Balance -= inacc.Balance;
-                        await _uw.Accounts.UpdateAsync(newacc);
-                        Transaction.RefTransactionStatusId = "success";
-                    }
-                    else
-                    {
-                        Transaction.RefTransactionStatusId = "failure";
-                    }
-                    RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                
-            }                  
-        }
-        [HttpPost]
-        [Route("deposit")]
+        [Route("Withdraw")]
         [Authorize(Roles = "Customer")]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, Account inacc)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount)
         {
             var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             if (AccountExists == null)
@@ -90,15 +40,99 @@ namespace EuroBankAPI.Controllers
             {
                 try
                 {
-                    Transaction Transaction = new();
-                    Account newacc = new();
-                    newacc.AccountId = AccountId;
-                    newacc.Balance += inacc.Balance;
-                    await _uw.Accounts.UpdateAsync(newacc);
-                    Transaction.RefTransactionStatusId = "success";
-                    RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
+                    Transaction transaction = new();
+                    //Account newacc = new();
+                    //check for rule microservice
+                    if (AccountExists.Balance > amount)
+                    {
+                        AccountExists.Balance -= amount;
+                        await _uw.Accounts.UpdateAsync(AccountExists);
+                        transaction.RefTransactionStatusId = 1;
+                    }
+                    else
+                    {
+                        transaction.RefTransactionStatusId = 2;
+                    }
+                    CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
+                    if(counterPartyExists == null)
+                    {
+                        counterPartyExists = new CounterParty();
+                        counterPartyExists.CounterPartyId = AccountExists.AccountId;
+                        counterPartyExists.CounterPartyName = AccountExists.CustomerId;
+                        await _uw.CounterParties.CreateAsync(counterPartyExists);
+                    }
+                    transaction.CounterPartyId = counterPartyExists.CounterPartyId;
+                    transaction.AccountId = AccountExists.AccountId;
+                    transaction.ServiceId = 3;
+                    transaction.RefTransactionStatusId = 1;
+                    transaction.RefTransactionTypeId = 1;
+                    transaction.DateOfTransaction = DateTime.Now;
+                    transaction.AmountOfTransaction = amount;
+                    await _uw.Transactions.CreateAsync(transaction);
+                    var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x=>x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                    var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
+                    //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return refTransactionStatusDTO;
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+        }
+        [HttpPost]
+        [Route("Deposit")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount)
+        {
+            var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
+            if (AccountExists == null)
+            {
+                return BadRequest("account does not exists");
+            }
+            else
+            {
+                try
+                {
+                    Transaction transaction = new();
+
+                    AccountExists.Balance += amount;
+                    await _uw.Accounts.UpdateAsync(AccountExists);
+                    CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
+                    if (counterPartyExists == null)
+                    {
+                        counterPartyExists = new CounterParty();
+                        counterPartyExists.CounterPartyId = AccountExists.AccountId;
+                        counterPartyExists.CounterPartyName = AccountExists.CustomerId;
+                        await _uw.CounterParties.CreateAsync(counterPartyExists);
+                    }
+                    transaction.CounterPartyId = counterPartyExists.CounterPartyId;
+                    transaction.AccountId = AccountExists.AccountId;
+                    transaction.ServiceId = 3;
+                    transaction.RefTransactionStatusId = 1;
+                    transaction.RefTransactionTypeId = 2;
+                    transaction.DateOfTransaction = DateTime.Now;
+                    transaction.AmountOfTransaction = amount;
+                    await _uw.Transactions.CreateAsync(transaction);
+                    var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                    var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
+                    //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return refTransactionStatusDTO;
                 }
                 catch (DbUpdateException ex)
                 {
@@ -119,18 +153,18 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpPost]
-        [Route("transfer")]
+        [Route("Transfer")]
         [Authorize(Roles = "Customer")]
 
-        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId,Guid Target_AccountId, double amount, Account inacc)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount)
         {
             var SourceAccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == Source_AccountId);
             var TargetAccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == Target_AccountId);
-            if(SourceAccountExists == null)
+            if (SourceAccountExists == null)
             {
                 return NotFound();
             }
-            else if(TargetAccountExists == null)
+            else if (TargetAccountExists == null)
             {
                 return BadRequest("Target Account does not exists");
             }
@@ -138,26 +172,44 @@ namespace EuroBankAPI.Controllers
             {
                 try
                 {
-                    Transaction Transaction = new();
-                    Account sourceacc = new();
-                    Account targetacc = new();
+                    Transaction transaction = new();
+                    //Account sourceacc = new();
+                    //Account targetacc = new();
                     //sourceacc.AccountId = Source_AccountId;
                     //targetacc.AccountId = Target_AccountId;
-                    if (sourceacc.Balance > amount)
+                    if (SourceAccountExists.Balance > amount)
                     {
-                        sourceacc.Balance -= amount;
-                        targetacc.Balance += amount;
-                        await _uw.Accounts.UpdateAsync(sourceacc);
-                        await _uw.Accounts.UpdateAsync(targetacc);
-                        Transaction.RefTransactionStatusId = "success";
+                        SourceAccountExists.Balance -= amount;
+                        TargetAccountExists.Balance += amount;
+                        await _uw.Accounts.UpdateAsync(SourceAccountExists);
+                        await _uw.Accounts.UpdateAsync(TargetAccountExists);
+                        transaction.RefTransactionStatusId = 1;
                     }
                     else
                     {
-                        Transaction.RefTransactionStatusId = "failure";
+                        transaction.RefTransactionStatusId = 2;
                     }
-                    RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
+                    CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == TargetAccountExists.AccountId);
+                    if (counterPartyExists == null)
+                    {
+                        counterPartyExists = new CounterParty();
+                        counterPartyExists.CounterPartyId = TargetAccountExists.AccountId;
+                        counterPartyExists.CounterPartyName = TargetAccountExists.CustomerId;
+                        await _uw.CounterParties.CreateAsync(counterPartyExists);
+                    }
+                    transaction.CounterPartyId = counterPartyExists.CounterPartyId;
+                    transaction.AccountId = SourceAccountExists.AccountId;
+                    transaction.ServiceId = 3;
+                    transaction.RefTransactionStatusId = 1;
+                    transaction.RefTransactionTypeId = 1;
+                    transaction.DateOfTransaction = DateTime.Now;
+                    transaction.AmountOfTransaction = amount;
+                    await _uw.Transactions.CreateAsync(transaction);
+                    var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                    var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
+                    //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return refTransactionStatusDTO;
                 }
                 catch (DbUpdateException ex)
                 {
@@ -178,19 +230,27 @@ namespace EuroBankAPI.Controllers
             }
 
         }
-        [HttpGet]
-        [Authorize(Roles ="Employee")]
-        public async Task<ActionResult<TransactionDTO>> GetTransactions(string CustomerId)
+        [HttpGet("GetTransactions")]
+        [Authorize(Roles = "Employee,Customer")]
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId)
         {
             Customer CustomerIdObj = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
-            if(CustomerIdObj == null)
+            var accounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+            List<Transaction> transactions = new List<Transaction>();
+            if (CustomerIdObj == null)
             {
                 return BadRequest("Customer does not exist");
             }
             else
             {
-                TransactionDTO transactionDTO = _mapper.Map<TransactionDTO>(CustomerIdObj);
-                return transactionDTO;
+                foreach (var account in accounts)
+                {
+                    var transactionsEnumerable = await _uw.Transactions.GetAllAsync(x => x.AccountId == account.AccountId);
+                    transactions.AddRange(transactionsEnumerable);
+
+                }
+                List<TransactionDTO> transactionsDTO = _mapper.Map<List<TransactionDTO>>(transactions);
+                return transactionsDTO;
             }
         }
     }

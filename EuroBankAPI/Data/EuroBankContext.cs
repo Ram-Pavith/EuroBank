@@ -15,8 +15,9 @@ namespace EuroBankAPI.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-38MT8D4;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
+            {   
+                optionsBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBankDummy;Trusted_Connection=True;TrustServerCertificate=True;");
+
             }
         }
          //Accounts Microservice Entities
@@ -51,8 +52,9 @@ namespace EuroBankAPI.Data
                         .WithMany(a => a.Accounts)
                         .HasForeignKey(ci => ci.CustomerId)
                         .IsRequired();
-/*
-                entity.HasOne(t => t.AccountCreationStatus)
+
+
+                /*entity.HasOne(t => t.AccountCreationStatus)
                 .WithOne(s => s.Account)
                 .HasForeignKey<Account>(t => t.AccountCreationStatusId)
                 .HasConstraintName("FK_Account_AccountCreationStatus");*/
@@ -137,7 +139,8 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.DOB).IsUnicode(false);
 
-              /*  entity.HasOne(e => e.CustomerCreationStatus)
+
+                /*entity.HasOne(e => e.CustomerCreationStatus)
                 .WithOne(p => p.Customer)
                 .HasForeignKey<Customer>(e => e.CustomerCreationStatusId);*/
 
@@ -180,19 +183,19 @@ namespace EuroBankAPI.Data
                 .HasForeignKey(c => c.CounterPartyId)
                 .HasConstraintName("FK_Transaction_CounterParty");
 
-                entity.HasOne(t => t.Service)
-                .WithOne(s => s.Transaction)
-                .HasForeignKey<Transaction>(t => t.ServiceId)
-                .HasConstraintName("FK_Transaction_Service");
+               /* entity.HasOne(t => t.Service)
+                .WithMany(s => s.Transactions)
+                .HasForeignKey(t => t.ServiceId)
+                .HasConstraintName("FK_Transaction_Service");*/
 
                 entity.HasOne(t => t.RefTransactionType)
-                .WithOne(s => s.Transaction)
-                .HasForeignKey<Transaction>(t => t.RefTransactionTypeId)
+                .WithMany(s => s.Transactions)
+                .HasForeignKey(t => t.RefTransactionTypeId)
                 .HasConstraintName("FK_Transaction_RefTransactionType");
 
                 entity.HasOne(t => t.RefTransactionStatus)
-                .WithOne(s => s.Transaction)
-                .HasForeignKey<Transaction>(t => t.RefTransactionStatusId)
+                .WithMany(s => s.Transactions)
+                .HasForeignKey(t => t.RefTransactionStatusId)
                 .HasConstraintName("FK_Transaction_RefTransactionStatus");
 
             });
