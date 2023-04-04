@@ -27,12 +27,12 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("CreateAccount")]
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AccountCreationStatusDTO>> createAccount(string CustomerId)
+        public async Task<ActionResult<AccountCreationStatusDTO>> CreateAccount(string CustomerId)
         {
             //Checking if the customer exist
             var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
@@ -81,11 +81,11 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("GetCustomerAccounts")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> getCustomerAccounts(string CustomerId)
+        public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> GetCustomerAccounts(string CustomerId)
         {
             //Checking if the customer exist
             var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
@@ -121,11 +121,11 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetAccountStatement")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<StatementDTO>>> getAccountStatement(Guid AccountId, DateTime? from_date, DateTime? to_date)
+        public async Task<ActionResult<IEnumerable<StatementDTO>>> GetAccountStatement(Guid AccountId, DateTime? from_date, DateTime? to_date)
         {
             //Checking if account exist
             Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
@@ -154,10 +154,10 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("Deposti")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<TransactionStatusDTO>> deposit(Guid AccountId, double amount)
+        public async Task<ActionResult<TransactionStatusDTO>> Deposit(Guid AccountId, double amount)
         {
             //Fetching balance of the account
             Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
@@ -210,10 +210,10 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("Withdraw")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<TransactionStatusDTO>> withdraw(Guid AccountId, double amount)
+        public async Task<ActionResult<TransactionStatusDTO>> Withdraw(Guid AccountId, double amount)
         {
             //Fetching balance of the account
             Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);

@@ -13,12 +13,14 @@ namespace EuroBankAPI.Models
         public int ServiceId { get; set; }
         public int RefTransactionStatusId { get; set; }
         public int RefTransactionTypeId { get; set; }
+        public int RefPaymentMethodId { get; set; }
         public DateTime DateOfTransaction { get; set; }
         public double AmountOfTransaction { get; set; }
         public virtual CounterParty? CounterParty { get; set; }
         public virtual Service? Service { get; set; }
         public virtual RefTransactionStatus? RefTransactionStatus { get; set; }
         public virtual RefTransactionType? RefTransactionType { get; set; }
+        public virtual RefPaymentMethod? RefPaymentMethod { get; set; }
         public virtual Account? Account { get; set; }
 
 

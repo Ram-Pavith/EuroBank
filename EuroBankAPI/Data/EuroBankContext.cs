@@ -198,6 +198,11 @@ namespace EuroBankAPI.Data
                 .HasForeignKey(t => t.RefTransactionStatusId)
                 .HasConstraintName("FK_Transaction_RefTransactionStatus");
 
+                entity.HasOne(t => t.RefPaymentMethod)
+                .WithMany(s => s.Transactions)
+                .HasForeignKey(t => t.RefPaymentMethodId)
+                .HasConstraintName("FK_Transaction_RefPaymentMethod");
+
             });
             modelBuilder.Entity<RefTransactionStatus>(entity =>
             {

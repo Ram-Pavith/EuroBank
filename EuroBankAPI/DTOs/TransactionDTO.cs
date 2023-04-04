@@ -14,12 +14,14 @@ namespace EuroBankAPI.DTOs
         public int ServiceId { get; set; }
         public int RefTransactionStatusId { get; set; }
         public int RefTransactionTypeId { get; set; }
+        public int RefPaymentMethodId { get; set; }
         public DateTime DateOfTransaction { get; set; }
         public double AmountOfTransaction { get; set; }
         public virtual Account Account { get; set; }
         public virtual CounterPartyDTO? CounterParty { get; set; }
         public virtual ServiceDTO? Service { get; set; }
         public virtual RefTransactionStatusDTO? RefTransactionStatus { get; set; }
+        public virtual RefPaymentMethodDTO? RefPaymentMethod { get; set; }
         public virtual RefTransactionTypeDTO? RefTransactionType { get; set; }
     }
 }
