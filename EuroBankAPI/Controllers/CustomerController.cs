@@ -360,6 +360,7 @@ namespace EuroBankAPI.Controllers
                 }
             }
         }
+        [HttpPut("ResetPassword")]
         public async Task<ActionResult<CustomerDTO>>ResetPassword(string Email,string Password)
         {
             try
