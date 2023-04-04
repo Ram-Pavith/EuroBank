@@ -16,6 +16,6 @@ namespace EuroBankAPI.DTOs
         public double Withdrawal { get; set; }
         public double Deposit { get; set; }
         public double ClosingBalance { get; set; }
-        public virtual AccountDTO Account { get; set; } = null!;
+        public virtual AccountDTO? Account { get; set; } = null!;
     }
 }

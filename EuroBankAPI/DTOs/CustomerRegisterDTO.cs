@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using EuroBankAPI.Models;
+﻿using EuroBankAPI.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace EuroBankAPI.DTOs
 {
-    public class CustomerDTO
+    public class CustomerRegisterDTO
     {
         [Key]
         public string CustomerId { get; set; }
@@ -11,9 +11,9 @@ namespace EuroBankAPI.DTOs
         [Required]
         public string EmailId { get; set; }
 
-        public string? Firstname { get; set; }
+        public string Firstname { get; set; }
 
-        public string? Lastname { get; set; }
+        public string Lastname { get; set; }
 
         public string Address { get; set; }
 
@@ -21,15 +21,13 @@ namespace EuroBankAPI.DTOs
         [Display(Name = "Phone Number")]
         public string Phone { get; set; }
         [Required]
-        public byte[] PasswordHash { get; set; }
-        [Required]
-        public byte[] PasswordSalt { get; set; }
+        public string Password { get; set; }
 
         [StringLength(10, MinimumLength = 10)]
-        public string? PanNumber { get; set; }
+        public string PanNumber { get; set; }
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
-        public virtual CustomerCreationStatusDTO? CustomerCreationStatus { get; set; }
-        public virtual ICollection<Account>? Accounts { get; set; }
+        public virtual CustomerCreationStatusDTO CustomerCreationStatus { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
     }
 }

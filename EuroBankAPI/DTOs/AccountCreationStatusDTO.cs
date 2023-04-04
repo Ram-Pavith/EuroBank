@@ -8,10 +8,8 @@ namespace EuroBankAPI.DTOs
         [Key]
         public int AccountCreationStatusId { get; set; }
 
-        /*  [ForeignKey("Account")]
-          public Guid AccountId { get; set; }*/
         public string Message { get; set; } = string.Empty;
 
-        public virtual AccountDTO Account { get; set; } = null!;
-    }
+/*        public virtual AccountDTO Account { get; set; } = null!;
+*/    }
 }

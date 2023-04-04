@@ -12,6 +12,6 @@ namespace EuroBankAPI.DTOs
         [Key]
         public int AccountTypeId { get; set; }
         public string Type { get; set; } = string.Empty;
-        public virtual ICollection<AccountDTO> Accounts { get; set; }
+        public virtual ICollection<AccountDTO>? Accounts { get; set; }
     }
 }
