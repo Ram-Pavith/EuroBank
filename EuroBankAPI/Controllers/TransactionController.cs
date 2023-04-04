@@ -52,6 +52,9 @@ namespace EuroBankAPI.Controllers
                     else
                     {
                         transaction.RefTransactionStatusId = 2;
+                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
+                        return refTransactionStatusErrorDTO;
                     }
                     CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
                     if(counterPartyExists == null)
@@ -61,6 +64,7 @@ namespace EuroBankAPI.Controllers
                         counterPartyExists.CounterPartyName = AccountExists.CustomerId;
                         await _uw.CounterParties.CreateAsync(counterPartyExists);
                     }
+                    //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
                     transaction.ServiceId = serviceId;
@@ -70,6 +74,8 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
+                    //statement inialising
+
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);

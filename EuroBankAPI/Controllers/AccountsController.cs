@@ -44,7 +44,7 @@ namespace EuroBankAPI.Controllers
             {
                 //Checking if the customer already has an acocunt of Type "Current"
                 var AccountExists = await _uw.Accounts.GetAsync(x => x.CustomerId == CustomerId && x.AccountTypeId == 2);
-                if (AccountExists == null)
+                if (AccountExists != null)
                 {
                     return BadRequest();
                 }
@@ -55,6 +55,7 @@ namespace EuroBankAPI.Controllers
                     newAcc.CustomerId = CustomerId;
                     newAcc.AccountTypeId = 2;   //current account
                     newAcc.AccountCreationStatusId = 1;     // success status
+                    newAcc.Balance = 10000;
 
                     try
                     {
@@ -102,11 +103,11 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetAccountBalance")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AccountBalanceDTO>> getAccount(Guid AccountId)
+        public async Task<ActionResult<AccountBalanceDTO>> getAccountBalance(Guid AccountId)
         {
             //Checking if account exist
             Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
@@ -116,7 +117,7 @@ namespace EuroBankAPI.Controllers
             }
             else
             {
-                AccountBalanceDTO targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
+                var targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
                 return targetAccountDTO;
             }
         }
@@ -137,8 +138,9 @@ namespace EuroBankAPI.Controllers
             {
                 if (from_date != null && to_date != null)
                 {
-                    IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == AccountId &&
-                                                                        x.Date >= from_date && x.Date <= to_date);
+                    IEnumerable<Transaction> stmt = await _uw.Transactions.GetAllAsync(x => x.AccountId == AccountId &&
+                                                                        x.DateOfTransaction >= from_date && x.DateOfTransaction <= to_date);
+
                     List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
                     return AccountStatement;
                 }

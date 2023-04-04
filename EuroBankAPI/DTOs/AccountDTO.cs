@@ -5,10 +5,12 @@ namespace EuroBankAPI.DTOs
 {
     public class AccountDTO
     {
-        public AccountDTO()
+       /* public AccountDTO()
         {
             TransactionStatuses = new HashSet<TransactionStatusDTO>();
-        }
+            Statements = new HashSet<StatementDTO>();
+            Transactions = new HashSet<TransactionDTO>();
+        }*/
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid AccountId { get; set; } = Guid.NewGuid();
@@ -22,15 +24,15 @@ namespace EuroBankAPI.DTOs
 
         public double Balance { get; set; }
 
-        public virtual AccountTypeDTO? AccountType { get; set; } = null!;
+       /* public virtual AccountTypeDTO? AccountType { get; set; } = null!;
 
         public virtual CustomerDTO? Customer { get; set; } = null!;
 
         public virtual AccountCreationStatusDTO? AccountCreationStatus { get; set; }
 
         public virtual ICollection<StatementDTO>? Statements { get; set; }
-        public virtual ICollection<Transaction>? Transactions { get; }
+        public virtual ICollection<TransactionDTO>? Transactions { get; }
 
         public virtual ICollection<TransactionStatusDTO>? TransactionStatuses { get; set; }
-    }
+*/    }
 }
