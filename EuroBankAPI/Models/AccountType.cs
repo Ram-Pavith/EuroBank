@@ -11,6 +11,6 @@ namespace EuroBankAPI.Models
         [Key]
         public int AccountTypeId { get; set; }
         public string Type { get; set; } = string.Empty;
-        public virtual ICollection<Account> Accounts { get; set; }
+        public virtual ICollection<Account>? Accounts { get; set; }
     }
 }

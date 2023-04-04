@@ -22,14 +22,16 @@ namespace EuroBankAPI.Models
 
         public double Balance { get; set; }
 
-        public virtual AccountType AccountType { get; set; } = null!;
+        public virtual AccountType? AccountType { get; set; } = null!;
         
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; } = null!;
 
-        public virtual AccountCreationStatus AccountCreationStatus { get; set; }
+        public virtual AccountCreationStatus? AccountCreationStatus { get; set; }
 
-        public virtual ICollection<Statement> Statements { get; set; }
+        public virtual ICollection<Statement>? Statements { get; set; }
+        
+        public virtual ICollection<Transaction>? Transactions { get; }
 
-        public virtual ICollection<TransactionStatus> TransactionStatuses { get; set; }
+        public virtual ICollection<TransactionStatus>? TransactionStatuses { get; set; }
     }
 }

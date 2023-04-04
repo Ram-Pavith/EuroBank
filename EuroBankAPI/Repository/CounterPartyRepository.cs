@@ -4,7 +4,7 @@ using EuroBankAPI.Repository.IRepository;
 
 namespace EuroBankAPI.Repository
 {
-    public class CounterPartyRepository :GenericRepository<CounterPartyRepository>,ICounterPartyRepository
+    public class CounterPartyRepository :GenericRepository<CounterParty>,ICounterPartyRepository
     {
         private readonly EuroBankContext _db;
 

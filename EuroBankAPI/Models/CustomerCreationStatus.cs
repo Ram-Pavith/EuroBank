@@ -9,8 +9,6 @@ namespace EuroBankAPI.Models
         public int CustomerCreationId { get; set; }
         [Required]
         public string Message { get; set; }
-        public virtual Customer Customer { get; set; }
-
-
+        //public virtual Customer Customer { get; set; }
     }
 }
