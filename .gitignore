@@ -364,4 +364,4 @@ FodyWeavers.xsd
 
 #appsettings
 appsettings.json
-migrations/
+EuroBankAPI/Migrations/
