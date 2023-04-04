@@ -8,8 +8,9 @@ namespace EuroBankAPI.Models
         public Account() 
         { 
             TransactionStatuses = new HashSet<TransactionStatus>();
+            Transactions = new HashSet<Transaction>();
         }
-
+        
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid AccountId { get; set; } = Guid.NewGuid();
 
@@ -29,8 +30,7 @@ namespace EuroBankAPI.Models
         public virtual AccountCreationStatus AccountCreationStatus { get; set; }
 
         public virtual ICollection<Statement> Statements { get; set; }
-        public virtual Transaction Transaction { get; }
-
+        public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<TransactionStatus> TransactionStatuses { get; set; }
     }
 }

@@ -180,6 +180,11 @@ namespace EuroBankAPI.Data
                 .HasForeignKey(c => c.CounterPartyId)
                 .HasConstraintName("FK_Transaction_CounterParty");
 
+                entity.HasOne(e => e.Account)
+                .WithMany(c => c.Transactions)
+                .HasForeignKey(c => c.AccountId)
+                .HasConstraintName("FK_Transaction_Account");
+
                 entity.HasOne(t => t.Service)
                 .WithOne(s => s.Transaction)
                 .HasForeignKey<Transaction>(t => t.ServiceId)

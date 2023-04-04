@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EuroBankAPI", "EuroBankAPI\EuroBankAPI.csproj", "{6631F09B-FDD3-4844-98B4-B3B5C82668AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankAPI", "EuroBankAPI\EuroBankAPI.csproj", "{6631F09B-FDD3-4844-98B4-B3B5C82668AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EuroBankTesting", "EuroBankTesting\EuroBankTesting.csproj", "{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6631F09B-FDD3-4844-98B4-B3B5C82668AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6631F09B-FDD3-4844-98B4-B3B5C82668AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6631F09B-FDD3-4844-98B4-B3B5C82668AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
