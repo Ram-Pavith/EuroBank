@@ -44,6 +44,8 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
             var customerDTO = _mapper.Map<EmployeeDTO>(customerRegisterDTO);
@@ -97,14 +99,35 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        public async Task<IEnumerable<TransactionDTO>> ViewAllTransaction()
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
         {
-            var Transactions = await _context.Transactions.GetAllAsync();
+            try
+            {
+                var Transactions = await _context.Transactions.GetAllAsync();
 
-            List<TransactionDTO> transactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
+                List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 
-            return transactionDTOs;
+                return TransactionDTOs;
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
+        public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
+        {
+            try
+            {
+                var BankAccounts = await _context.Accounts.GetAllAsync();
+                List<AccountDTO> AccountsDTOs = _mapper.Map<List<AccountDTO>>(BankAccounts);
+                return AccountsDTOs;
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }
