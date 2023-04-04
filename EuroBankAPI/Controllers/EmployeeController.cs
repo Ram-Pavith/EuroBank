@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authorization;
 using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace EuroBankAPI.Controllers
 {
@@ -121,12 +123,25 @@ namespace EuroBankAPI.Controllers
                 else
                     return BadRequest(response.Message);
             }
-            catch(Exception ex){
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
 
-           
+
         [HttpGet("ViewAllTransactions")]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
         {

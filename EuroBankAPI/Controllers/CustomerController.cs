@@ -22,7 +22,7 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<CustomerController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public CustomerController(IUnitOfWork context, ILogger<CustomerController> logger, IMapper mapper,IAuthService authService)
+        public CustomerController(IUnitOfWork context, ILogger<CustomerController> logger, IMapper mapper, IAuthService authService)
         {
             _context = context;
             _logger = logger;
@@ -40,7 +40,7 @@ namespace EuroBankAPI.Controllers
                 response = await _authService.LoginEmployeeAndCustomer(request);
                 if (response.Success)
                     return Ok(response);
-                else 
+                else
                     return BadRequest(response.Message);
             }
             catch (DbUpdateException ex)
@@ -55,7 +55,7 @@ namespace EuroBankAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -186,6 +186,185 @@ namespace EuroBankAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("ViewAllTransactions")]
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
+        {
+            try
+            {
+                var Transactions = await _context.Transactions.GetAllAsync();
+
+                List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
+
+                return TransactionDTOs;
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("withdraw")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, Account inacc)
+        {
+            var AccountExists = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
+            if (AccountExists == null)
+            {
+                return BadRequest("account does not exists");
+            }
+            else
+            {
+                try
+                {
+                    Transaction Transaction = new();
+                    Account newacc = new();
+                    //check for rule microservice
+                    if (inacc.Balance > amount)
+                    {
+                        newacc.Balance -= inacc.Balance;
+                        await _context.Accounts.UpdateAsync(newacc);
+                        Transaction.RefTransactionStatusId = "success";
+                    }
+                    else
+                    {
+                        Transaction.RefTransactionStatusId = "failure";
+                    }
+                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return objDTO;
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+
+            }
+        }
+        [HttpPost]
+        [Route("deposit")]
+        [Authorize(Roles = "Customer")]
+        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, Account inacc)
+        {
+            var AccountExists = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
+            if (AccountExists == null)
+            {
+                return BadRequest("account does not exists");
+            }
+            else
+            {
+                try
+                {
+                    Transaction Transaction = new();
+                    Account newacc = new();
+                    newacc.AccountId = AccountId;
+                    newacc.Balance += inacc.Balance;
+                    await _context.Accounts.UpdateAsync(newacc);
+                    Transaction.RefTransactionStatusId = "success";
+                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return objDTO;
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+        }
+        [HttpPost]
+        [Route("transfer")]
+        [Authorize(Roles = "Customer")]
+
+        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount, Account inacc)
+        {
+            var SourceAccountExists = await _context.Accounts.GetAsync(x => x.AccountId == Source_AccountId);
+            var TargetAccountExists = await _context.Accounts.GetAsync(x => x.AccountId == Target_AccountId);
+            if (SourceAccountExists == null)
+            {
+                return NotFound();
+            }
+            else if (TargetAccountExists == null)
+            {
+                return BadRequest("Target Account does not exists");
+            }
+            else
+            {
+                try
+                {
+                    Transaction Transaction = new();
+                    Account sourceacc = new();
+                    Account targetacc = new();
+                    //sourceacc.AccountId = Source_AccountId;
+                    //targetacc.AccountId = Target_AccountId;
+                    if (sourceacc.Balance > amount)
+                    {
+                        sourceacc.Balance -= amount;
+                        targetacc.Balance += amount;
+                        await _context.Accounts.UpdateAsync(sourceacc);
+                        await _context.Accounts.UpdateAsync(targetacc);
+                        Transaction.RefTransactionStatusId = "success";
+                    }
+                    else
+                    {
+                        Transaction.RefTransactionStatusId = "failure";
+                    }
+                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return objDTO;
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
     }
