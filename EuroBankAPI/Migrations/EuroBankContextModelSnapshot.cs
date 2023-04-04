@@ -44,7 +44,11 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
+<<<<<<< Updated upstream
                         .HasDefaultValue(new DateTime(2023, 4, 3, 15, 32, 57, 461, DateTimeKind.Local).AddTicks(1899));
+=======
+                        .HasDefaultValue(new DateTime(2023, 4, 3, 16, 9, 45, 12, DateTimeKind.Local).AddTicks(1961));
+>>>>>>> Stashed changes
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");
