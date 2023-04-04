@@ -65,7 +65,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> getCustomerAccounts(string CustomerId)
+        public async Task<ActionResult<IEnumerable<AccountDTO>>> getCustomerAccounts(string CustomerId)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace EuroBankAPI.Controllers
                 {
                     IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
                     //IEnumerable<AccountBalanceDTO> customerAccountsDTO = _mapper.Map<IEnumerable<AccountBalanceDTO>>(customerAccounts); --error
-                    List<AccountBalanceDTO> customerAccountsDTO = _mapper.Map<List<AccountBalanceDTO>>(customerAccounts);
+                    List<AccountDTO> customerAccountsDTO = _mapper.Map<List<AccountDTO>>(customerAccounts);
                     return customerAccountsDTO;
                 }
             }
@@ -105,7 +105,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AccountBalanceDTO>> getAccount(Guid AccountId)
+        public async Task<ActionResult<AccountDTO>> getAccount(Guid AccountId)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace EuroBankAPI.Controllers
                 }
                 else
                 {
-                    AccountBalanceDTO targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
+                    AccountDTO targetAccountDTO = _mapper.Map<AccountDTO>(targetAccount);
                     return targetAccountDTO;
                 }
             }
