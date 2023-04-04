@@ -29,6 +29,7 @@ namespace EuroBankAPI.Models
         public virtual AccountCreationStatus AccountCreationStatus { get; set; }
 
         public virtual ICollection<Statement> Statements { get; set; }
+        public virtual Transaction Transaction { get; }
 
         public virtual ICollection<TransactionStatus> TransactionStatuses { get; set; }
     }
