@@ -32,6 +32,8 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("CustomerLogin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserAuthResponseDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
             UserAuthResponseDTO response;
@@ -66,7 +68,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-       
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> getCustomerAccounts(string CustomerId)
         {
             try
@@ -105,6 +107,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AccountDTO>> GetAccount(Guid AccountId)
         {
             try
@@ -143,6 +146,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<StatementDTO>>> GetCustomerStatement(string CustomerId, DateTime? from_date, DateTime? to_date)
         {
             try
@@ -195,6 +199,9 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpGet("ViewAllTransactions")]
+        [Authorize("Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
         {
             try
@@ -222,158 +229,10 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-       /* [HttpPost]
-        [Route("withdraw")]
-        [Authorize(Roles = "Customer")]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, Account inacc)
-        {
-            var AccountExists = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
-            if (AccountExists == null)
-            {
-                return BadRequest("account does not exists");
-            }
-            else
-            {
-                try
-                {
-                    Transaction Transaction = new();
-                    Account newacc = new();
-                    //check for rule microservice
-                    if (inacc.Balance > amount)
-                    {
-                        newacc.Balance -= inacc.Balance;
-                        await _context.Accounts.UpdateAsync(newacc);
-                        Transaction.RefTransactionStatusId = "success";
-                    }
-                    else
-                    {
-                        Transaction.RefTransactionStatusId = "failure";
-                    }
-                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
 
-            }
-        }
-        [HttpPost]
-        [Route("deposit")]
-        [Authorize(Roles = "Customer")]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, Account inacc)
-        {
-            var AccountExists = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
-            if (AccountExists == null)
-            {
-                return BadRequest("account does not exists");
-            }
-            else
-            {
-                try
-                {
-                    Transaction Transaction = new();
-                    Account newacc = new();
-                    newacc.AccountId = AccountId;
-                    newacc.Balance += inacc.Balance;
-                    await _context.Accounts.UpdateAsync(newacc);
-                    Transaction.RefTransactionStatusId = "success";
-                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-        }
-        [HttpPost]
-        [Route("transfer")]
-        [Authorize(Roles = "Customer")]
-
-        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount, Account inacc)
-        {
-            var SourceAccountExists = await _context.Accounts.GetAsync(x => x.AccountId == Source_AccountId);
-            var TargetAccountExists = await _context.Accounts.GetAsync(x => x.AccountId == Target_AccountId);
-            if (SourceAccountExists == null)
-            {
-                return NotFound();
-            }
-            else if (TargetAccountExists == null)
-            {
-                return BadRequest("Target Account does not exists");
-            }
-            else
-            {
-                try
-                {
-                    Transaction Transaction = new();
-                    Account sourceacc = new();
-                    Account targetacc = new();
-                    //sourceacc.AccountId = Source_AccountId;
-                    //targetacc.AccountId = Target_AccountId;
-                    if (sourceacc.Balance > amount)
-                    {
-                        sourceacc.Balance -= amount;
-                        targetacc.Balance += amount;
-                        await _context.Accounts.UpdateAsync(sourceacc);
-                        await _context.Accounts.UpdateAsync(targetacc);
-                        Transaction.RefTransactionStatusId = "success";
-                    }
-                    else
-                    {
-                        Transaction.RefTransactionStatusId = "failure";
-                    }
-                    RefTransactionStatus obj = await _context.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                    RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                    return objDTO;
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-        }*/
         [HttpPut("ResetPassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDTO>> ResetPassword(string Email, string Password)
         {
             try

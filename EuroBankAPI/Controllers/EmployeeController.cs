@@ -26,8 +26,11 @@ namespace EuroBankAPI.Controllers
             _mapper= mapper;
             _authService= authService;
         }
+
         [HttpPost("EmployeeRegister")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
         {
             try
@@ -60,6 +63,8 @@ namespace EuroBankAPI.Controllers
 
         [HttpPost("CreateCustomer")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
             var customerDTO = _mapper.Map<CustomerDTO>(customerRegisterDTO);
@@ -141,6 +146,8 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("EmployeeLogin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserAuthResponseDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
         {
             UserAuthResponseDTO response;
@@ -174,6 +181,8 @@ namespace EuroBankAPI.Controllers
 
         [HttpGet("ViewAllTransactions")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions()
         {
             try
@@ -201,8 +210,11 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("ViewAllBankAccounts")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
         {
             try
@@ -231,6 +243,8 @@ namespace EuroBankAPI.Controllers
 
         [HttpGet("GetAllCustomers")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
         {
             try
@@ -258,6 +272,8 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPut("ResetPassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email,string Password)
         {
             try

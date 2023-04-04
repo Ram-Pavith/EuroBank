@@ -26,9 +26,10 @@ namespace EuroBankAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        [Route("Withdraw")]
+        [HttpPost("Withdraw")]
         [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
         {
             if(amount<0)
@@ -121,9 +122,10 @@ namespace EuroBankAPI.Controllers
 
             }
         }
-        [HttpPost]
-        [Route("Deposit")]
+        [HttpPost("Deposit")]
         [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
         {
             if (amount < 0)
@@ -196,10 +198,11 @@ namespace EuroBankAPI.Controllers
                 }
             }
         }
-        [HttpPost]
-        [Route("Transfer")]
+        [HttpPost("Transfer")]
         [Authorize(Roles = "Customer")]
-
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount, int serviceId)
         {
             if (amount < 0)
@@ -296,6 +299,8 @@ namespace EuroBankAPI.Controllers
         }
         [HttpGet("GetTransactions")]
         [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId)
         {
             Customer CustomerIdObj = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
