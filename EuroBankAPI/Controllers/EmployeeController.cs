@@ -24,16 +24,16 @@ namespace EuroBankAPI.Controllers
             _mapper= mapper;
             _authService= authService;
         }
-        [HttpPost]
-        [Authorize(Roles = "Employee")]
-        public async Task<ActionResult<Employee>> Register(EmployeeRegisterDTO employeeRegisterDTO)
+        [HttpPost("EmployeeRegister")]
+        //[Authorize(Roles = "Employee")]
+        public async Task<ActionResult<Employee>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
         {
             try
             {
                 var employeeDTO = _mapper.Map<EmployeeDTO>(employeeRegisterDTO);
                 _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employeeDTO.PasswordHash = Convert.ToString(passwordHash);
-                employeeDTO.PasswordSalt = Convert.ToString(passwordSalt);
+                employeeDTO.PasswordHash = passwordHash;
+                employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
                 await _context.Employees.CreateAsync(employee);
                 return employee;
@@ -50,8 +50,8 @@ namespace EuroBankAPI.Controllers
         {
             var customerDTO = _mapper.Map<EmployeeDTO>(customerRegisterDTO);
             _authService.CreatePasswordHash(customerRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-            customerDTO.PasswordHash = Convert.ToString(passwordHash);
-            customerDTO.PasswordSalt = Convert.ToString(passwordSalt);
+            customerDTO.PasswordHash = passwordHash;
+            customerDTO.PasswordSalt = passwordSalt;
             try
             {
                 Customer customer = _mapper.Map<Customer>(customerDTO);
