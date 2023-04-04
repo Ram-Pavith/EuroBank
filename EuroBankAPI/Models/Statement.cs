@@ -15,6 +15,6 @@ namespace EuroBankAPI.Models
         public double Withdrawal { get; set; }
         public double Deposit { get; set; }
         public double ClosingBalance { get; set; }
-        public virtual Account Account { get; set; } = null!;
+        public virtual Account? Account { get; set; } = null!;
     }
 }

@@ -4,10 +4,12 @@ namespace EuroBankAPI.Models
 {
     public class RefTransactionStatus
     {
-        
-        public string TransactionStatusCode { get; set; } 
+        public RefTransactionStatus() {
+            Transactions = new HashSet<Transaction>();
+        }
+        public int TransactionStatusCode { get; set; } 
         public string TransactionStatusDescriptions { get; set; }
 
-        public virtual Transaction Transaction { get; set; }
+        public virtual ICollection<Transaction>? Transactions { get; set; }
     }
 }

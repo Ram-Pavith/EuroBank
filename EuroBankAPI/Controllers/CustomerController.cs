@@ -61,7 +61,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("getCustomerAccounts")]
+        [HttpGet("GetCustomerAccounts")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -100,7 +100,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("getAccount")]
+        [HttpGet("GetAccount")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -138,7 +138,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("getAccountStatement")]
+        [HttpGet("GetAccountStatement")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -215,7 +215,7 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost]
+       /* [HttpPost]
         [Route("withdraw")]
         [Authorize(Roles = "Customer")]
         public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, Account inacc)
@@ -364,6 +364,39 @@ namespace EuroBankAPI.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
+            }
+        }*/
+        [HttpPut("ResetPassword")]
+        public async Task<ActionResult<CustomerDTO>> ResetPassword(string Email, string Password)
+        {
+            try
+            {
+                Customer customer = await _context.Customers.GetAsync(x => x.EmailId == Email);
+                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                customer.PasswordHash = passwordHash;
+                customer.PasswordSalt = passwordSalt;
+                await _context.Customers.UpdateAsync(customer);
+
+                CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
+                return customerDTO;
+
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
         [HttpPut("ResetPassword")]

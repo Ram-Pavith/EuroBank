@@ -4,9 +4,12 @@ namespace EuroBankAPI.DTOs
 {
     public class RefTransactionStatusDTO
     {
-        public string TransactionStatusCode { get; set; }
+        public RefTransactionStatusDTO() { 
+            Transactions = new HashSet<TransactionDTO>();
+        }
+        public int TransactionStatusCode { get; set; }
         public string TransactionStatusDescriptions { get; set; }
 
-        public virtual TransactionDTO Transaction { get; set; }
+        public virtual ICollection<TransactionDTO>? Transactions { get; set; }
     }
 }
