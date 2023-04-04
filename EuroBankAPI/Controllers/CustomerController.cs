@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System;
 using System.Data;
 
@@ -104,7 +105,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AccountDTO>> getAccount(Guid AccountId)
+        public async Task<ActionResult<AccountDTO>> GetAccount(Guid AccountId)
         {
             try
             {
@@ -142,33 +143,39 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<StatementDTO>>> getAccountStatement(Guid AccountId, DateTime? from_date, DateTime? to_date)
+        public async Task<ActionResult<IEnumerable<StatementDTO>>> GetCustomerStatement(string CustomerId, DateTime? from_date, DateTime? to_date)
         {
             try
             {
+                List<Statement> statementCustomer = new List<Statement>();
+
                 //Checking is account exist
-                Account targetAccount = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
-                if (targetAccount == null)
+                var targetAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+                if (targetAccounts == null)
                 {
                     return NotFound();
                 }
-                else
+                foreach (var account in targetAccounts)
                 {
+                    
                     if (from_date != null && to_date != null)
                     {
-                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == AccountId &&
+                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
                                                                             x.Date >= from_date && x.Date <= to_date);
                         List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
-                        return AccountStatement;
+                        statementCustomer.AddRange(stmt);
                     }
                     else
                     {
-                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == AccountId &&
+                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
                                                                             x.Date.Month == DateTime.Now.Month);
                         List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
-                        return AccountStatement;
+                        statementCustomer.AddRange(stmt);
                     }
                 }
+                var statementCustomerDTO = _mapper.Map<List<StatementDTO>>(statementCustomer);
+                return statementCustomerDTO;
+
             }
             catch (DbUpdateException ex)
             {
