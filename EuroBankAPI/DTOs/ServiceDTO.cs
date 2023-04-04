@@ -9,7 +9,6 @@ namespace EuroBankAPI.DTOs
 
         [Key]
         public int ServiceId { get; set; }
-        public DateTime DateServiceProvided { get; set; }
         public string ServiceName { get; set; }
     }
 }
