@@ -36,7 +36,7 @@ namespace EuroBankAPI.Controllers
         {
             //Checking if the customer exist
             var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
-            if (CustomerExists == null)
+            if (CustomerExists != null)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("getAccount/{AccountId}")]
+        [HttpGet]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -154,7 +154,7 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPost("Deposti")]
+        [HttpPost("Deposit")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TransactionStatusDTO>> Deposit(Guid AccountId, double amount)
