@@ -66,7 +66,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
        
-        public async Task<ActionResult<IEnumerable<CustomerDTO>>> getCustomerAccounts(string CustomerId)
+        public async Task<ActionResult<IEnumerable<AccountDTO>>> getCustomerAccounts(string CustomerId)
         {
             try
             {
@@ -78,8 +78,8 @@ namespace EuroBankAPI.Controllers
                 else
                 {
                     IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
-                    List<CustomerDTO> customerDTO = _mapper.Map<List<CustomerDTO>>(customerAccounts);
-                    return customerDTO;
+                    List<AccountDTO> AccountsDTO = _mapper.Map<List<AccountDTO>>(customerAccounts);
+                    return AccountsDTO;
                 }
             }
             catch (DbUpdateException ex)
