@@ -65,23 +65,16 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<AccountDTO>>> getCustomerAccounts(string CustomerId)
+       
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> getCustomerAccounts()
         {
             try
             {
-                //Checking if the customer exist
-                var CustomerExists = await _context.Customers.GetAsync(x => x.CustomerId == CustomerId);
-                if (CustomerExists == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
-                    //IEnumerable<AccountBalanceDTO> customerAccountsDTO = _mapper.Map<IEnumerable<AccountBalanceDTO>>(customerAccounts); --error
-                    List<AccountDTO> customerAccountsDTO = _mapper.Map<List<AccountDTO>>(customerAccounts);
-                    return customerAccountsDTO;
-                }
+                var customers = await _context.Customers.GetAllAsync();
+
+                List<CustomerDTO> customerDTO = _mapper.Map<List<CustomerDTO>>(customers);
+
+                return customerDTO;
             }
             catch (DbUpdateException ex)
             {
@@ -365,6 +358,38 @@ namespace EuroBankAPI.Controllers
                 {
                     return BadRequest(ex.Message);
                 }
+            }
+        }
+        public async Task<ActionResult<CustomerDTO>>ResetPassword(string Email,string Password)
+        {
+            try
+            {
+                Customer customer=await _context.Customers.GetAsync(x=>x.EmailId == Email);
+                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+                customer.PasswordHash= passwordHash;
+                customer.PasswordSalt= passwordSalt;
+                await _context.Customers.UpdateAsync(customer);
+
+                CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
+                return customerDTO;
+
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }
