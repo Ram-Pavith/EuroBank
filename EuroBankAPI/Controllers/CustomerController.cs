@@ -399,38 +399,5 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut("ResetPassword")]
-        public async Task<ActionResult<CustomerDTO>>ResetPassword(string Email,string Password)
-        {
-            try
-            {
-                Customer customer=await _context.Customers.GetAsync(x=>x.EmailId == Email);
-                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-                customer.PasswordHash= passwordHash;
-                customer.PasswordSalt= passwordSalt;
-                await _context.Customers.UpdateAsync(customer);
-
-                CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
-                return customerDTO;
-
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
     }
 }

@@ -220,35 +220,35 @@ namespace EuroBankAPI.Data
 
             modelBuilder.Entity<AccountCreationStatus>()
                 .HasData(
-                    new AccountCreationStatus() { Message = "Account Creation Succes" },
-                    new AccountCreationStatus() { Message = "Account Creation Failed" }
+                    new AccountCreationStatus() { AccountCreationStatusId = 1,Message = "Account Creation Succes" },
+                    new AccountCreationStatus() { AccountCreationStatusId = 2,Message = "Account Creation Failed" }
                 );
             modelBuilder.Entity<AccountType>()
                 .HasData(
-                    new AccountType() { Type = "Savings"},
-                    new AccountType() { Type = "Current"}
+                    new AccountType() {AccountTypeId = 1, Type = "Savings"},
+                    new AccountType() { AccountTypeId = 2,Type = "Current"}
                 );
             modelBuilder.Entity<Models.Service>()
                 .HasData(
-                    new Models.Service() { ServiceName = "NEFT"},
-                    new Models.Service() { ServiceName = "RTGS"},
-                    new Models.Service() { ServiceName = "IMPS"}
+                    new Models.Service() { ServiceId = 1,ServiceName = "NEFT"},
+                    new Models.Service() { ServiceId = 2,ServiceName = "RTGS"},
+                    new Models.Service() { ServiceId = 3,ServiceName = "IMPS"}
                 );
             modelBuilder.Entity<RefTransactionStatus>()
                 .HasData(
-                    new RefTransactionStatus() { TransactionStatusDescriptions = "Transaction Success" },
-                    new RefTransactionStatus() { TransactionStatusDescriptions = "Transaction Failed" }
+                    new RefTransactionStatus() { TransactionStatusCode = 1,TransactionStatusDescriptions = "Transaction Success" },
+                    new RefTransactionStatus() { TransactionStatusCode = 2,TransactionStatusDescriptions = "Transaction Failed" }
                 );
             modelBuilder.Entity<RefTransactionType>()
                 .HasData(
-                    new RefTransactionType() { TransactionTypeDescriptions = "Despost"},
-                    new RefTransactionType() { TransactionTypeDescriptions = "Withdraw"},
-                    new RefTransactionType() { TransactionTypeDescriptions = "Transfer"}
+                    new RefTransactionType() { TransactionTypeCode = 1,TransactionTypeDescriptions = "Despost"},
+                    new RefTransactionType() { TransactionTypeCode = 2,TransactionTypeDescriptions = "Withdraw"},
+                    new RefTransactionType() { TransactionTypeCode = 3,TransactionTypeDescriptions = "Transfer"}
                 );
             modelBuilder.Entity<RefPaymentMethod>()
                 .HasData(
-                    new RefPaymentMethod() { PaymentMethodName = "Card"},
-                    new RefPaymentMethod() { PaymentMethodName = "NetBanking"}
+                    new RefPaymentMethod() { PaymentMethodCode = 1, PaymentMethodName = "Card"},
+                    new RefPaymentMethod() { PaymentMethodCode = 2, PaymentMethodName = "NetBanking"}
                 );
             modelBuilder.Entity<Employee>()
                 .HasData(
@@ -264,8 +264,8 @@ namespace EuroBankAPI.Data
                 );
             modelBuilder.Entity<CustomerCreationStatus>()
                 .HasData(
-                    new CustomerCreationStatus() { Message = "Customer Created Successfully"},
-                    new CustomerCreationStatus() { Message = "Customer Creation Failed"}
+                    new CustomerCreationStatus() { CustomerCreationId = 1, Message = "Customer Created Successfully"},
+                    new CustomerCreationStatus() { CustomerCreationId = 2, Message = "Customer Creation Failed"}
                 );
             modelBuilder.Entity<Customer>()
                 .HasData(
@@ -288,6 +288,7 @@ namespace EuroBankAPI.Data
                 .HasData(
                     new Account()
                     {
+                        AccountId = Guid.NewGuid(),
                         CustomerId = "CustomerEurobank",
                         Balance = 10000,
                         AccountTypeId = 1,
