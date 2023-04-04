@@ -19,7 +19,7 @@ namespace EuroBankAPI.Controllers
         private readonly IUnitOfWork _uw;
         private readonly IMapper _mapper;
         private readonly IAccountRepository _accountRepo;
-        public AccountsController(IUnitOfWork uw, IMapper mapper,IAccountRepository _accRepo)
+        public AccountsController(IUnitOfWork uw, IMapper mapper, IAccountRepository _accRepo)
         {
             _uw = uw;
             _mapper = mapper;
@@ -81,7 +81,7 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("getCustomerAccounts/{CustomerId}")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -102,7 +102,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("getAccount/{AccountId}")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -121,7 +121,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetStatement/{AccountId}/{from_date}/{to_date}")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -154,7 +154,7 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("deposit/{AccountId}/{amount}")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TransactionStatusDTO>> deposit(Guid AccountId, double amount)
@@ -210,7 +210,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("withdraw/{AccountId}/{amount}")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<TransactionStatusDTO>> withdraw(Guid AccountId, double amount)
