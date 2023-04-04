@@ -22,14 +22,14 @@ namespace EuroBankAPI.DTOs
 
         public double Balance { get; set; }
 
-        public virtual AccountTypeDTO AccountType { get; set; } = null!;
+        public virtual AccountTypeDTO? AccountType { get; set; } = null!;
 
-        public virtual CustomerDTO Customer { get; set; } = null!;
+        public virtual CustomerDTO? Customer { get; set; } = null!;
 
-        public virtual AccountCreationStatusDTO AccountCreationStatus { get; set; }
+        public virtual AccountCreationStatusDTO? AccountCreationStatus { get; set; }
 
-        public virtual ICollection<StatementDTO> Statements { get; set; }
+        public virtual ICollection<StatementDTO>? Statements { get; set; }
 
-        public virtual ICollection<TransactionStatusDTO> TransactionStatuses { get; set; }
+        public virtual ICollection<TransactionStatusDTO>? TransactionStatuses { get; set; }
     }
 }

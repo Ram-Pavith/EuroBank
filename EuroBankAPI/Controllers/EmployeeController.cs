@@ -90,8 +90,11 @@ namespace EuroBankAPI.Controllers
                         {
                             Message = "Success"
                         };
+                        account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
+                        customer.Accounts.Add(account);
+
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
                         {
@@ -221,5 +224,31 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        [HttpGet("GetAllCustomers")]
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
+        {
+            try
+            {
+                var Customers = await _context.Customers.GetAllAsync();
+                List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
+                return CustomersDTOs;
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

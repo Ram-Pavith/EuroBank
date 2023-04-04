@@ -51,11 +51,11 @@ namespace EuroBankAPI.Data
                         .WithMany(a => a.Accounts)
                         .HasForeignKey(ci => ci.CustomerId)
                         .IsRequired();
-
+/*
                 entity.HasOne(t => t.AccountCreationStatus)
                 .WithOne(s => s.Account)
                 .HasForeignKey<Account>(t => t.AccountCreationStatusId)
-                .HasConstraintName("FK_Account_AccountCreationStatus");
+                .HasConstraintName("FK_Account_AccountCreationStatus");*/
 
                 entity.Property(e => e.DateCreated).HasDefaultValue(DateTime.Now);
 
