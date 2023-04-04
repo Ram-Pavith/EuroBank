@@ -30,14 +30,14 @@ namespace EuroBankAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost]
+        [HttpPost("CustomerLogin")]
         public async Task<ActionResult<UserAuthResponseDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
             UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
-                response = await _authService.Login(request);
+                response = await _authService.LoginEmployeeAndCustomer(request);
                 if (response.Success)
                     return Ok(response);
                 else 
