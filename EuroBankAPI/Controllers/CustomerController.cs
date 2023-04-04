@@ -19,13 +19,13 @@ namespace EuroBankAPI.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly IUnitOfWork _context;
+        private readonly IUnitOfWork _uw;
         private readonly ILogger<CustomerController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public CustomerController(IUnitOfWork context, ILogger<CustomerController> logger, IMapper mapper, IAuthService authService)
+        public CustomerController(IUnitOfWork uw, ILogger<CustomerController> logger, IMapper mapper, IAuthService authService)
         {
-            _context = context;
+            _uw = uw;
             _logger = logger;
             _mapper = mapper;
             _authService = authService;
@@ -71,14 +71,14 @@ namespace EuroBankAPI.Controllers
         {
             try
             {
-                var CustomerExists = await _context.Customers.GetAsync(x => x.CustomerId == CustomerId);
+                var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
                 if (CustomerExists == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+                    IEnumerable<Account> customerAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
                     List<AccountDTO> AccountsDTO = _mapper.Map<List<AccountDTO>>(customerAccounts);
                     return AccountsDTO;
                 }
@@ -110,7 +110,7 @@ namespace EuroBankAPI.Controllers
             try
             {
                 //Checking is account exist
-                Account targetAccount = await _context.Accounts.GetAsync(x => x.AccountId == AccountId);
+                Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
                 if (targetAccount == null)
                 {
                     return NotFound();
@@ -150,7 +150,7 @@ namespace EuroBankAPI.Controllers
                 List<Statement> statementCustomer = new List<Statement>();
 
                 //Checking is account exist
-                var targetAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+                var targetAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
                 if (targetAccounts == null)
                 {
                     return NotFound();
@@ -160,14 +160,14 @@ namespace EuroBankAPI.Controllers
                     
                     if (from_date != null && to_date != null)
                     {
-                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
+                        IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
                                                                             x.Date >= from_date && x.Date <= to_date);
                         List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
                         statementCustomer.AddRange(stmt);
                     }
                     else
                     {
-                        IEnumerable<Statement> stmt = await _context.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
+                        IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == account.AccountId &&
                                                                             x.Date.Month == DateTime.Now.Month);
                         List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
                         statementCustomer.AddRange(stmt);
@@ -199,7 +199,7 @@ namespace EuroBankAPI.Controllers
         {
             try
             {
-                var Transactions = await _context.Transactions.GetAllAsync();
+                var Transactions = await _uw.Transactions.GetAllAsync();
 
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 
@@ -378,12 +378,12 @@ namespace EuroBankAPI.Controllers
         {
             try
             {
-                Customer customer = await _context.Customers.GetAsync(x => x.EmailId == Email);
+                Customer customer = await _uw.Customers.GetAsync(x => x.EmailId == Email);
                 _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 customer.PasswordHash = passwordHash;
                 customer.PasswordSalt = passwordSalt;
-                await _context.Customers.UpdateAsync(customer);
+                await _uw.Customers.UpdateAsync(customer);
 
                 CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
                 return customerDTO;
