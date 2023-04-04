@@ -137,9 +137,9 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.DOB).IsUnicode(false);
 
-                entity.HasOne(e => e.CustomerCreationStatus)
+              /*  entity.HasOne(e => e.CustomerCreationStatus)
                 .WithOne(p => p.Customer)
-                .HasForeignKey<Customer>(e => e.CustomerCreationStatusId);
+                .HasForeignKey<Customer>(e => e.CustomerCreationStatusId);*/
 
             });
 
