@@ -75,7 +75,16 @@ namespace EuroBankAPI.Controllers
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
                     //statement inialising
-
+                    var statement = new Statement();
+                    statement.AccountId = AccountExists.AccountId;
+                    statement.Date = DateTime.Today;
+                    statement.Narration = "Deposit using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
+                    statement.ValueDate = DateTime.Today;
+                    statement.ClosingBalance = AccountExists.Balance;
+                    await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);

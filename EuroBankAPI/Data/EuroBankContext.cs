@@ -93,7 +93,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Date).IsRequired();
 
-                entity.Property(e => e.Narration).HasMaxLength(35).IsRequired();
+                entity.Property(e => e.Narration).HasMaxLength(100).IsRequired();
 
                 entity.Property(e => e.RefNo).IsRequired();
 
