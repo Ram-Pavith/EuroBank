@@ -19,7 +19,7 @@ namespace EuroBankAPI.Service.AuthService
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
-        public AuthService(IUnitOfWork context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor,IMapper mapper)
+        public AuthService(IUnitOfWork context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
             _context = context;
             _configuration = configuration;
@@ -30,9 +30,9 @@ namespace EuroBankAPI.Service.AuthService
         public async Task<UserAuthResponseDTO> LoginEmployeeAndCustomer(UserAuthLoginDTO request)
         {
             //var user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
-            
+
             UserAuth user = new UserAuth();
-            if(request.Role == "Employee")
+            if (request.Role == "Employee")
             {
                 var employee = await _context.Employees.GetAsync(e => e.EmailId == request.Username);
                 if (employee == null)
@@ -52,9 +52,9 @@ namespace EuroBankAPI.Service.AuthService
                         await _context.UserAuths.CreateAsync(user);
                     }
                 }
-                
+
             }
-            if(request.Role == "Customer")
+            if (request.Role == "Customer")
             {
                 var customer = await _context.Customers.GetAsync(c => c.EmailId == request.Username);
                 if (customer == null)
@@ -75,10 +75,10 @@ namespace EuroBankAPI.Service.AuthService
                     }
                 }
             }
-           /* else
-            {
-                user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
-            }*/
+            /* else
+             {
+                 user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
+             }*/
 
             if (user == null)
             {
@@ -89,10 +89,10 @@ namespace EuroBankAPI.Service.AuthService
             {
                 return new UserAuthResponseDTO { Message = "Wrong Password." };
             }
-           /* if(request.Role != user.Role)
-            {
-                return new UserAuthResponseDTO { Message = "Authorization Error" };
-            }*/
+            /* if(request.Role != user.Role)
+             {
+                 return new UserAuthResponseDTO { Message = "Authorization Error" };
+             }*/
 
             string token = GenerateJWT(user);
             var refreshToken = CreateRefreshToken();
