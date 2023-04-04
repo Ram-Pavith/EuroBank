@@ -21,9 +21,9 @@ namespace EuroBankAPI.DTOs
         [Display(Name = "Phone Number")]
         public string Phone { get; set; }
         [Required]
-        public string PasswordHash { get; set; }
+        public byte[] PasswordHash { get; set; }
         [Required]
-        public string PasswordSalt { get; set; }
+        public byte[] PasswordSalt { get; set; }
 
         [StringLength(10, MinimumLength = 10)]
         public string PanNumber { get; set; }

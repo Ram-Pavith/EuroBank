@@ -2,6 +2,7 @@
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
+using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Http;
@@ -23,7 +24,6 @@ namespace EuroBankAPI.Controllers
             _mapper= mapper;
             _authService= authService;
         }
-
         [HttpPost]
         [Authorize(Roles = "Employee")]
         public async Task<ActionResult<Employee>> Register(EmployeeRegisterDTO employeeRegisterDTO)
@@ -92,6 +92,7 @@ namespace EuroBankAPI.Controllers
                 }
                 CustomerCreationStatusDTO customerCreationStatusDTO = _mapper.Map<CustomerCreationStatusDTO>(customerCreationStatus);
                 return customerCreationStatusDTO;
+            
             }
             catch (Exception ex)
             {
@@ -99,6 +100,34 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        /* [HttpPost]
+         [Authorize(Roles = "Employee")]
+         public async Task<Employee> Register(EmployeeDTO employeeDTO)
+         {
+             Employee employee = _mapper.Map<Employee>(employeeDTO);
+             await _context.Employees.CreateAsync(employee);
+             return employee;
+         }*/
+        [HttpPost("EmployeeLogin")]
+        public async Task<ActionResult<UserAuthResponseDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
+        {
+            UserAuthResponseDTO response;
+            try
+            {
+                var request = _mapper.Map<UserAuthLoginDTO>(employeeLogin);
+                response = await _authService.LoginEmployeeAndCustomer(request);
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response.Message);
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+
+           
+        [HttpGet("ViewAllTransactions")]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
         {
             try
@@ -113,7 +142,7 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("ViewAllBankAccounts")]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
         {
             try
@@ -127,7 +156,6 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
     }
 }
