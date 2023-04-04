@@ -50,7 +50,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
-            var customerDTO = _mapper.Map<EmployeeDTO>(customerRegisterDTO);
+            var customerDTO = _mapper.Map<CustomerDTO>(customerRegisterDTO);
             _authService.CreatePasswordHash(customerRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
             customerDTO.PasswordHash = passwordHash;
             customerDTO.PasswordSalt = passwordSalt;
@@ -60,11 +60,8 @@ namespace EuroBankAPI.Controllers
                 CustomerCreationStatus customerCreationStatus;
                 try
                 {
-                    await _context.Customers.CreateAsync(customer);
                     Account account = new Account()
                     {
-                        AccountTypeId = 1,
-                        CustomerId = customer.CustomerId,
                         DateCreated = DateTime.Now,
                         Balance = 10000
                     };
@@ -73,13 +70,29 @@ namespace EuroBankAPI.Controllers
                     };
                     try
                     {
-                        await _context.Accounts.CreateAsync(account);
                         AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
                         {
                             Message = "Success"
                         };
+                        AccountType accountType = new AccountType()
+                        {
+                            Type= "Savings"
+                        };
+
+                        await _context.AccountCreationStatuses.CreateAsync(accountCreationStatus);
+                        account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
+                        await _context.AccountTypes.CreateAsync(accountType);
+                        account.AccountTypeId = accountType.AccountTypeId;
+                        account.CustomerId = customer.CustomerId;
+                        await _context.CustomerCreationStatuses.CreateAsync(customerCreationStatus);
+                        customer.CustomerCreationStatusId = customerCreationStatus.CustomerCreationId;
+                        customer.CustomerCreationStatusId = 1;
+                        await _context.Customers.CreateAsync(customer);
+                        await _context.Accounts.CreateAsync(account);
+
+
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
                         {
@@ -171,6 +184,37 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPut("ResetPassword")]
+        public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email, string Password)
+        {
+            try
+            {
+                Employee employee = await _context.Employees.GetAsync(x => x.EmailId == Email);
+                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
 
+                employee.PasswordHash = passwordHash;
+                employee.PasswordSalt = passwordSalt;
+                await _context.Employees.UpdateAsync(employee);
+
+                EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
+                return employeeDTO;
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

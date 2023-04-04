@@ -32,7 +32,7 @@ namespace EuroBankAPI.Models
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
         public int CustomerCreationStatusId { get; set; }
-        public virtual CustomerCreationStatus CustomerCreationStatus { get; set; }
-        public virtual ICollection<Account> Accounts { get; set; }  
+        public virtual CustomerCreationStatus? CustomerCreationStatus { get; set; }
+        public virtual ICollection<Account>? Accounts { get; set; }  
     }
 }

@@ -10,6 +10,6 @@ namespace EuroBankAPI.DTOs
         public Guid AccountId { get; set; }
         public string Message { get; set; } = string.Empty;
         public double SourceBalance { get; set; }
-        public virtual AccountDTO Account { get; set; } = null!;
+        public virtual AccountDTO? Account { get; set; } = null!;
     }
 }
