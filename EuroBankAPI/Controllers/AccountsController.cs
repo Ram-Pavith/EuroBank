@@ -5,7 +5,10 @@ using EuroBankAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using System.Data.Common;
 
 namespace EuroBankAPI.Controllers
 {
@@ -51,12 +54,28 @@ namespace EuroBankAPI.Controllers
                     Account newAcc = new Account();
                     newAcc.CustomerId = CustomerId;
                     newAcc.AccountTypeId = 2;   //current account
-
                     newAcc.AccountCreationStatusId = 1;     // success status
-                    await _uw.Accounts.CreateAsync(newAcc);
-                    AccountCreationStatus acs = await _uw.AccountCreationStatuses.GetAsync(x => x.AccountCreationStatusId == newAcc.AccountCreationStatusId);
-                    AccountCreationStatusDTO accCreationStatusDTO = _mapper.Map<AccountCreationStatusDTO>(acs);
-                    return accCreationStatusDTO;
+
+                    try
+                    {
+                        await _uw.Accounts.CreateAsync(newAcc);
+                        AccountCreationStatus acs = await _uw.AccountCreationStatuses.GetAsync(x => x.AccountCreationStatusId == newAcc.AccountCreationStatusId);
+                        AccountCreationStatusDTO accCreationStatusDTO = _mapper.Map<AccountCreationStatusDTO>(acs);
+                        return accCreationStatusDTO;
+                    }
+                    catch (SqlException ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                    catch (NullReferenceException ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest(ex.Message);
+                    }
+
                 }
             }
         }
@@ -155,7 +174,26 @@ namespace EuroBankAPI.Controllers
                 ts_success.Message = "Successful deposit: " + "₹ " + Math.Round(amount, 2).ToString();
                 //Updating Account Balance
                 targetAccount.Balance = ts_success.SourceBalance;
-                await _accountRepo.UpdateAsync(targetAccount);
+                try
+                {
+                    await _accountRepo.UpdateAsync(targetAccount);
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
                 TransactionStatusDTO tsSuccessDTO = _mapper.Map<TransactionStatusDTO>(ts_success);
                 return tsSuccessDTO;
             }
@@ -193,8 +231,26 @@ namespace EuroBankAPI.Controllers
 
                 //Updating Account Balance
                 targetAccount.Balance = ts_success.SourceBalance;
-                await _accountRepo.UpdateAsync(targetAccount);
-
+                try
+                {
+                    await _accountRepo.UpdateAsync(targetAccount);
+                }
+                catch (DbUpdateException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (SqlException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (NullReferenceException ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
 
                 return tsSuccessDTO;
             }
