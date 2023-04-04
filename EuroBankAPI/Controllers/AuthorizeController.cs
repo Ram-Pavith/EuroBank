@@ -1,4 +1,5 @@
-﻿using EuroBankAPI.DTOs;
+﻿using AutoMapper;
+using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Authorization;
@@ -13,10 +14,12 @@ namespace EuroBankAPI.Controllers
     public class AuthorizeController : ControllerBase
     {
         private readonly IAuthService _authService;
-
-        public AuthorizeController(IAuthService authService)
+        private readonly IMapper _mapper;
+        public AuthorizeController(IAuthService authService,IMapper mapper)
         {
+            _mapper = mapper;
             _authService = authService;
+
         }
         [HttpPost("RegisterAuth")]
         public async Task<ActionResult<UserAuth>> RegisterUser(UserAuthLoginDTO request)
@@ -28,6 +31,7 @@ namespace EuroBankAPI.Controllers
         [HttpPost("Authorize")]
         public async Task<ActionResult<UserAuth>> Authorize(UserAuthLoginDTO request)
         {
+            //var request = _mapper.Map<UserAuthLoginDTO>(emplogin);
             var response = await _authService.Login(request);
             if (response.Success)
                 return Ok(response);
