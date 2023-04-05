@@ -26,11 +26,16 @@ namespace EuroBankAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        [Route("Withdraw")]
+        [HttpPost("Withdraw")]
         [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
         {
+            if(amount<0)
+            {
+                return BadRequest("Amount to withdraw should a positive value, did you mean to Deposit amount?");
+            }
             var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             if (AccountExists == null)
             {
@@ -49,9 +54,16 @@ namespace EuroBankAPI.Controllers
                         await _uw.Accounts.UpdateAsync(AccountExists);
                         transaction.RefTransactionStatusId = 1;
                     }
-                    else
+                    if(AccountExists.Balance < amount)
                     {
-                        transaction.RefTransactionStatusId = 2;
+                        transaction.RefTransactionStatusId = 4;
+                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
+                        return refTransactionStatusErrorDTO;
+                    }
+                    if (amount > 50000)
+                    {
+                        transaction.RefTransactionStatusId = 3;
                         var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                         var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
                         return refTransactionStatusErrorDTO;
@@ -75,7 +87,16 @@ namespace EuroBankAPI.Controllers
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
                     //statement inialising
-
+                    var statement = new Statement();
+                    statement.AccountId = AccountExists.AccountId;
+                    statement.Date = DateTime.Today;
+                    statement.Narration = "Deposit using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
+                    statement.ValueDate = DateTime.Today;
+                    statement.ClosingBalance = AccountExists.Balance;
+                    await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
@@ -101,11 +122,16 @@ namespace EuroBankAPI.Controllers
 
             }
         }
-        [HttpPost]
-        [Route("Deposit")]
+        [HttpPost("Deposit")]
         [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
         {
+            if (amount < 0)
+            {
+                return BadRequest("Amount to Deposit should be a positive value, did you mean to Withdraw amount?");
+            }
             var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             if (AccountExists == null)
             {
@@ -127,6 +153,7 @@ namespace EuroBankAPI.Controllers
                         counterPartyExists.CounterPartyName = AccountExists.CustomerId;
                         await _uw.CounterParties.CreateAsync(counterPartyExists);
                     }
+                    //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
                     transaction.ServiceId = serviceId;
@@ -136,6 +163,17 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
+                    //statement inialising
+                    var statement = new Statement();
+                    statement.AccountId = AccountExists.AccountId;
+                    statement.Date = DateTime.Today;
+                    statement.Narration = "Withdrawal using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = 0;
+                    statement.Withdrawal = amount;
+                    statement.ValueDate = DateTime.Today;
+                    statement.ClosingBalance = AccountExists.Balance;
+                    await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
@@ -160,12 +198,17 @@ namespace EuroBankAPI.Controllers
                 }
             }
         }
-        [HttpPost]
-        [Route("Transfer")]
+        [HttpPost("Transfer")]
         [Authorize(Roles = "Customer")]
-
-        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount, int serviceId)
         {
+            if (amount < 0)
+            {
+                return BadRequest("Cannot Transfer an amount of negative value, please enter positive amount value");
+            }
             var SourceAccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == Source_AccountId);
             var TargetAccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == Target_AccountId);
             if (SourceAccountExists == null)
@@ -195,7 +238,9 @@ namespace EuroBankAPI.Controllers
                     }
                     else
                     {
-                        transaction.RefTransactionStatusId = 2;
+                        transaction.RefTransactionStatusId = 4;
+                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
                     }
                     CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == TargetAccountExists.AccountId);
                     if (counterPartyExists == null)
@@ -205,6 +250,7 @@ namespace EuroBankAPI.Controllers
                         counterPartyExists.CounterPartyName = TargetAccountExists.CustomerId;
                         await _uw.CounterParties.CreateAsync(counterPartyExists);
                     }
+                    //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = SourceAccountExists.AccountId;
                     transaction.ServiceId = 3;
@@ -214,6 +260,18 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 2;
                     await _uw.Transactions.CreateAsync(transaction);
+                    //statement initialising
+                    //statement inialising
+                    var statement = new Statement();
+                    statement.AccountId = SourceAccountExists.AccountId;
+                    statement.Date = DateTime.Today;
+                    statement.Narration = "Transfer using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
+                    statement.RefNo = "Transfer of " + amount.ToString() + " To " + TargetAccountExists.AccountId.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
+                    statement.ValueDate = DateTime.Today;
+                    statement.ClosingBalance = SourceAccountExists.Balance;
+                    await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
@@ -241,6 +299,8 @@ namespace EuroBankAPI.Controllers
         }
         [HttpGet("GetTransactions")]
         [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId)
         {
             Customer CustomerIdObj = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);

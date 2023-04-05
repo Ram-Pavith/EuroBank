@@ -1,6 +1,8 @@
 ﻿using EuroBankAPI.Data;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace EuroBankAPI.Repository
 {

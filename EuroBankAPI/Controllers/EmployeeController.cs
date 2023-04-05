@@ -16,18 +16,21 @@ namespace EuroBankAPI.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly IUnitOfWork _context;
+        private readonly IUnitOfWork _uw;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public EmployeeController(IUnitOfWork context,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService) { 
-            _context= context;
+        public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService) { 
+            _uw= uw;
             _logger= logger;
             _mapper= mapper;
             _authService= authService;
         }
+
         [HttpPost("EmployeeRegister")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
         {
             try
@@ -37,7 +40,7 @@ namespace EuroBankAPI.Controllers
                 employeeDTO.PasswordHash = passwordHash;
                 employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
-                await _context.Employees.CreateAsync(employee);
+                await _uw.Employees.CreateAsync(employee);
                 return employee;
             }
             catch (DbUpdateException ex)
@@ -60,6 +63,8 @@ namespace EuroBankAPI.Controllers
 
         [HttpPost("CreateCustomer")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
             var customerDTO = _mapper.Map<CustomerDTO>(customerRegisterDTO);
@@ -93,16 +98,16 @@ namespace EuroBankAPI.Controllers
                             Type= "Savings"
                         };
 
-                        await _context.AccountCreationStatuses.CreateAsync(accountCreationStatus);
+                        await _uw.AccountCreationStatuses.CreateAsync(accountCreationStatus);
                         account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
-                        await _context.AccountTypes.CreateAsync(accountType);
+                        await _uw.AccountTypes.CreateAsync(accountType);
                         account.AccountTypeId = accountType.AccountTypeId;
                         account.CustomerId = customer.CustomerId;
-                        await _context.CustomerCreationStatuses.CreateAsync(customerCreationStatus);
+                        await _uw.CustomerCreationStatuses.CreateAsync(customerCreationStatus);
                         customer.CustomerCreationStatusId = customerCreationStatus.CustomerCreationId;
                         customer.CustomerCreationStatusId = 1;
-                        await _context.Customers.CreateAsync(customer);
-                        await _context.Accounts.CreateAsync(account);
+                        await _uw.Customers.CreateAsync(customer);
+                        await _uw.Accounts.CreateAsync(account);
 
                     }
                     catch (Exception ex)
@@ -141,6 +146,8 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("EmployeeLogin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserAuthResponseDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
         {
             UserAuthResponseDTO response;
@@ -174,11 +181,13 @@ namespace EuroBankAPI.Controllers
 
         [HttpGet("ViewAllTransactions")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions()
         {
             try
             {
-                var Transactions = await _context.Transactions.GetAllAsync();
+                var Transactions = await _uw.Transactions.GetAllAsync();
 
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 
@@ -201,13 +210,16 @@ namespace EuroBankAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("ViewAllBankAccounts")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
         {
             try
             {
-                var BankAccounts = await _context.Accounts.GetAllAsync();
+                var BankAccounts = await _uw.Accounts.GetAllAsync();
                 List<AccountDTO> AccountsDTOs = _mapper.Map<List<AccountDTO>>(BankAccounts);
                 return AccountsDTOs;
             }
@@ -231,11 +243,13 @@ namespace EuroBankAPI.Controllers
 
         [HttpGet("GetAllCustomers")]
         [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
         {
             try
             {
-                var Customers = await _context.Customers.GetAllAsync();
+                var Customers = await _uw.Customers.GetAllAsync();
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
                 return CustomersDTOs;
             }
@@ -258,15 +272,17 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPut("ResetPassword")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email,string Password)
         {
             try
             {
-                Employee employee = await _context.Employees.GetAsync(x => x.EmailId == Email);
+                Employee employee = await _uw.Employees.GetAsync(x => x.EmailId == Email);
                 _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
                 employee.PasswordHash = passwordHash;
                 employee.PasswordSalt = passwordSalt;
-                await _context.Employees.UpdateAsync(employee);
+                await _uw.Employees.UpdateAsync(employee);
 
                 EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
                 return employeeDTO;
