@@ -19,7 +19,7 @@ namespace EuroBankAPI.Controllers
         private readonly IUnitOfWork _uw;
         private readonly IMapper _mapper;
         private readonly IAccountRepository _accountRepo;
-        public AccountsController(IUnitOfWork uw, IMapper mapper,IAccountRepository _accRepo)
+        public AccountsController(IUnitOfWork uw, IMapper mapper, IAccountRepository _accRepo)
         {
             _uw = uw;
             _mapper = mapper;
@@ -82,11 +82,11 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpGet("GetCustomerAccounts")]
+        [HttpGet("GetCustomerAccountsBalance")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> GetCustomerAccounts(string CustomerId)
+        public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> GetCustomerAccountsBalance(string CustomerId)
         {
             //Checking if the customer exist
             var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
