@@ -27,13 +27,24 @@ namespace EuroBankAPI.Repository
             await SaveAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, int pageSize = 0, int pageNumber = 1)
         {
             IQueryable<T> query = dbSet;
 
             if (filter != null)
             {
                 query = query.Where(filter);
+            }
+            if (pageSize > 0)
+            {
+                if (pageSize > 10)
+                {
+                    pageSize = 10;
+                }
+                //skip0.take(5)
+                //page number- 2     || page size -5
+                //skip(5*(1)) take(5)
+                query = query.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
             }
             if (includeProperties != null)
             {

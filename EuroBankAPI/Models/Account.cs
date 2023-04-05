@@ -9,6 +9,7 @@ namespace EuroBankAPI.Models
         { 
             TransactionStatuses = new HashSet<TransactionStatus>();
             Transactions = new HashSet<Transaction>();
+            Statements = new HashSet<Statement>();
         }
         
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -44,7 +44,7 @@ namespace EuroBankAPI.Controllers
             {
                 //Checking if the customer already has an acocunt of Type "Current"
                 var AccountExists = await _uw.Accounts.GetAsync(x => x.CustomerId == CustomerId && x.AccountTypeId == 2);
-                if (AccountExists == null)
+                if (AccountExists != null)
                 {
                     return BadRequest();
                 }
@@ -55,6 +55,7 @@ namespace EuroBankAPI.Controllers
                     newAcc.CustomerId = CustomerId;
                     newAcc.AccountTypeId = 2;   //current account
                     newAcc.AccountCreationStatusId = 1;     // success status
+                    newAcc.Balance = 10000;
 
                     try
                     {
@@ -102,11 +103,11 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("GetAccountBalance")]
         [Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<AccountBalanceDTO>> getAccount(Guid AccountId)
+        public async Task<ActionResult<AccountBalanceDTO>> GetAccountBalance(Guid AccountId)
         {
             //Checking if account exist
             Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
@@ -116,7 +117,7 @@ namespace EuroBankAPI.Controllers
             }
             else
             {
-                AccountBalanceDTO targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
+                var targetAccountDTO = _mapper.Map<AccountBalanceDTO>(targetAccount);
                 return targetAccountDTO;
             }
         }
@@ -139,6 +140,7 @@ namespace EuroBankAPI.Controllers
                 {
                     IEnumerable<Statement> stmt = await _uw.Statements.GetAllAsync(x => x.AccountId == AccountId &&
                                                                         x.Date >= from_date && x.Date <= to_date);
+
                     List<StatementDTO> AccountStatement = _mapper.Map<List<StatementDTO>>(stmt);
                     return AccountStatement;
                 }
@@ -152,133 +154,30 @@ namespace EuroBankAPI.Controllers
             }
 
         }
-
-
-        [HttpPost("Deposti")]
-        [Authorize(Roles = "Customer")]
+        [HttpGet("GetTransactions")]
+        [Authorize(Roles = "Employee,Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<TransactionStatusDTO>> Deposit(Guid AccountId, double amount)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(Guid  AccountId, int PageSize = 0, int PageNumber = 1)
         {
-            //Fetching balance of the account
-            Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
-            double targetBalance = targetAccount.Balance;
-
-            //Deposit limit: 1 lakh
-            if (amount > 0 && amount <= 100000)
+            var account = await _uw.Accounts.GetAllAsync(x => x.AccountId == AccountId);
+            if (account == null)
             {
-                //On Success 
-                TransactionStatus ts_success = new TransactionStatus();
-                ts_success.TransactionStatusId = 1;
-                ts_success.AccountId = AccountId;
-                ts_success.SourceBalance = targetBalance + amount;
-                ts_success.Message = "Successful deposit: " + "₹ " + Math.Round(amount, 2).ToString();
-                //Updating Account Balance
-                targetAccount.Balance = ts_success.SourceBalance;
-                try
-                {
-                    await _accountRepo.UpdateAsync(targetAccount);
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                TransactionStatusDTO tsSuccessDTO = _mapper.Map<TransactionStatusDTO>(ts_success);
-                return tsSuccessDTO;
+                return BadRequest("Account does not exist");
+            }
+            IEnumerable<Transaction> transactions;
+            if (PageSize <= 0)
+            {
+                transactions = await _uw.Transactions.GetAllAsync(x => x.AccountId == AccountId);
             }
             else
             {
-                //On Failure
-                TransactionStatus ts_failure = new TransactionStatus();
-                ts_failure.TransactionStatusId = 2;
-                ts_failure.AccountId = AccountId;
-                ts_failure.SourceBalance = targetBalance;
-                ts_failure.Message = "Failed deposit: " + "₹ " + Math.Round(amount, 2).ToString();
-                TransactionStatusDTO tsFailureDTO = _mapper.Map<TransactionStatusDTO>(ts_failure);
-                return tsFailureDTO;
+                transactions = await _uw.Transactions.GetAllAsync(x => x.AccountId == AccountId, pageSize: PageSize, pageNumber: PageNumber);
             }
+            List<TransactionDTO> transactionsDTO = _mapper.Map<List<TransactionDTO>>(transactions);
+            return transactionsDTO;
+            
         }
-
-        [HttpPost("Withdraw")]
-        [Authorize(Roles = "Customer")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<TransactionStatusDTO>> Withdraw(Guid AccountId, double amount)
-        {
-            //Fetching balance of the account
-            Account targetAccount = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
-            double targetBalance = targetAccount.Balance;
-
-            //On Success 
-            if (amount <= targetBalance && amount >0 && amount <= 50000)    
-            {
-                TransactionStatus ts_success = new TransactionStatus();
-                ts_success.TransactionStatusId = 1;
-                ts_success.AccountId = AccountId;
-                ts_success.SourceBalance = targetBalance - amount;
-                ts_success.Message = "Successful withdraw: " + "₹ " + Math.Round(amount, 2).ToString();
-                TransactionStatusDTO tsSuccessDTO = _mapper.Map<TransactionStatusDTO>(ts_success);
-
-                //Updating Account Balance
-                targetAccount.Balance = ts_success.SourceBalance;
-                try
-                {
-                    await _accountRepo.UpdateAsync(targetAccount);
-                }
-                catch (DbUpdateException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (SqlException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (NullReferenceException ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-
-                return tsSuccessDTO;
-            }
-            //On exceeding withdrawal limit
-            else if(amount >50000)
-            {
-                TransactionStatus ts_failure = new TransactionStatus();
-                ts_failure.TransactionStatusId = 2;
-                ts_failure.AccountId = AccountId;
-                ts_failure.SourceBalance = targetBalance;
-                ts_failure.Message = "Exceeded withdrawal limit: ₹50000";
-                TransactionStatusDTO tsFailureDTO = _mapper.Map<TransactionStatusDTO>(ts_failure);
-                return tsFailureDTO;
-            }
-            //On Insufficient balance
-            else
-            {
-                TransactionStatus ts_failure = new TransactionStatus();
-                ts_failure.TransactionStatusId = 2;
-                ts_failure.AccountId = AccountId;
-                ts_failure.SourceBalance = targetBalance;
-                ts_failure.Message = "Insufficient balance";
-                TransactionStatusDTO tsFailureDTO = _mapper.Map<TransactionStatusDTO>(ts_failure);
-                return tsFailureDTO;
-            }
-                      
-        }
-
 
     }
 }

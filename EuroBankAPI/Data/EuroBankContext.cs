@@ -93,7 +93,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Date).IsRequired();
 
-                entity.Property(e => e.Narration).HasMaxLength(35).IsRequired();
+                entity.Property(e => e.Narration).HasMaxLength(200).IsRequired();
 
                 entity.Property(e => e.RefNo).IsRequired();
 
@@ -242,7 +242,10 @@ namespace EuroBankAPI.Data
             modelBuilder.Entity<RefTransactionStatus>()
                 .HasData(
                     new RefTransactionStatus() { TransactionStatusCode = 1,TransactionStatusDescriptions = "Transaction Success" },
-                    new RefTransactionStatus() { TransactionStatusCode = 2,TransactionStatusDescriptions = "Transaction Failed" }
+                    new RefTransactionStatus() { TransactionStatusCode = 2,TransactionStatusDescriptions = "Transaction Failed" },
+                    new RefTransactionStatus() { TransactionStatusCode = 3,TransactionStatusDescriptions = "Withdrawal Limit Amount Exceeded" },
+                    new RefTransactionStatus() { TransactionStatusCode = 4,TransactionStatusDescriptions = "Insufficient Balance" }
+
                 );
             modelBuilder.Entity<RefTransactionType>()
                 .HasData(

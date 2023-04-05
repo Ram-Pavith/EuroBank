@@ -4,6 +4,8 @@ using EuroBankAPI.DTOs;
 using EuroBankAPI.Repository;
 using EuroBankAPI.Repository.IRepository;
 using EuroBankAPI.Service.AuthService;
+using EuroBankAPI.Service.BusinessService;
+using EuroBankAPI.Service.EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +22,8 @@ builder.Services.AddControllers();
 
 //AuthService Injection
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IBusinessService, BusinessService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
@@ -35,7 +39,7 @@ builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
-//Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
+/*Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();//.Enrich.FromLogContext().CreateLogger();*/
 //File Logging
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
