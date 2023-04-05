@@ -32,7 +32,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Employee>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
+        public async Task<ActionResult<EmployeeDTO>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
         {
             try
             {
@@ -42,7 +42,8 @@ namespace EuroBankAPI.Controllers
                 employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
                 await _uw.Employees.CreateAsync(employee);
-                return employee;
+                return employeeDTO;
+
             }
             catch (DbUpdateException ex)
             {

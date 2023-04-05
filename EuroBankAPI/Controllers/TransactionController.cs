@@ -267,7 +267,7 @@ namespace EuroBankAPI.Controllers
                     statement.Date = DateTime.Today;
                     statement.Narration = "Transfer using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
                     statement.RefNo = "Transfer of " + amount.ToString() + " To " + TargetAccountExists.AccountId.ToString();
-                    statement.Deposit = amount;
+                    statement.Deposit = 0;
                     statement.Withdrawal = 0;
                     statement.ValueDate = DateTime.Today;
                     statement.ClosingBalance = SourceAccountExists.Balance;
