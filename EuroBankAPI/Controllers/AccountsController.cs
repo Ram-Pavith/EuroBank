@@ -36,7 +36,7 @@ namespace EuroBankAPI.Controllers
         {
             //Checking if the customer exist
             var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
-            if (CustomerExists != null)
+            if (CustomerExists == null)
             {
                 return NotFound();
             }
@@ -206,7 +206,7 @@ namespace EuroBankAPI.Controllers
                 ts_failure.TransactionStatusId = 2;
                 ts_failure.AccountId = AccountId;
                 ts_failure.SourceBalance = targetBalance;
-                ts_failure.Message = "Failed deposit: " + "₹ " + Math.Round(amount, 2).ToString();
+                ts_failure.Message = "Execeeded deposit limit: ₹100000";
                 TransactionStatusDTO tsFailureDTO = _mapper.Map<TransactionStatusDTO>(ts_failure);
                 return tsFailureDTO;
             }
