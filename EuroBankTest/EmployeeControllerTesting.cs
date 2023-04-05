@@ -54,7 +54,7 @@ namespace EuroBankTest
         public void GetAllCustomersTest()
         {
             Task<IEnumerable<Customer>> customers = Task.FromResult(_customers.AsEnumerable());
-            _unitOfWork.Setup(p => p.Customers.GetAllAsync(null, null)).Returns(customers);
+            _unitOfWork.Setup(p => p.Customers.GetAllAsync(null,null,0 ,1)).Returns(customers);
             var result = _employeeController.GetAllCustomers();
             Assert.That(result, Is.InstanceOf<Task<ActionResult<IEnumerable<CustomerDTO>>>>());
         }
