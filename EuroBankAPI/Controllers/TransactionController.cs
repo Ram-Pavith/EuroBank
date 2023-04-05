@@ -39,7 +39,7 @@ namespace EuroBankAPI.Controllers
             var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             if (AccountExists == null)
             {
-                return BadRequest("account does not exists");
+                return BadRequest("Account does not exists");
             }
             else
             {
@@ -90,10 +90,10 @@ namespace EuroBankAPI.Controllers
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Deposit using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
-                    statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                    statement.Deposit = amount;
-                    statement.Withdrawal = 0;
+                    statement.Narration = "Withdrawal using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    statement.RefNo = "Withdrawal of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = 0;
+                    statement.Withdrawal = amount;
                     statement.ValueDate = DateTime.Today;
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);
@@ -135,7 +135,7 @@ namespace EuroBankAPI.Controllers
             var AccountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             if (AccountExists == null)
             {
-                return BadRequest("account does not exists");
+                return BadRequest("Account does not exists");
             }
             else
             {
@@ -167,10 +167,10 @@ namespace EuroBankAPI.Controllers
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Withdrawal using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
-                    statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                    statement.Deposit = 0;
-                    statement.Withdrawal = amount;
+                    statement.Narration = "Deposit using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.RefNo = "Deposit of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
                     statement.ValueDate = DateTime.Today;
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);
