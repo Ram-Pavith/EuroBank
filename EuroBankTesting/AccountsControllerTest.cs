@@ -25,7 +25,6 @@ namespace EuroBankTesting
         private Mock<IUnitOfWork> _iUw;
         private Mock<IAccountRepository> accRepo;
         private Mock<IMapper> _mapper;
-        private Mock<IGenericRepository<Customer>> _genRepo;
 
         private AccountsController accController;
 
@@ -81,12 +80,12 @@ namespace EuroBankTesting
             Task<Customer> cust = Task.FromResult(_customer);
             Task<IEnumerable<Account>> c_accs = Task.FromResult(_customerAccs.AsEnumerable());
             _iUw.Setup(x => x.Customers.GetAsync(x => x.CustomerId == Cid, true, null)).Returns(cust);          
-            _iUw.Setup(x => x.Accounts.GetAllAsync(x => x.CustomerId == Cid,null)).Returns(c_accs);
+            _iUw.Setup(x => x.Accounts.GetAllAsync(x => x.CustomerId == Cid,null,0,1)).Returns(c_accs);
             var result = accController.GetCustomerAccounts(Cid);
             Assert.That(result, Is.InstanceOf<Task<ActionResult<IEnumerable<AccountBalanceDTO>>>>());
         }
 
-        []
+        
     }
 
    
