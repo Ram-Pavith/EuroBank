@@ -12,6 +12,7 @@ namespace EuroBankAPI.Repository
         {
             _db = db;
         }
+
         public async Task<Customer> UpdateAsync(Customer customer)
         {
             _db.Update(customer);
