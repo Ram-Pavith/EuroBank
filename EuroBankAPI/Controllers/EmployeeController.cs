@@ -330,6 +330,8 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpDelete("RemoveEmployee")]
+        [Authorize(Roles = "Employee")]
+
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> DeleteEmployee(Guid EmployeeId)
