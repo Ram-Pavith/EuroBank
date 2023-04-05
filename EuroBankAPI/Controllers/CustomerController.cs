@@ -236,6 +236,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+
         [HttpPut("ResetPassword")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -270,6 +271,19 @@ namespace EuroBankAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpDelete("RemoveCustomer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)
+        {
+            var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
+            if (customerExists == null)
+            {
+                return BadRequest("Employee With the EmployeeId does not Exists");
+            }
+            await _uw.Customers.DeleteAsync(customerExists);
+            return Ok(customerExists);
         }
     }
 }
