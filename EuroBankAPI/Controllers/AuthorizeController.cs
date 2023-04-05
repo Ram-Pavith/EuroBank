@@ -1,4 +1,6 @@
-﻿using EuroBankAPI.DTOs;
+﻿using AutoMapper;
+using EuroBankAPI.DTOs;
+using EuroBankAPI.Models;
 using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,21 +14,24 @@ namespace EuroBankAPI.Controllers
     public class AuthorizeController : ControllerBase
     {
         private readonly IAuthService _authService;
-
-        public AuthorizeController(IAuthService authService)
+        private readonly IMapper _mapper;
+        public AuthorizeController(IAuthService authService,IMapper mapper)
         {
+            _mapper = mapper;
             _authService = authService;
+
         }
-        [HttpPost]
-        public async Task<ActionResult<UserAuthDTO>> RegisterUser(UserAuthLoginDTO request)
+        [HttpPost("RegisterAuth")]
+        public async Task<ActionResult<UserAuth>> RegisterUser(UserAuthLoginDTO request)
         {
             var response = await _authService.RegisterUser(request);
             return Ok(response);
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<UserAuthDTO>> Login(UserAuthLoginDTO request)
+        [HttpPost("Authorize")]
+        public async Task<ActionResult<UserAuth>> Authorize(UserAuthLoginDTO request)
         {
+            //var request = _mapper.Map<UserAuthLoginDTO>(emplogin);
             var response = await _authService.Login(request);
             if (response.Success)
                 return Ok(response);
@@ -34,7 +39,7 @@ namespace EuroBankAPI.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("Refresh-Token")]
         public async Task<ActionResult<string>> RefreshToken()
         {
             var response = await _authService.RefreshToken();
@@ -44,7 +49,7 @@ namespace EuroBankAPI.Controllers
             return BadRequest(response.Message);
         }
 
-        [HttpGet, Authorize(Roles = "User,Admin")]
+        [HttpGet, Authorize(Roles = "Customer,Employee")]
         public ActionResult<string> Aloha()
         {
             return Ok("Aloha! You're authorized!");

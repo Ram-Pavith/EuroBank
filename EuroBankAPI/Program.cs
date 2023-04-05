@@ -1,5 +1,11 @@
+using AutoMapper;
 using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
+using EuroBankAPI.Repository;
+using EuroBankAPI.Repository.IRepository;
+using EuroBankAPI.Service.AuthService;
+using EuroBankAPI.Service.BusinessService;
+using EuroBankAPI.Service.EmailService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +20,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddControllers();
 
+//AuthService Injection
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IBusinessService, BusinessService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmployeeRepository,EmployeeRepository>();
+builder.Services.AddScoped<IAccountRepository,AccountRepository>();
+builder.Services.AddScoped<IAccountTypeRepository,AccountTypeRepository>();
+builder.Services.AddScoped<IAccountCreationStatusRepository, AccountCreationStatusRepository>();
+builder.Services.AddScoped<ITransactionStatusRepository,TransactionStatusRepository>();
+builder.Services.AddScoped<IStatementRepository,StatementRepository>();
+builder.Services.AddScoped<ITransactionRepository,TransactionRepository>();
+builder.Services.AddScoped<ICounterPartyRepository,CounterPartyRepository>();
+builder.Services.AddScoped<IRefTransactionTypeRepository,RefTransactionTypeRepository>();
+builder.Services.AddScoped<IRefTransactionStatusRepository,RefTransactionStatusRepository>();
+builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
+builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
 //Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
@@ -25,7 +48,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 //AutoMapper
-builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddAutoMapper(typeof(EuroBankAPI.DTOs.Mapper));
 
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -70,7 +93,7 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
-
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
