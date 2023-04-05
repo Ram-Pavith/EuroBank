@@ -19,7 +19,7 @@ namespace EuroBankAPI.Controllers
         private readonly IUnitOfWork _uw;
         private readonly IMapper _mapper;
         private readonly IAccountRepository _accountRepo;
-        public AccountsController(IUnitOfWork uw, IMapper mapper,IAccountRepository _accRepo)
+        public AccountsController(IUnitOfWork uw, IMapper mapper, IAccountRepository _accRepo)
         {
             _uw = uw;
             _mapper = mapper;
