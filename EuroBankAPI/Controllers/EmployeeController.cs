@@ -329,7 +329,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpDelete("ResetPassword")]
+        [HttpDelete("RemoveEmployee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> DeleteEmployee(Guid EmployeeId)
