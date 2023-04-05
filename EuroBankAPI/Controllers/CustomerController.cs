@@ -202,11 +202,17 @@ namespace EuroBankAPI.Controllers
         [Authorize("Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction()
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction(string CustomerId)
         {
+            var targetAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+            List<Transaction> Transactions = new ();
+            IEnumerable<Transaction> TransactionAccounts;
             try
             {
-                var Transactions = await _uw.Transactions.GetAllAsync();
+                foreach(var account in targetAccounts) {
+                    TransactionAccounts = await _uw.Transactions.GetAllAsync(x => x.AccountId == account.AccountId);
+                    Transactions.AddRange(TransactionAccounts);
+                }
 
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 

@@ -154,6 +154,30 @@ namespace EuroBankAPI.Controllers
             }
 
         }
+        [HttpGet("GetTransactions")]
+        [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(Guid  AccountId, int PageSize = 0, int PageNumber = 1)
+        {
+            var account = await _uw.Accounts.GetAllAsync(x => x.AccountId == AccountId);
+            if (account == null)
+            {
+                return BadRequest("Account does not exist");
+            }
+            IEnumerable<Transaction> transactions;
+            if (PageSize <= 0)
+            {
+                transactions = await _uw.Transactions.GetAllAsync(x => x.AccountId == AccountId);
+            }
+            else
+            {
+                transactions = await _uw.Transactions.GetAllAsync(x => x.AccountId == AccountId, pageSize: PageSize, pageNumber: PageNumber);
+            }
+            List<TransactionDTO> transactionsDTO = _mapper.Map<List<TransactionDTO>>(transactions);
+            return transactionsDTO;
+            
+        }
 
     }
 }

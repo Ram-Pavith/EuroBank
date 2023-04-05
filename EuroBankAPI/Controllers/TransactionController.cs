@@ -301,7 +301,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee,Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId)
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId, int PageSize = 0, int PageNumber = 1)
         {
             Customer CustomerIdObj = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
             var accounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
@@ -314,13 +314,35 @@ namespace EuroBankAPI.Controllers
             {
                 foreach (var account in accounts)
                 {
-                    var transactionsEnumerable = await _uw.Transactions.GetAllAsync(x => x.AccountId == account.AccountId);
+                    IEnumerable<Transaction> transactionsEnumerable;
+                    if (PageSize <= 0)
+                    {
+                         transactionsEnumerable = await _uw.Transactions.GetAllAsync(x => x.AccountId == account.AccountId);
+                    }
+                    else
+                    {
+                         transactionsEnumerable = await _uw.Transactions.GetAllAsync(x => x.AccountId == account.AccountId,pageSize : PageSize, pageNumber:PageNumber);
+                    }
                     transactions.AddRange(transactionsEnumerable);
 
                 }
                 List<TransactionDTO> transactionsDTO = _mapper.Map<List<TransactionDTO>>(transactions);
                 return transactionsDTO;
             }
+        }
+        [HttpGet("GetTransactionById")]
+        [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<TransactionDTO>> GetTransactionById(Guid TransactionId)
+        {
+            var transaction = await _uw.Transactions.GetAsync(x => x.TransactionId == TransactionId);
+            if(transaction == null)
+            {
+                return BadRequest("Transaction Id does not exist");
+            }
+            TransactionDTO transactionDTO = _mapper.Map<TransactionDTO>(transaction);
+            return Ok(transactionDTO);
         }
     }
 }

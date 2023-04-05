@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace EuroBankAPI.Controllers
 {
@@ -183,11 +184,20 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions()
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions(int PageSize = 0, int PageNumber = 1)
         {
+            IEnumerable<Transaction> Transactions;
             try
             {
-                var Transactions = await _uw.Transactions.GetAllAsync();
+                if (PageSize <= 0)
+                {
+                    Transactions = await _uw.Transactions.GetAllAsync();
+                }
+                else
+                {
+                    Transactions = await _uw.Transactions.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
+                }
+                Transactions = await _uw.Transactions.GetAllAsync();
 
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 
@@ -215,11 +225,20 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts()
+        public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts(int PageSize = 0, int PageNumber = 1)
         {
+            IEnumerable<Account> BankAccounts;
             try
             {
-                var BankAccounts = await _uw.Accounts.GetAllAsync();
+                if (PageSize <= 0)
+                {
+                    BankAccounts = await _uw.Accounts.GetAllAsync();
+                }
+                else
+                {
+                    BankAccounts = await _uw.Accounts.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
+                }
+                BankAccounts = await _uw.Accounts.GetAllAsync();
                 List<AccountDTO> AccountsDTOs = _mapper.Map<List<AccountDTO>>(BankAccounts);
                 return AccountsDTOs;
             }
@@ -245,11 +264,20 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers()
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
         {
+            IEnumerable<Customer> Customers;
             try
             {
-                var Customers = await _uw.Customers.GetAllAsync();
+                if (PageSize <= 0)
+                {
+                    Customers = await _uw.Customers.GetAllAsync();
+                }
+                else
+                {
+                    Customers = await _uw.Customers.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
+                }
+                Customers = await _uw.Customers.GetAllAsync();
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
                 return CustomersDTOs;
             }
