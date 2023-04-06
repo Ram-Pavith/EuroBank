@@ -75,7 +75,7 @@ namespace EuroBankTesting
 
         
         [TestCase("CustomerEurobank")]
-        public void GetCustomerAccounts_TestAsync(string Cid)
+        public void GetCustomerAccounts_Test(string Cid)
         {
             Task<Customer> cust = Task.FromResult(_customer);
             Task<IEnumerable<Account>> c_accs = Task.FromResult(_customerAccs.AsEnumerable());
