@@ -28,7 +28,7 @@ namespace EuroBankAPI.Controllers
 
 
         [HttpPost("CreateAccount")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -83,7 +83,7 @@ namespace EuroBankAPI.Controllers
 
 
         [HttpGet("GetCustomerAccountsBalance")]
-        [Authorize(Roles = "Employee, Customer")]
+        //[Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<AccountBalanceDTO>>> GetCustomerAccountsBalance(string CustomerId)
@@ -104,7 +104,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccountBalance")]
-        [Authorize(Roles = "Employee, Customer")]
+        //[Authorize(Roles = "Employee, Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<AccountBalanceDTO>> GetAccountBalance(Guid AccountId)

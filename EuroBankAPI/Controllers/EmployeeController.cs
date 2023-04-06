@@ -81,7 +81,7 @@ namespace EuroBankAPI.Controllers
             try
             {
                 Customer customer = _mapper.Map<Customer>(customerDTO);
-                var customerExists = _uw.Customers.GetAsync(x => x.CustomerId== customerRegisterDTO.CustomerId || x.EmailId  == customerRegisterDTO.EmailId);
+                var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId== customerRegisterDTO.CustomerId || x.EmailId  == customerRegisterDTO.EmailId);
                 if (customerExists != null) {
                     return BadRequest("Customer Exists with the same CustomerId, please try to register with a different customer id");
                 }
