@@ -307,6 +307,7 @@ namespace EuroBankAPI.Controllers
                 employee.PasswordHash = passwordHash;
                 employee.PasswordSalt = passwordSalt;
                 await _uw.Employees.UpdateAsync(employee);
+                _uw.Save();
 
                 EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
                 return employeeDTO;

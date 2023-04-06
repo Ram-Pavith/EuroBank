@@ -39,12 +39,12 @@ builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
 //Serilog Logger Setup
 // Serilog DB Logging
-/*Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();//.Enrich.FromLogContext().CreateLogger();*/
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
 //File Logging
-Log.Logger = new LoggerConfiguration()
+/*Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/EuroBankLogs.log", rollingInterval: RollingInterval.Month)
-    .CreateLogger();
+    .CreateLogger();*/
 builder.Host.UseSerilog();
 
 //AutoMapper
@@ -104,6 +104,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    );
 
 app.UseAuthentication();
 

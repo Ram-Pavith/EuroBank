@@ -125,7 +125,7 @@ namespace EuroBankAPI.Data
             {
                 entity.HasIndex(e => e.CustomerId, "CustomerId").IsUnique();
 
-                entity.HasIndex(e => e.EmailId, "EmailId");
+                entity.HasIndex(e => e.EmailId, "EmailId").IsUnique();
 
                 entity.Property(e => e.Firstname).HasMaxLength(50).IsUnicode(true);
 
@@ -156,9 +156,9 @@ namespace EuroBankAPI.Data
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasIndex(e => e.EmployeeId, "EmployeeId");
+                entity.HasIndex(e => e.EmployeeId, "EmployeeId").IsUnique();
 
-                entity.HasIndex(e => e.EmailId, "EmailId");
+                entity.HasIndex(e => e.EmailId, "EmailId").IsUnique();
 
                 entity.Property(e => e.EmailId).IsRequired();
 

@@ -250,7 +250,7 @@ namespace EuroBankAPI.Controllers
                 customer.PasswordHash = passwordHash;
                 customer.PasswordSalt = passwordSalt;
                 await _uw.Customers.UpdateAsync(customer);
-
+                _uw.Save();
                 CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
                 return customerDTO;
 
