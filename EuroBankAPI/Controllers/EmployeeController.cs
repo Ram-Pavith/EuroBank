@@ -197,8 +197,6 @@ namespace EuroBankAPI.Controllers
                 {
                     Transactions = await _uw.Transactions.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
-                Transactions = await _uw.Transactions.GetAllAsync();
-
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
 
                 return TransactionDTOs;
@@ -238,7 +236,6 @@ namespace EuroBankAPI.Controllers
                 {
                     BankAccounts = await _uw.Accounts.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
-                BankAccounts = await _uw.Accounts.GetAllAsync();
                 List<AccountDTO> AccountsDTOs = _mapper.Map<List<AccountDTO>>(BankAccounts);
                 return AccountsDTOs;
             }
@@ -277,7 +274,6 @@ namespace EuroBankAPI.Controllers
                 {
                     Customers = await _uw.Customers.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
-                Customers = await _uw.Customers.GetAllAsync();
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
                 return CustomersDTOs;
             }
@@ -331,6 +327,20 @@ namespace EuroBankAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpDelete("RemoveEmployee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Employee>> DeleteEmployee(Guid EmployeeId)
+        {
+            var employeeExists = await _uw.Employees.GetAsync(x => x.EmployeeId == EmployeeId);
+            if(employeeExists == null)
+            {
+                return BadRequest("Employee With the EmployeeId does not Exists");
+            }
+            await _uw.Employees.DeleteAsync(employeeExists);
+            return Ok(employeeExists);
         }
     }
 }
