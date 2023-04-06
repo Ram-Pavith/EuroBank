@@ -18,6 +18,17 @@ IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
     .ConfigureServices((hostcontext,services) =>
     {
+        services.AddDbContext<EuroBankContext>(options =>
+        {
+            options.UseSqlServer(
+                hostContext.Configuration["ConnectionStrings:Connection"],
+                serverDbContextOptionsBuilder =>
+                {
+                    var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
+                    serverDbContextOptionsBuilder.CommandTimeout(minutes);
+                    serverDbContextOptionsBuilder.EnableRetryOnFailure();
+                });
+        });
         IConfiguration configuration = hostcontext.Configuration;
         //services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
