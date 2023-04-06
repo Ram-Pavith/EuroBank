@@ -37,6 +37,9 @@ builder.Services.AddScoped<IRefTransactionTypeRepository,RefTransactionTypeRepos
 builder.Services.AddScoped<IRefTransactionStatusRepository,RefTransactionStatusRepository>();
 builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationStatusRepository>();
+
 //Serilog Logger Setup
 // Serilog DB Logging
 /*Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();//.Enrich.FromLogContext().CreateLogger();*/
@@ -104,7 +107,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(options => options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 app.UseAuthentication();
 
 app.UseAuthorization();

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using EuroBankAPI.Data;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
@@ -23,12 +24,14 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<CustomerController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public CustomerController(IUnitOfWork uw, ILogger<CustomerController> logger, IMapper mapper, IAuthService authService)
+        private readonly EuroBankContext _euroBankContext;
+        public CustomerController(IUnitOfWork uw, ILogger<CustomerController> logger, IMapper mapper, IAuthService authService,EuroBankContext euroBankContext)
         {
             _uw = uw;
             _logger = logger;
             _mapper = mapper;
             _authService = authService;
+            _euroBankContext = euroBankContext;
         }
 
         [HttpPost("CustomerLogin")]
@@ -65,7 +68,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetCustomerAccounts")]
-        [Authorize(Roles = "Customer")]
+      //  [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -104,7 +107,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccount")]
-        [Authorize(Roles = "Customer")]
+       // [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -143,7 +146,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccountStatement")]
-        [Authorize(Roles = "Customer")]
+      //  [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -199,7 +202,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpGet("ViewAllTransactions")]
-        [Authorize("Employee")]
+      //  [Authorize("Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction(string CustomerId)
@@ -246,10 +249,11 @@ namespace EuroBankAPI.Controllers
             {
                 Customer customer = await _uw.Customers.GetAsync(x => x.EmailId == Email);
                 _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-
                 customer.PasswordHash = passwordHash;
                 customer.PasswordSalt = passwordSalt;
                 await _uw.Customers.UpdateAsync(customer);
+                _uw.Save();
+
 
                 CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
                 return customerDTO;
@@ -273,7 +277,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpDelete("RemoveCustomer")]
-        [Authorize(Roles = "Employee")]
+       // [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)
