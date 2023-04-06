@@ -129,7 +129,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Firstname).HasMaxLength(50).IsUnicode(true);
 
-                entity.Property(e => e.Lastname).HasMaxLength(50).IsUnicode(true);
+                entity.Property(e => e.Lastname).HasMaxLength(50).IsUnicode(true); 
 
                 entity.Property(e => e.Address).HasMaxLength(200);
 
