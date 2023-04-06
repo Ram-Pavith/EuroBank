@@ -86,7 +86,7 @@ namespace EuroBankAPI.Data
             {
                 entity.HasKey(e => e.StatementId).HasName("PK_Statement_ID");
 
-                entity.Property(e => e.Narration).HasMaxLength(35);
+                entity.Property(e => e.Narration).HasMaxLength(200);
                 entity.HasOne(s => s.Account)
                     .WithMany(a => a.Statements)
                     .HasForeignKey(a => a.AccountId);
@@ -135,7 +135,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Phone).HasMaxLength(10).IsUnicode(true);
 
-                entity.Property(e => e.PanNumber).HasMaxLength(15).IsUnicode(true);
+                entity.Property(e => e.PanNumber).HasMaxLength(10).IsUnicode(true);
 
                 entity.Property(e => e.DOB).IsUnicode(false);
 
