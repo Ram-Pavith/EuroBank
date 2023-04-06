@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EuroBankAPI.Controllers
+namespace EuroBankAPI.Controllers 
 {
     public class BusinessRulesAndServiceController : Controller
     {
