@@ -27,7 +27,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("Withdraw")]
-        [Authorize(Roles = "Customer")]
+       // [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
@@ -123,7 +123,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpPost("Deposit")]
-        [Authorize(Roles = "Customer")]
+       // [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
@@ -199,7 +199,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpPost("Transfer")]
-        [Authorize(Roles = "Customer")]
+       // [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -298,7 +298,7 @@ namespace EuroBankAPI.Controllers
 
         }
         [HttpGet("GetTransactions")]
-        [Authorize(Roles = "Employee,Customer")]
+      //  [Authorize(Roles = "Employee,Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> GetTransactions(string CustomerId, int PageSize = 0, int PageNumber = 1)
@@ -331,7 +331,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpGet("GetTransactionById")]
-        [Authorize(Roles = "Employee,Customer")]
+     //   [Authorize(Roles = "Employee,Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TransactionDTO>> GetTransactionById(Guid TransactionId)
