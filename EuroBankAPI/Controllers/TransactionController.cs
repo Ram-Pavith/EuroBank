@@ -142,12 +142,7 @@ namespace EuroBankAPI.Controllers
             {
                 try
                 {
-                    if (amount > 200000)
-                    {
-                        return BadRequest("Deposit amount cannot be greater than Two Lakhs");
-                    }
-                    else
-                    {
+                   
                         Transaction transaction = new();
 
                         AccountExists.Balance += amount;
@@ -160,11 +155,18 @@ namespace EuroBankAPI.Controllers
                             counterPartyExists.CounterPartyName = AccountExists.CustomerId;
                             await _uw.CounterParties.CreateAsync(counterPartyExists);
                         }
+                    if (amount < 200000)
+                    {
+                        transaction.RefTransactionStatusId = 1;
+                    }
+                    else {
+                        transaction.RefTransactionStatusId = 2; 
+                    }
                         //transaction initialising
                         transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                         transaction.AccountId = AccountExists.AccountId;
                         transaction.ServiceId = serviceId;
-                        transaction.RefTransactionStatusId = 1;
+                        //transaction.RefTransactionStatusId = 1;
                         transaction.RefTransactionTypeId = 2;
                         transaction.DateOfTransaction = DateTime.Now;
                         transaction.AmountOfTransaction = amount;
@@ -186,7 +188,8 @@ namespace EuroBankAPI.Controllers
                         //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
                         //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
                         return refTransactionStatusDTO;
-                    }
+                    
+                   
                 }
                 catch (DbUpdateException ex)
                 {
