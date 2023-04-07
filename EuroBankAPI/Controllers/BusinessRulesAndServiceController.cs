@@ -25,7 +25,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("SendEmail")]
-        [Authorize(Roles = "Customer,Employee")]
+        //[Authorize(Roles = "Customer,Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -44,7 +44,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("EvaluateMinBalance")]
-        [Authorize(Roles ="Customer,Employee")]
+        //[Authorize(Roles ="Customer,Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -65,7 +65,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetCustomerAccounts")]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -104,7 +104,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccount")]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -143,7 +143,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccountStatement")]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
