@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankAPI", "EuroBankAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankTesting", "EuroBankTesting\EuroBankTesting.csproj", "{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceChargesService", "ServiceChargesService\ServiceChargesService.csproj", "{79820666-9843-4ED9-BFC0-E0621019B471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceChargesService", "ServiceChargesService\ServiceChargesService.csproj", "{79820666-9843-4ED9-BFC0-E0621019B471}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

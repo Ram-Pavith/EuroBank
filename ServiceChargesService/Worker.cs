@@ -18,8 +18,8 @@ namespace ServiceChargesService
         public Worker(ILogger<Worker> logger,EuroBankContext euroBankContext,IServiceProvider serviceProvider)
         {
             _logger = logger;
-            _euroBankContext = euroBankContext;
-            _serviceProvider = serviceProvider;
+            _euroBankContext = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<EuroBankContext>();
+            //_serviceProvider = serviceProvider;
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
@@ -35,12 +35,11 @@ namespace ServiceChargesService
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<EuroBankContext>();
-                    int totalRows = await dbContext.Accounts.CountAsync();
+                
+                    //var dbContext = scope.ServiceProvider.GetRequiredService<EuroBankContext>();
+                    int totalRows = await _euroBankContext.Accounts.CountAsync();
                     _logger.LogInformation("Total rows in Accounts is " + totalRows);
-                }
+                
                 /*var accounts = _euroBankContext.Accounts.Where(x => x.Balance < _minBalance).ToList();
                 foreach (var account in accounts)
                 {

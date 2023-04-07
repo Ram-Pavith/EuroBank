@@ -18,24 +18,24 @@ IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
     .ConfigureServices((hostcontext,services) =>
     {
-        services.AddDbContext<EuroBankContext>(options =>
+        IConfiguration configuration = hostcontext.Configuration;
+        /*services.AddDbContext<EuroBankContext>(options =>
         {
             options.UseSqlServer(
-                hostContext.Configuration["ConnectionStrings:Connection"],
+                hostcontext.Configuration["ConnectionStrings:DefaultConnection"],
                 serverDbContextOptionsBuilder =>
                 {
                     var minutes = (int)TimeSpan.FromMinutes(3).TotalSeconds;
                     serverDbContextOptionsBuilder.CommandTimeout(minutes);
                     serverDbContextOptionsBuilder.EnableRetryOnFailure();
                 });
-        });
-        IConfiguration configuration = hostcontext.Configuration;
-        //services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        });*/
+        services.AddDbContext<EuroBankContext>();//options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
       //  var OptionBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
       //  OptionBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
-        services.AddDbContext<EuroBankContext>(options => options.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;"));
-       services.AddTransient<EuroBankContext>();
+        //services.AddDbContext<EuroBankContext>(options => options.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;"));
+       services.AddScoped<EuroBankContext>();
         services.AddHostedService<Worker>();
     })
     .UseSerilog()

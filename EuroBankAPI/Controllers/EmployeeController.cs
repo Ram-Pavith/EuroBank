@@ -181,7 +181,7 @@ namespace EuroBankAPI.Controllers
 
 
         [HttpGet("ViewAllTransactions")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions(int PageSize = 0, int PageNumber = 1)
@@ -220,7 +220,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("ViewAllBankAccounts")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts(int PageSize = 0, int PageNumber = 1)
@@ -258,7 +258,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAllCustomers")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
