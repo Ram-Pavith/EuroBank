@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using EuroBankAPI.Helpers;
 
 namespace EuroBankAPI.Controllers
 {
@@ -179,7 +180,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-
+        [Cached(600)]
         [HttpGet("ViewAllTransactions")]
         //[Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -191,10 +192,12 @@ namespace EuroBankAPI.Controllers
             {
                 if (PageSize <= 0)
                 {
+                    _logger.LogError("page size is less than 0");
                     Transactions = await _uw.Transactions.GetAllAsync();
                 }
                 else
                 {
+                    _logger.LogInformation("calling view all transactions");
                     Transactions = await _uw.Transactions.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
@@ -220,7 +223,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("ViewAllBankAccounts")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> ViewAllBankAccounts(int PageSize = 0, int PageNumber = 1)
