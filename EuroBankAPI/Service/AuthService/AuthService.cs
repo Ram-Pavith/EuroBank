@@ -27,7 +27,7 @@ namespace EuroBankAPI.Service.AuthService
             _mapper = mapper;
         }
 
-        public async Task<UserAuthResponseDTO> LoginEmployeeAndCustomer(UserAuthLoginDTO request)
+        public async Task<UserAuthResponseDTO> AuthorizeEmployeeAndCustomer(UserAuthLoginDTO request)
         {
             //var user = await _context.UserAuths.GetAsync(u => u.Username == request.Username);
 
@@ -105,6 +105,43 @@ namespace EuroBankAPI.Service.AuthService
                 RefreshToken = refreshToken.Token,
                 TokenExpires = refreshToken.Expires
             };
+        }
+        public async Task<EmployeeDTO> EmployeeLogin(UserAuthLoginDTO request)
+        {
+            var employee = await _context.Employees.GetAsync(e => e.EmailId == request.Username );
+            if (employee == null)
+            {
+                return null;
+            }
+            if (VerifyPasswordHash(request.Password, employee.PasswordHash, employee.PasswordSalt))
+            {
+                if(employee.PasswordHash == employee.PasswordHash && employee.PasswordSalt== employee.PasswordSalt)
+                {
+                    var employeeDTO = _mapper.Map<EmployeeDTO>(employee);
+                    return employeeDTO;
+                }
+            }
+            return null;
+
+
+        }
+        public async Task<CustomerDTO> CustomerLogin(UserAuthLoginDTO request)
+        {
+            var customer = await _context.Customers.GetAsync(e => e.EmailId == request.Username);
+            if (customer == null)
+            {
+                return null;
+            }
+            
+            if (VerifyPasswordHash(request.Password, customer.PasswordHash, customer.PasswordSalt))
+            {
+                if (customer.PasswordHash == customer.PasswordHash && customer.PasswordSalt == customer.PasswordSalt)
+                {
+                    var customerDTO = _mapper.Map<CustomerDTO>(customer);
+                    return customerDTO;
+                }
+            }
+            return null;
         }
         public async Task<UserAuthResponseDTO> Login(UserAuthLoginDTO request)
         {
