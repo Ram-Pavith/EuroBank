@@ -72,17 +72,22 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomerDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
+        public async Task<ActionResult<CustomerDetailsDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
             UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
-                response = await _authService.AuthorizeEmployeeAndCustomer(request);
-                if (response.Success)
-                    return Ok(response);
+                var Customer = await _authService.CustomerLogin(request);
+                if (Customer == null)
+                {
+                    return NotFound();
+                }
                 else
-                    return BadRequest(response.Message);
+                {
+                    var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
+                    return customerDetailsDTO;
+                }
             }
             catch (DbUpdateException ex)
             {

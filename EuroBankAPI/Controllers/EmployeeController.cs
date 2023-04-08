@@ -180,7 +180,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EmployeeDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
+        public async Task<ActionResult<EmployeeDetailsDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
         {
             try
             {
@@ -192,7 +192,8 @@ namespace EuroBankAPI.Controllers
                 }
                 else
                 {
-                    return Employee;
+                    var employeeDetailsDTO = _mapper.Map<EmployeeDetailsDTO>(Employee);
+                    return employeeDetailsDTO;
                 }
             }
             catch (DbUpdateException ex)
