@@ -84,7 +84,10 @@ namespace EuroBankAPI.Controllers
                 }
                 else
                 {
-                    return Customer;
+                    IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+                    var CustomerAccountsList= customerAccounts.ToList();
+                    List<AccountDTO> AccountsDTO = _mapper.Map<List<AccountDTO>>(CustomerAccountsList);
+                    return AccountsDTO;
                 }
             }
             catch (DbUpdateException ex)
