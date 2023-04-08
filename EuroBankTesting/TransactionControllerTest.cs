@@ -44,5 +44,12 @@ namespace EuroBankTest
             var result = _transactionController.GetTransactionById(transactionId);
             Assert.That(result, Is.InstanceOf<Task<ActionResult<TransactionDTO>>>());
         }
+
+        [TestCase("544f2e07-2651-45fa-8369-0c2cb6137da4", 5000,1)]
+        public void Withdraw(Guid AccountId,double amount,int ServiceId)
+        {
+            var result= _transactionController.Withdraw(AccountId,amount,ServiceId);
+            Assert.That(result, Is.InstanceOf<Task<ActionResult<RefTransactionStatusDTO>>>());
+        }
     }
 }
