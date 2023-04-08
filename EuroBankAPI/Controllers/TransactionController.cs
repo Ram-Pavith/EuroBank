@@ -90,7 +90,8 @@ namespace EuroBankAPI.Controllers
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Deposit using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    var service = await _uw.Services.GetAsync(x=>x.ServiceId == serviceId);
+                    statement.Narration = "Deposit using "+service.ServiceName.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
                     statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
                     statement.Deposit = amount;
                     statement.Withdrawal = 0;
@@ -163,11 +164,12 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
+                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Withdrawal using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.Narration = "Withdrawal using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
                     statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
                     statement.Deposit = 0;
                     statement.Withdrawal = amount;
@@ -260,12 +262,13 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 2;
                     await _uw.Transactions.CreateAsync(transaction);
+                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
                     //statement initialising
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = SourceAccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Transfer using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
+                    statement.Narration = "Transfer using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
                     statement.RefNo = "Transfer of " + amount.ToString() + " To " + TargetAccountExists.AccountId.ToString();
                     statement.Deposit = amount;
                     statement.Withdrawal = 0;

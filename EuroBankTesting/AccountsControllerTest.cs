@@ -25,7 +25,6 @@ namespace EuroBankTesting
         private Mock<IUnitOfWork> _iUw;
         private Mock<IAccountRepository> accRepo;
         private Mock<IMapper> _mapper;
-        private Mock<IGenericRepository<Customer>> _genRepo;
 
         private AccountsController accController;
 
@@ -76,7 +75,7 @@ namespace EuroBankTesting
 
         
         [TestCase("CustomerEurobank")]
-        public void GetCustomerAccounts_TestAsync(string Cid)
+        public void GetCustomerAccounts_Test(string Cid)
         {
             Task<Customer> cust = Task.FromResult(_customer);
             Task<IEnumerable<Account>> c_accs = Task.FromResult(_customerAccs.AsEnumerable());

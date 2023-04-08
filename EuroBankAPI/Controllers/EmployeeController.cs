@@ -41,6 +41,11 @@ namespace EuroBankAPI.Controllers
                 employeeDTO.PasswordHash = passwordHash;
                 employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
+                var employeeExists = _uw.Employees.GetAsync(x => x.EmailId == employeeRegisterDTO.EmailId);
+                if(employeeExists != null)
+                {
+                    return BadRequest("Employee already exists with the same email id, try with another email id");
+                }
                 await _uw.Employees.CreateAsync(employee);
                 return employee;
             }
@@ -68,6 +73,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerCreationStatusDTO>> CreateCustomer(CustomerRegisterDTO customerRegisterDTO)
         {
+
             var customerDTO = _mapper.Map<CustomerDTO>(customerRegisterDTO);
             _authService.CreatePasswordHash(customerRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
             customerDTO.PasswordHash = passwordHash;
@@ -75,6 +81,10 @@ namespace EuroBankAPI.Controllers
             try
             {
                 Customer customer = _mapper.Map<Customer>(customerDTO);
+                var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId== customerRegisterDTO.CustomerId || x.EmailId  == customerRegisterDTO.EmailId);
+                if (customerExists != null) {
+                    return BadRequest("Customer Exists with the same CustomerId, please try to register with a different customer id");
+                }
                 CustomerCreationStatus customerCreationStatus;
                 try
                 {
@@ -88,25 +98,12 @@ namespace EuroBankAPI.Controllers
                     };
                     try
                     {
-                        AccountCreationStatus accountCreationStatus = new AccountCreationStatus()
-                        {
-                            Message = "Success"
-                        };
-                        account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
-                        customer.Accounts.Add(account);
-                        AccountType accountType = new AccountType()
-                        {
-                            Type= "Savings"
-                        };
-
-                        await _uw.AccountCreationStatuses.CreateAsync(accountCreationStatus);
-                        account.AccountCreationStatusId = accountCreationStatus.AccountCreationStatusId;
-                        await _uw.AccountTypes.CreateAsync(accountType);
-                        account.AccountTypeId = accountType.AccountTypeId;
+                        
+                        account.AccountCreationStatusId = 1;
+                        account.AccountTypeId = 1;
                         account.CustomerId = customer.CustomerId;
-                        await _uw.CustomerCreationStatuses.CreateAsync(customerCreationStatus);
-                        customer.CustomerCreationStatusId = customerCreationStatus.CustomerCreationId;
                         customer.CustomerCreationStatusId = 1;
+                        customer.Accounts.Add(account);
                         await _uw.Customers.CreateAsync(customer);
                         await _uw.Accounts.CreateAsync(account);
 
