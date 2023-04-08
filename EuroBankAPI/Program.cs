@@ -37,6 +37,9 @@ builder.Services.AddScoped<IRefTransactionTypeRepository,RefTransactionTypeRepos
 builder.Services.AddScoped<IRefTransactionStatusRepository,RefTransactionStatusRepository>();
 builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 builder.Services.AddScoped<IRefPaymentMethodRepository,RefPaymentMethodRepository>();
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationStatusRepository>();
+
 //Serilog Logger Setup
 // Serilog DB Logging
 /*Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();//.Enrich.FromLogContext().CreateLogger();*/
@@ -71,11 +74,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 //Cors Policy
-builder.Services.AddCors(c =>
+/*builder.Services.AddCors(c =>
 {
-    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-});
-
+    c.AddPolicy("AllowOrigin", options => options.WithOrigins("http://localhost:4200/").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});*/
+builder.Services.AddCors();
 
 
 
@@ -110,7 +113,14 @@ app.UseCors(x => x
 
 app.UseHttpsRedirection();
 
+app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+
 app.UseAuthentication();
+
+app.UseCors(options => options.WithOrigins("http://localhost:4200/").AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
 app.UseAuthorization();
 

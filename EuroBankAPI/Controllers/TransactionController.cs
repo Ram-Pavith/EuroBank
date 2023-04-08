@@ -91,10 +91,11 @@ namespace EuroBankAPI.Controllers
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Withdrawal using "+serviceId.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
-                    statement.RefNo = "Withdrawal of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                    statement.Deposit = 0;
-                    statement.Withdrawal = amount;
+                    var service = await _uw.Services.GetAsync(x=>x.ServiceId == serviceId);
+                    statement.Narration = "Deposit using "+service.ServiceName.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
                     statement.ValueDate = DateTime.Today;
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);
@@ -159,37 +160,33 @@ namespace EuroBankAPI.Controllers
                     {
                         transaction.RefTransactionStatusId = 1;
                     }
-                    else {
-                        transaction.RefTransactionStatusId = 2; 
-                    }
-                        //transaction initialising
-                        transaction.CounterPartyId = counterPartyExists.CounterPartyId;
-                        transaction.AccountId = AccountExists.AccountId;
-                        transaction.ServiceId = serviceId;
-                        //transaction.RefTransactionStatusId = 1;
-                        transaction.RefTransactionTypeId = 2;
-                        transaction.DateOfTransaction = DateTime.Now;
-                        transaction.AmountOfTransaction = amount;
-                        transaction.RefPaymentMethodId = 1;
-                        await _uw.Transactions.CreateAsync(transaction);
-                        //statement inialising
-                        var statement = new Statement();
-                        statement.AccountId = AccountExists.AccountId;
-                        statement.Date = DateTime.Today;
-                        statement.Narration = "Deposit using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
-                        statement.RefNo = "Deposit of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                        statement.Deposit = amount;
-                        statement.Withdrawal = 0;
-                        statement.ValueDate = DateTime.Today;
-                        statement.ClosingBalance = AccountExists.Balance;
-                        await _uw.Statements.CreateAsync(statement);
-                        var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
-                        var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
-                        //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
-                        //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
-                        return refTransactionStatusDTO;
-                    
-                   
+                    //transaction initialising
+                    transaction.CounterPartyId = counterPartyExists.CounterPartyId;
+                    transaction.AccountId = AccountExists.AccountId;
+                    transaction.ServiceId = serviceId;
+                    transaction.RefTransactionStatusId = 1;
+                    transaction.RefTransactionTypeId = 2;
+                    transaction.DateOfTransaction = DateTime.Now;
+                    transaction.AmountOfTransaction = amount;
+                    transaction.RefPaymentMethodId = 1;
+                    await _uw.Transactions.CreateAsync(transaction);
+                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
+                    //statement inialising
+                    var statement = new Statement();
+                    statement.AccountId = AccountExists.AccountId;
+                    statement.Date = DateTime.Today;
+                    statement.Narration = "Withdrawal using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = 0;
+                    statement.Withdrawal = amount;
+                    statement.ValueDate = DateTime.Today;
+                    statement.ClosingBalance = AccountExists.Balance;
+                    await _uw.Statements.CreateAsync(statement);
+                    var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                    var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
+                    //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
+                    //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    return refTransactionStatusDTO;
                 }
                 catch (DbUpdateException ex)
                 {
@@ -275,12 +272,13 @@ namespace EuroBankAPI.Controllers
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 2;
                     await _uw.Transactions.CreateAsync(transaction);
+                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
                     //statement initialising
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = SourceAccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Transfer using " + serviceId.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
+                    statement.Narration = "Transfer using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees From " + SourceAccountExists.AccountId.ToString() + " To " + TargetAccountExists.AccountId.ToString();
                     statement.RefNo = "Transfer of " + amount.ToString() + " To " + TargetAccountExists.AccountId.ToString();
                     statement.Deposit = 0;
                     statement.Withdrawal = 0;
