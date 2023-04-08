@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Azure;
+using Castle.Core.Resource;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
@@ -31,16 +32,16 @@ namespace EuroBankAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost("CustomerLogin")]
+        [HttpPost("CustomerAuthorize")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserAuthResponseDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
+        public async Task<ActionResult<UserAuthResponseDTO>> CustomerAuthorize(CustomerLoginDTO customerLogin)
         {
             UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
-                response = await _authService.LoginEmployeeAndCustomer(request);
+                response = await _authService.AuthorizeEmployeeAndCustomer(request);
                 if (response.Success)
                     return Ok(response);
                 else
@@ -62,6 +63,44 @@ namespace EuroBankAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("CustomerLogin")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomerDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
+        {
+            try
+            {
+                var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
+                var Customer = await _authService.CustomerLogin(request);
+                if (Customer == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Customer;
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
         [HttpGet("GetCustomerAccounts")]
