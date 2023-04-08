@@ -281,8 +281,8 @@ namespace EuroBankAPI.Data
                 );
             modelBuilder.Entity<CustomerCreationStatus>()
                 .HasData(
-                    new CustomerCreationStatus() { CustomerCreationId = 1, Message = "Customer Created Successfully"},
-                    new CustomerCreationStatus() { CustomerCreationId = 2, Message = "Customer Creation Failed"}
+                    new CustomerCreationStatus() { CustomerCreationId = 1, Message = "Customer Created Successfully" },
+                    new CustomerCreationStatus() { CustomerCreationId = 2, Message = "Customer Creation Failed" }
                 );
             modelBuilder.Entity<Customer>()
                 .HasData(
