@@ -273,6 +273,10 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpDelete("RemoveCustomer")]
+<<<<<<< Updated upstream
+=======
+        [Authorize(Roles = "Employee")]
+>>>>>>> Stashed changes
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)

@@ -201,7 +201,7 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpPost("Transfer")]
-        [Authorize(Roles = "Customer")]
+        //[Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -257,7 +257,7 @@ namespace EuroBankAPI.Controllers
                     transaction.AccountId = SourceAccountExists.AccountId;
                     transaction.ServiceId = 3;
                     transaction.RefTransactionStatusId = 1;
-                    transaction.RefTransactionTypeId = 1;
+                    transaction.RefTransactionTypeId = 3;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 2;
