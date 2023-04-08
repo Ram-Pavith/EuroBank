@@ -74,6 +74,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
+            UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
@@ -84,10 +85,7 @@ namespace EuroBankAPI.Controllers
                 }
                 else
                 {
-                    IEnumerable<Account> customerAccounts = await _context.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
-                    var CustomerAccountsList= customerAccounts.ToList();
-                    List<AccountDTO> AccountsDTO = _mapper.Map<List<AccountDTO>>(CustomerAccountsList);
-                    return AccountsDTO;
+                    return BadRequest(response.Message);
                 }
             }
             catch (DbUpdateException ex)
