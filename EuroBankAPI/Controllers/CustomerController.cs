@@ -107,6 +107,7 @@ namespace EuroBankAPI.Controllers
 
         }
 
+
         [HttpGet("GetCustomerAccounts")]
       //  [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

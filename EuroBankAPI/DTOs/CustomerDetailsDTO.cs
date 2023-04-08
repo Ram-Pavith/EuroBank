@@ -24,6 +24,5 @@ namespace EuroBankAPI.DTOs
         public string? PanNumber { get; set; }
         [DataType(DataType.Date)]
         public DateTime DOB { get; set; }
-        public int? CustomerCreationStatusId { get; set; }
     }
 }
