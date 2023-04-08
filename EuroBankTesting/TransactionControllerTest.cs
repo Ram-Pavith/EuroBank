@@ -1,43 +1,48 @@
-/*using AutoMapper;
+using AutoMapper;
 using EuroBankAPI.Controllers;
 using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
-using EuroBankAPI.Repository;
 using EuroBankAPI.Repository.IRepository;
+using EuroBankAPI.Service.AuthService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
 
-namespace EuroBankTesting
+namespace EuroBankTest
 {
     public class Tests
     {
-        private Mock<IUnitOfWork> unitofworkobj;
-        private TransactionController TransactionController;
-        private Mock<ITransactionRepository> transactionrepoobj;
-        private List<Transaction> transactions=new List<Transaction>();
-        private Mock<IMapper> mapper;
-        private Account account=new Account();
-        private Service service=new Service();
+        private TransactionController _transactionController;
+        private Mock<IUnitOfWork> _unitOfWork;
+        private Mock<ILogger<TransactionController>> _logger;
+        private Mock<IMapper> _mapper;
         
+        private Transaction transaction;
         [SetUp]
         public void Setup()
         {
-            
-            unitofworkobj=new Mock<IUnitOfWork>();
-            mapper=new Mock<IMapper>();
-            transactionrepoobj= new Mock<ITransactionRepository>();
-            TransactionController=new TransactionController(unitofworkobj.Object,mapper.Object,transactionrepoobj.Object);
-        }
+            _unitOfWork = new Mock<IUnitOfWork>();
+            _logger = new Mock<ILogger<TransactionController>>();
+            _mapper = new Mock<IMapper>();
+            _transactionController = new TransactionController(_unitOfWork.Object, _mapper.Object, _logger.Object);
 
-*//*        [TestCase(new Guid("544F2E07-2651-45FA-8369-0C2CB6137DA4"),3500,1)]
-*//*        public void WithDrawTest(Guid AccountId, double amount, int serviceId)
+            transaction=new Transaction();
+           
+        }
+        
+        
+
+        [TestCase("544f2e07-2651-45fa-8369-0c2cb6137da4")]
+        public void GetTransaction(Guid transactionId)
         {
-            //account.AccountId = AccountId;
-            //service.ServiceId = serviceId;
-            Task<IEnumerable<Account>> c_accs = Task.FromResult(_customerAccs.AsEnumerable());
-            var a = TransactionController.Withdraw(AccountId, amount, serviceId);
-            Assert.That(a,Is.InstanceOf<Task<ActionResult<RefTransactionStatusDTO>>>);
+            Task<Transaction> transactions = Task.FromResult(transaction);
+            object value = _unitOfWork.Setup(p => p.Transactions.GetAsync(null, true, null)).Returns(transactions);
+            var result = _transactionController.GetTransactionById(transactionId);
+            Assert.That(result, Is.InstanceOf<Task<ActionResult<TransactionDTO>>>());
         }
     }
-}*/
+}
