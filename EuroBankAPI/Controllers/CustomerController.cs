@@ -78,15 +78,11 @@ namespace EuroBankAPI.Controllers
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
-                var Customer = await _authService.CustomerLogin(request);
-                if (Customer == null)
-                {
-                    return NotFound();
-                }
+                response = await _authService.AuthorizeEmployeeAndCustomer(request);
+                if (response.Success)
+                    return Ok(response);
                 else
-                {
                     return BadRequest(response.Message);
-                }
             }
             catch (DbUpdateException ex)
             {
