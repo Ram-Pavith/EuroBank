@@ -199,12 +199,16 @@ namespace EuroBankAPI.Controllers
             }
         }
         [HttpGet("ViewAllTransactions")]
-        [Authorize("Employee")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction(string CustomerId)
         {
             var targetAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
+            if (targetAccounts == null)
+            {
+                return BadRequest("Customer not found");
+            }
             List<Transaction> Transactions = new ();
             IEnumerable<Transaction> TransactionAccounts;
             try

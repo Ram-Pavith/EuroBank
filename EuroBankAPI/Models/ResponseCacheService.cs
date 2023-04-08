@@ -27,6 +27,7 @@ namespace EuroBankAPI.Models
             await _database.StringSetAsync(cacheKey, serialisedResponse, timeToLive);
         }
 
+
         public async Task<string> GetCachedResponse(string cacheKey)
         {
             var cachedResponse = await _database.StringGetAsync(cacheKey);
