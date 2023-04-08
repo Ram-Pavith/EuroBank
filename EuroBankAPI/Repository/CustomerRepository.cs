@@ -15,7 +15,7 @@ namespace EuroBankAPI.Repository
 
         public async Task<Customer> UpdateAsync(Customer customer)
         {
-            _db.Update(customer);
+            _db.Customers.Update(customer);
             await _db.SaveChangesAsync();
             return customer;
         }

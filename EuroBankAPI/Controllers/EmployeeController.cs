@@ -143,16 +143,16 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPost("EmployeeLogin")]
+        [HttpPost("EmployeeAuthorize")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<UserAuthResponseDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
+        public async Task<ActionResult<UserAuthResponseDTO>> EmployeeAuthorize(EmployeeLoginDTO employeeLogin)
         {
             UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(employeeLogin);
-                response = await _authService.LoginEmployeeAndCustomer(request);
+                response = await _authService.AuthorizeEmployeeAndCustomer(request);
                 if (response.Success)
                     return Ok(response);
                 else
@@ -176,6 +176,44 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        [HttpPost("EmployeeLogin")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<EmployeeDetailsDTO>> EmployeeLogin(EmployeeLoginDTO employeeLogin)
+        {
+            try
+            {
+                var request = _mapper.Map<UserAuthLoginDTO>(employeeLogin);
+                var Employee = await _authService.EmployeeLogin(request);
+                if (Employee == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var employeeDetailsDTO = _mapper.Map<EmployeeDetailsDTO>(Employee);
+                    return employeeDetailsDTO;
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
 
         [HttpGet("ViewAllTransactions")]
         [Authorize(Roles = "Employee")]
@@ -304,6 +342,7 @@ namespace EuroBankAPI.Controllers
                 employee.PasswordHash = passwordHash;
                 employee.PasswordSalt = passwordSalt;
                 await _uw.Employees.UpdateAsync(employee);
+                _uw.Save();
 
                 EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
                 return employeeDTO;
@@ -327,6 +366,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpDelete("RemoveEmployee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> DeleteEmployee(Guid EmployeeId)

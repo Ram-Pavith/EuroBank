@@ -15,7 +15,7 @@ namespace EuroBankAPI.Repository
 
         public async Task<CustomerCreationStatus> UpdateAsync(CustomerCreationStatus customerCreationStatus)
         {
-            _db.Update(customerCreationStatus);
+            _db.CustomerCreationStatuses.Update(customerCreationStatus);
             await _db.SaveChangesAsync();
             return customerCreationStatus;
         }

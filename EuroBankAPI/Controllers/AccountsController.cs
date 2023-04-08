@@ -123,7 +123,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccountStatement")]
-        [Authorize(Roles = "Customer")]
+      //  [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<StatementDTO>>> GetAccountStatement(Guid AccountId, DateTime? from_date, DateTime? to_date)

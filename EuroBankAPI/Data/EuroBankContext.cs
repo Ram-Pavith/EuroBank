@@ -135,7 +135,7 @@ namespace EuroBankAPI.Data
 
                 entity.Property(e => e.Phone).HasMaxLength(10).IsUnicode(true);
 
-                entity.Property(e => e.PanNumber).HasMaxLength(15).IsUnicode(true);
+                entity.Property(e => e.PanNumber).HasMaxLength(10).IsUnicode(true);
 
                 entity.Property(e => e.DOB).IsUnicode(false);
 
@@ -281,8 +281,8 @@ namespace EuroBankAPI.Data
                 );
             modelBuilder.Entity<CustomerCreationStatus>()
                 .HasData(
-                    new CustomerCreationStatus() { CustomerCreationId = 1, Message = "Customer Created Successfully"},
-                    new CustomerCreationStatus() { CustomerCreationId = 2, Message = "Customer Creation Failed"}
+                    new CustomerCreationStatus() { CustomerCreationId = 1, Message = "Customer Created Successfully" },
+                    new CustomerCreationStatus() { CustomerCreationId = 2, Message = "Customer Creation Failed" }
                 );
             modelBuilder.Entity<Customer>()
                 .HasData(
