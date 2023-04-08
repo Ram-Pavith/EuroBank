@@ -29,7 +29,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("EmployeeRegister")]
-        [Authorize(Roles = "Employee")]
+       // [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Employee>> EmployeeRegister(EmployeeRegisterDTO employeeRegisterDTO)
@@ -258,7 +258,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAllCustomers")]
-        [Authorize(Roles = "Employee")]
+      //  [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
