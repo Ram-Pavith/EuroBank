@@ -10,6 +10,5 @@ namespace EuroBankAPI.DTOs
 
         public string Message { get; set; } = string.Empty;
 
-/*        public virtual AccountDTO Account { get; set; } = null!;
-*/    }
+    }
 }

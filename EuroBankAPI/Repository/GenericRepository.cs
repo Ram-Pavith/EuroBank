@@ -78,6 +78,11 @@ namespace EuroBankAPI.Repository
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<int> CountAsync()
+        {
+            return await dbSet.CountAsync();
+        }
+
 
 
         public async Task SaveAsync()

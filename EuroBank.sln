@@ -7,7 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankAPI", "EuroBankAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankTesting", "EuroBankTesting\EuroBankTesting.csproj", "{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EuroBankTesting1", "EuroBankTesting1\EuroBankTesting1.csproj", "{D6488B91-8D62-4A4B-BE68-2F55648E4057}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC83A2FA-37FC-413C-AC88-161D9E28E04C}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +26,6 @@ Global
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D6488B91-8D62-4A4B-BE68-2F55648E4057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D6488B91-8D62-4A4B-BE68-2F55648E4057}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D6488B91-8D62-4A4B-BE68-2F55648E4057}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D6488B91-8D62-4A4B-BE68-2F55648E4057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
