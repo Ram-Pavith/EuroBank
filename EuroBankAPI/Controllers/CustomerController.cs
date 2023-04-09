@@ -106,6 +106,84 @@ namespace EuroBankAPI.Controllers
             }
 
         }
+        
+        [HttpGet("GetCustomerById")]
+        //  [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomerDetailsDTO>> GetCustomerById(string CustomerId)
+        {
+            try
+            {
+                var Customer = await _uw.Customers.GetAsync(x=>x.CustomerId == CustomerId);
+                if (Customer == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
+                    return customerDetailsDTO;
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("UpdateCustomer")]
+        //  [Authorize(Roles = "Customer")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomerDetailsDTO>> UpdateCustomer(CustomerDetailsDTO customer )
+        {
+            try
+            {
+                var Customer = await _uw.Customers.GetAsync(x => x.CustomerId == customer.CustomerId);
+                if (Customer == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    await _uw.Customers.UpdateAsync(Customer);
+                    var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
+                    return customerDetailsDTO;
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (SqlException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (NullReferenceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
         [HttpGet("GetCustomerAccounts")]
@@ -186,7 +264,7 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("GetAccountStatement")]
+        [HttpGet("GetCustomerStatement")]
       //  [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -288,7 +366,7 @@ namespace EuroBankAPI.Controllers
         [HttpPut("ResetPassword")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomerDTO>> ResetPassword(string Email, string Password)
+        public async Task<ActionResult<CustomerDetailsDTO>> ResetPassword(string Email, string Password)
         {
             try
             {
@@ -298,8 +376,9 @@ namespace EuroBankAPI.Controllers
                 customer.PasswordSalt = passwordSalt;
                 await _uw.Customers.UpdateAsync(customer);
                 _uw.Save();
-                CustomerDTO customerDTO = _mapper.Map<CustomerDTO>(customer);
-                return customerDTO;
+                var customerDTO = _mapper.Map<CustomerDTO>(customer); 
+                var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(customerDTO);
+                return customerDetailsDTO;
 
             }
             catch (DbUpdateException ex)

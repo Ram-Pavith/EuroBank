@@ -1,4 +1,5 @@
-﻿using EuroBankAPI.DTOs;
+﻿using AutoMapper;
+using EuroBankAPI.DTOs;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
 using EuroBankAPI.Service.BusinessService;
@@ -16,12 +17,14 @@ namespace EuroBankAPI.Controllers
         private readonly IConfiguration _config;
         private readonly IUnitOfWork _uw;
         private readonly IBusinessService _businessService;
-        public BusinessRulesAndServiceController(IEmailService emailService, ILogger<BusinessRulesAndServiceController> logger, IConfiguration config, IUnitOfWork uw,IBusinessService businessService) {
+        private readonly IMapper _mapper;
+        public BusinessRulesAndServiceController(IEmailService emailService, ILogger<BusinessRulesAndServiceController> logger, IConfiguration config, IUnitOfWork uw,IBusinessService businessService,IMapper mapper) {
             _emailService = emailService;
             logger = _logger;
             _config = config;
             _uw = uw;
             _businessService = businessService;
+            _mapper = mapper;
         }
 
         [HttpPost("SendEmail")]
@@ -58,7 +61,7 @@ namespace EuroBankAPI.Controllers
                 return ruleStatus;
             }
             var remainingBalance = accountExists.Balance - Amount;
-            double minBalance = _businessService.EvaluateMinBalance(accountExists.AccountTypeId, accountExists.Balance);
+            double minBalance = _businessService.EvaluateMinBalance(accountExists.AccountTypeId);
             if(accountExists.Balance > minBalance && remainingBalance>minBalance)
             {
                 ruleStatus = new RuleStatus() { RuleStatusId = 1,Status = "Minimum Balance Sufficient"};
@@ -70,6 +73,23 @@ namespace EuroBankAPI.Controllers
                 return ruleStatus;
             }
             return new RuleStatus() { RuleStatusId = 4, Status= "Balance insufficient to proceed with the transaction" };
+        }
+
+        [HttpPost("EvaluateServiceCharges")]
+        [Authorize(Roles = "Employee")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> EvaluateServiceCharges()
+        {
+            var accounts = await _uw.Accounts.GetAllAsync();
+            foreach(var acc in accounts)
+            {
+                if (_businessService.EvaluateMinBalance(acc.AccountTypeId)>acc.Balance)
+                {
+                    acc.Balance -= _businessService.ServiceCharges(acc.AccountTypeId);
+                    await _uw.Accounts.UpdateAsync(acc);
+                }
+            }
+            return Ok();
         }
     }
 }

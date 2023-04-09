@@ -7,10 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankAPI", "EuroBankAPI\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EuroBankTesting", "EuroBankTesting\EuroBankTesting.csproj", "{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceChargesService", "ServiceChargesService\ServiceChargesService.csproj", "{79820666-9843-4ED9-BFC0-E0621019B471}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServiceChargesWorker", "ServiceChargesWorker\ServiceChargesWorker.csproj", "{C1CCAA06-E334-4B86-BF75-E199DE3B054A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AC83A2FA-37FC-413C-AC88-161D9E28E04C}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
@@ -30,14 +26,6 @@ Global
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F64F2C5-40B7-4AD3-AA1F-7E1DB4292ADC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79820666-9843-4ED9-BFC0-E0621019B471}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79820666-9843-4ED9-BFC0-E0621019B471}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79820666-9843-4ED9-BFC0-E0621019B471}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79820666-9843-4ED9-BFC0-E0621019B471}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1CCAA06-E334-4B86-BF75-E199DE3B054A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1CCAA06-E334-4B86-BF75-E199DE3B054A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1CCAA06-E334-4B86-BF75-E199DE3B054A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1CCAA06-E334-4B86-BF75-E199DE3B054A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

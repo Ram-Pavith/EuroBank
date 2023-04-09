@@ -59,14 +59,12 @@ namespace EuroBankAPI.Controllers
                         transaction.RefTransactionStatusId = 4;
                         var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                         var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
-                        return refTransactionStatusErrorDTO;
                     }
                     if (amount > 50000)
                     {
                         transaction.RefTransactionStatusId = 3;
                         var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                         var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
-                        return refTransactionStatusErrorDTO;
                     }
                     CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
                     if(counterPartyExists == null)
@@ -80,8 +78,7 @@ namespace EuroBankAPI.Controllers
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
                     transaction.ServiceId = serviceId;
-                    transaction.RefTransactionStatusId = 1;
-                    transaction.RefTransactionTypeId = 1;
+                    transaction.RefTransactionTypeId = 2;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
@@ -154,12 +151,20 @@ namespace EuroBankAPI.Controllers
                         counterPartyExists.CounterPartyName = AccountExists.CustomerId;
                         await _uw.CounterParties.CreateAsync(counterPartyExists);
                     }
+                    if (AccountExists.Balance > amount)
+                    {
+                        transaction.RefTransactionStatusId = 1;
+                    }
+                    if (amount > 200000)
+                    {
+                        transaction.RefTransactionStatusId = 2;
+                    }
+                    
                     //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
                     transaction.ServiceId = serviceId;
-                    transaction.RefTransactionStatusId = 1;
-                    transaction.RefTransactionTypeId = 2;
+                    transaction.RefTransactionTypeId = 1;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
@@ -238,12 +243,11 @@ namespace EuroBankAPI.Controllers
                         await _uw.Accounts.UpdateAsync(TargetAccountExists);
                         transaction.RefTransactionStatusId = 1;
                     }
-                    else
+                    if (SourceAccountExists.Balance < amount)
                     {
                         transaction.RefTransactionStatusId = 4;
-                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
-                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
                     }
+
                     CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == TargetAccountExists.AccountId);
                     if (counterPartyExists == null)
                     {
@@ -256,8 +260,7 @@ namespace EuroBankAPI.Controllers
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = SourceAccountExists.AccountId;
                     transaction.ServiceId = 3;
-                    transaction.RefTransactionStatusId = 1;
-                    transaction.RefTransactionTypeId = 1;
+                    transaction.RefTransactionTypeId = 3;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 2;
