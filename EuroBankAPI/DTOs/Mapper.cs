@@ -36,7 +36,7 @@ namespace EuroBankAPI.DTOs
 
             //EmployeeLoginDTO and UserAuthDTO
             CreateMap<EmployeeLoginDTO, UserAuthLoginDTO>()
-                .ForMember(dest => dest.Role, map=> map.MapFrom(src => "Employee"/*src.EmployeeId is string ?"Employee":"Employee"*/  ))
+                .ForMember(dest => dest.Role, map=> map.MapFrom(src => "Employee" ))
                 .ForMember(dest => dest.Username, map => map.MapFrom(src => src.EmailId));
             //CustomerLoginDTO and UserAuthDTO
             CreateMap<CustomerLoginDTO, UserAuthLoginDTO>()

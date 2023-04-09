@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using EuroBankAPI.Helpers;
+using AutoMapper.Execution;
 
 namespace EuroBankAPI.Controllers
 {
@@ -21,11 +23,13 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService) { 
+        private readonly ICacheService _cacheService;
+        public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService,ICacheService cacheService) { 
             _uw= uw;
             _logger= logger;
             _mapper= mapper;
             _authService= authService;
+            _cacheService= cacheService;
         }
 
         [HttpPost("EmployeeRegister")]
@@ -37,15 +41,16 @@ namespace EuroBankAPI.Controllers
             try
             {
                 var employeeDTO = _mapper.Map<EmployeeDTO>(employeeRegisterDTO);
-                _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employeeDTO.PasswordHash = passwordHash;
-                employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
-                var employeeExists = _uw.Employees.GetAsync(x => x.EmailId == employeeRegisterDTO.EmailId);
-                if(employeeExists != null)
+                var employeeExists = await _uw.Employees.GetAsync(x => x.EmailId == employeeRegisterDTO.EmailId);
+                if (employeeExists != null)
                 {
                     return BadRequest("Employee already exists with the same email id, try with another email id");
                 }
+                _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                employeeDTO.PasswordHash = passwordHash;
+                employeeDTO.PasswordSalt = passwordSalt;
+                
                 await _uw.Employees.CreateAsync(employee);
                 return employee;
             }
@@ -226,10 +231,12 @@ namespace EuroBankAPI.Controllers
             {
                 if (PageSize <= 0)
                 {
+                    _logger.LogError("page size is less than 0");
                     Transactions = await _uw.Transactions.GetAllAsync();
                 }
                 else
                 {
+                    _logger.LogInformation("calling view all transactions");
                     Transactions = await _uw.Transactions.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
