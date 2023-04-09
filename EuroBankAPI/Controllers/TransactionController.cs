@@ -48,27 +48,28 @@ namespace EuroBankAPI.Controllers
                     Transaction transaction = new();
                     //Account newacc = new();
                     //check for rule microservice
-                    if (AccountExists.Balance > amount)
+                    if (AccountExists.Balance > amount && amount<50000)
                     {
                         AccountExists.Balance -= amount;
                         await _uw.Accounts.UpdateAsync(AccountExists);
                         transaction.RefTransactionStatusId = 1;
                     }
-                    if(AccountExists.Balance < amount)
+                    else
+                    {
+                        transaction.RefTransactionStatusId = 3;
+                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
+                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
+                        //return refTransactionStatusErrorDTO;
+
+                    }
+                    if (AccountExists.Balance < amount)
                     {
                         transaction.RefTransactionStatusId = 4;
                         var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                         var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
                         //return refTransactionStatusErrorDTO;
                     }
-                    if (amount > 50000)
-                    {
-                        transaction.RefTransactionStatusId = 3;
-
-                        var refTransactionStatusError = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
-                        var refTransactionStatusErrorDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatusError);
-                        //return refTransactionStatusErrorDTO;
-                    }
+                   
                     CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
                     if(counterPartyExists == null)
                     {
