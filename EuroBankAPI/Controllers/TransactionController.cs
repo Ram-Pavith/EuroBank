@@ -85,13 +85,30 @@ namespace EuroBankAPI.Controllers
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
-                    statement.Date = DateTime.Today;
+                    statement.Date = DateTime.Now;
                     var service = await _uw.Services.GetAsync(x=>x.ServiceId == serviceId);
                     statement.Narration = "Deposit using "+service.ServiceName.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
                     statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
                     statement.Deposit = amount;
                     statement.Withdrawal = 0;
-                    statement.ValueDate = DateTime.Today;
+
+                    /*If, Transaction date is less than 1 hr from the closing hours of the bank (i.e)., 4:00 PM 
+                        --> Value Date = Transaction Date
+                      Else,
+                        --> ValueDate = Next Day
+                     */
+                    DateTime ClosingTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 14, 0, 0);
+                    var diffOfDates = ClosingTime - transaction.DateOfTransaction;
+                    if (Math.Abs(diffOfDates.Hours) < 1)
+                    {
+                        statement.ValueDate = DateTime.Now.AddDays(1);
+                    }
+                    else
+                    {
+                        statement.ValueDate = DateTime.Now;
+                    }                    
+                    
+                    
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
