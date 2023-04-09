@@ -41,7 +41,7 @@ namespace EuroBankAPI.Controllers
                 employeeDTO.PasswordHash = passwordHash;
                 employeeDTO.PasswordSalt = passwordSalt;
                 Employee employee = _mapper.Map<Employee>(employeeDTO);
-                var employeeExists = _uw.Employees.GetAsync(x => x.EmailId == employeeRegisterDTO.EmailId);
+                var employeeExists = await _uw.Employees.GetAsync(x => x.EmailId == employeeRegisterDTO.EmailId);
                 if(employeeExists != null)
                 {
                     return BadRequest("Employee already exists with the same email id, try with another email id");
@@ -81,8 +81,9 @@ namespace EuroBankAPI.Controllers
             try
             {
                 Customer customer = _mapper.Map<Customer>(customerDTO);
-                var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId== customerRegisterDTO.CustomerId || x.EmailId  == customerRegisterDTO.EmailId);
-                if (customerExists != null) {
+                var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId == customerRegisterDTO.CustomerId || x.EmailId == customerRegisterDTO.EmailId);
+                if (customerExists != null)
+                {
                     return BadRequest("Customer Exists with the same CustomerId, please try to register with a different customer id");
                 }
                 CustomerCreationStatus customerCreationStatus;
@@ -93,12 +94,13 @@ namespace EuroBankAPI.Controllers
                         DateCreated = DateTime.Now,
                         Balance = 10000
                     };
-                    customerCreationStatus = new CustomerCreationStatus() { 
+                    customerCreationStatus = new CustomerCreationStatus()
+                    {
                         Message = "Success"
                     };
                     try
                     {
-                        
+
                         account.AccountCreationStatusId = 1;
                         account.AccountTypeId = 1;
                         account.CustomerId = customer.CustomerId;
@@ -115,7 +117,9 @@ namespace EuroBankAPI.Controllers
                             Message = "Failure"
                         };
                     }
-                }catch(Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     customerCreationStatus = new CustomerCreationStatus()
                     {
                         Message = "Failure"
@@ -123,7 +127,7 @@ namespace EuroBankAPI.Controllers
                 }
                 CustomerCreationStatusDTO customerCreationStatusDTO = _mapper.Map<CustomerCreationStatusDTO>(customerCreationStatus);
                 return customerCreationStatusDTO;
-            
+
             }
             catch (DbUpdateException ex)
             {
@@ -296,7 +300,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
+        public async Task<ActionResult<IEnumerable<CustomerDetailsDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
         {
             IEnumerable<Customer> Customers;
             try
@@ -310,7 +314,8 @@ namespace EuroBankAPI.Controllers
                     Customers = await _uw.Customers.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
-                return CustomersDTOs;
+                List<CustomerDetailsDTO> customerDetailsDTO = _mapper.Map<List<CustomerDetailsDTO>>(CustomersDTOs);
+                return customerDetailsDTO;
             }
             catch (DbUpdateException ex)
             {
