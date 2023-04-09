@@ -9,7 +9,8 @@ namespace EuroBankAPI.Service.BusinessService
         private readonly double savingsAccountMinBalance = 2000;
         private readonly double currentAccountMinBalance = 500;
         private readonly double accountMinBalance = 1000;
-        public double EvaluateMinBalance(int AccountTypeId, double Balance)
+        private readonly double serviceCharges = 10;
+        public double EvaluateMinBalance(int AccountTypeId)
         {
             if(AccountTypeId == savingsAccountTypeId)
             {
@@ -21,6 +22,10 @@ namespace EuroBankAPI.Service.BusinessService
             }
             return accountMinBalance;
 
+        }
+        public double ServiceCharges(int ServiceCharges)
+        {
+            return serviceCharges;
         }
     }
 }

@@ -2,6 +2,8 @@
 {
     public interface IBusinessService
     {
-        public double EvaluateMinBalance(int AccountTypeId, double Balance);
+        public double EvaluateMinBalance(int AccountTypeId);
+        public double ServiceCharges(int ServiceCharges);
+
     }
 }

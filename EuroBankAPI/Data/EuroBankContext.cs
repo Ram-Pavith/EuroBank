@@ -4,7 +4,7 @@ using System.Security.Policy;
 
 namespace EuroBankAPI.Data
 {
-    public class EuroBankContext : DbContext
+    public class EuroBankContext : DbContext,IServiceProvider
     {
         public EuroBankContext() { }
         public EuroBankContext(DbContextOptions<EuroBankContext> options) : base(options) { }
@@ -17,7 +17,7 @@ namespace EuroBankAPI.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-ETROQ1R\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
+                optionsBuilder.UseSqlServer("Server=DESKTOP-LJOJLTJ\\SQLEXPRESS;Database=EuroBank;Trusted_Connection=True;TrustServerCertificate=True;");
             }
         }
          //Accounts Microservice Entities
@@ -125,7 +125,7 @@ namespace EuroBankAPI.Data
             {
                 entity.HasIndex(e => e.CustomerId, "CustomerId").IsUnique();
 
-                entity.HasIndex(e => e.EmailId, "EmailId");
+                entity.HasIndex(e => e.EmailId, "EmailId").IsUnique();
 
                 entity.Property(e => e.Firstname).HasMaxLength(50).IsUnicode(true);
 
@@ -156,9 +156,9 @@ namespace EuroBankAPI.Data
 
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasIndex(e => e.EmployeeId, "EmployeeId");
+                entity.HasIndex(e => e.EmployeeId, "EmployeeId").IsUnique();
 
-                entity.HasIndex(e => e.EmailId, "EmailId");
+                entity.HasIndex(e => e.EmailId, "EmailId").IsUnique();
 
                 entity.Property(e => e.EmailId).IsRequired();
 
@@ -338,6 +338,10 @@ namespace EuroBankAPI.Data
                 );
         }
 
+        public object? GetService(Type serviceType)
+        {
+            throw new NotImplementedException();
+        }
     } 
 
 }
