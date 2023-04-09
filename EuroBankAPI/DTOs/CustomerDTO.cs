@@ -31,7 +31,5 @@ namespace EuroBankAPI.DTOs
         public DateTime DOB { get; set; }
         public int? CustomerCreationStatusId { get; set; }
 
-        //public virtual CustomerCreationStatusDTO? CustomerCreationStatus { get; set; }
-       // public virtual ICollection<Account>? Accounts { get; set; }
     }
 }

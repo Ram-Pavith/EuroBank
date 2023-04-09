@@ -108,7 +108,7 @@ namespace EuroBankAPI.Controllers
         }
         
         [HttpGet("GetCustomerById")]
-        //  [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -145,49 +145,10 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("UpdateCustomer")]
-        //  [Authorize(Roles = "Customer")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomerDetailsDTO>> UpdateCustomer(CustomerDetailsDTO customer )
-        {
-            try
-            {
-                var Customer = await _uw.Customers.GetAsync(x => x.CustomerId == customer.CustomerId);
-                if (Customer == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    await _uw.Customers.UpdateAsync(Customer);
-                    var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
-                    return customerDetailsDTO;
-                }
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
 
 
         [HttpGet("GetCustomerAccounts")]
-      //  [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -226,7 +187,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAccount")]
-       // [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -265,7 +226,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetCustomerStatement")]
-      //  [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

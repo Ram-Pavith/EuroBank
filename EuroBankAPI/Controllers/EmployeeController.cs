@@ -221,10 +221,10 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("ViewAllTransactions")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Pagination<TransactionDTO>>> ViewAllTransactions(int PageSize = 0, int PageNumber = 1)
+        public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransactions(int PageSize = 0, int PageNumber = 1)
         {
             IEnumerable<Transaction> Transactions;
             try
@@ -240,15 +240,8 @@ namespace EuroBankAPI.Controllers
                     Transactions = await _uw.Transactions.GetAllAsync(pageSize: PageSize, pageNumber: PageNumber);
                 }
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
-                int totalCount = await _uw.Transactions.CountAsync();
-                Pagination<TransactionDTO> pages = new Pagination<TransactionDTO>()
-                {
-                    Data = TransactionDTOs,
-                    CurrentPage = PageNumber,
-                    TotalPages = (totalCount/PageSize)
-                };
 
-                return pages;
+                return TransactionDTOs;
             }
             catch (DbUpdateException ex)
             {
@@ -307,7 +300,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpGet("GetAllCustomers")]
-        //[Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)

@@ -7,12 +7,8 @@ namespace EuroBankAPI.Models
     {
         [Key]
         public int AccountCreationStatusId { get; set; }
-
-      /*  [ForeignKey("Account")]
-        public Guid AccountId { get; set; }*/
         public string Message { get; set; } = string.Empty;
 
-/*        public virtual Account Account { get; set; } = null!;
-*/
+
     }
 }
