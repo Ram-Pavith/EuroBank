@@ -218,7 +218,7 @@ namespace EuroBankAPI.Controllers
             {
                 return BadRequest("Source AccountId and the Counter Party AccountId should be different");
             }
-            if (amount < 0)
+            if (amount <= 0)
             {
                 return BadRequest("Cannot Transfer an amount of negative value, please enter positive amount value");
             }
