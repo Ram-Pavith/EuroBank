@@ -31,7 +31,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int paymentId)
         {
             _logger.LogInformation("Withdraw in AccountId " + AccountId + " is done");
 
@@ -89,8 +89,8 @@ namespace EuroBankAPI.Controllers
                     //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
-                    transaction.ServiceId = serviceId;
-                    transaction.RefTransactionTypeId = 2;
+                    transaction.ServiceId = 1;
+                    transaction.RefTransactionTypeId = paymentId;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
@@ -99,8 +99,8 @@ namespace EuroBankAPI.Controllers
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    var service = await _uw.Services.GetAsync(x=>x.ServiceId == serviceId);
-                    statement.Narration = "Deposit using "+service.ServiceName.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
+                    var service = await _uw.RefPaymentMethods.GetAsync(x=>x.PaymentMethodCode == paymentId);
+                    statement.Narration = "Deposit using  of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
                     statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
                     statement.Deposit = amount;
                     statement.Withdrawal = 0;
@@ -138,7 +138,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int paymentId)
         {
             _logger.LogInformation("Deposit to AccountId " + AccountId + " of amount"+amount +"is done");
             if (amount < 0)
@@ -181,18 +181,18 @@ namespace EuroBankAPI.Controllers
                     //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
-                    transaction.ServiceId = serviceId;
-                    transaction.RefTransactionTypeId = 1;
+                    transaction.ServiceId = 1;
+                    transaction.RefTransactionTypeId = paymentId;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
                     transaction.RefPaymentMethodId = 1;
                     await _uw.Transactions.CreateAsync(transaction);
-                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
+                    var service = await _uw.RefPaymentMethods.GetAsync(x => x.PaymentMethodCode == paymentId);
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Withdrawal using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.Narration = "withdrawal of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
                     statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
                     statement.Deposit = 0;
                     statement.Withdrawal = amount;
