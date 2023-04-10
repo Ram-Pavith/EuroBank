@@ -156,13 +156,14 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPost("EvaluateServiceCharges")]
+        [HttpGet("EvaluateServiceCharges")]
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EvaluateServiceCharges()
+        public async Task<ActionResult<int>> EvaluateServiceCharges()
         {
             try
             {
+                var count = 0;
                 var accounts = await _uw.Accounts.GetAllAsync();
                 foreach (var acc in accounts)
                 {
@@ -170,9 +171,10 @@ namespace EuroBankAPI.Controllers
                     {
                         acc.Balance -= _businessService.ServiceCharges(acc.AccountTypeId);
                         await _uw.Accounts.UpdateAsync(acc);
+                        count++;
                     }
                 }
-                return Ok();
+                return count;
             }
             catch(Exception ex)
             {

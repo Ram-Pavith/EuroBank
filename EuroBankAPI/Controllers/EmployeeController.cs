@@ -335,6 +335,23 @@ namespace EuroBankAPI.Controllers
             }
         }
 
+        [HttpGet("AllAccountPages")]
+        //[Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> AllAccountPages(int pageSize)
+        {
+            decimal count = await _uw.Accounts.CountAsync();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
+        }
+        [HttpGet("AllTransactionPages")]
+        //[Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> AllTransactionPages(int pageSize)
+        {
+            decimal count = await _uw.Transactions.CountAsync();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
+        }
+
         [HttpDelete("RemoveEmployee")]
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]

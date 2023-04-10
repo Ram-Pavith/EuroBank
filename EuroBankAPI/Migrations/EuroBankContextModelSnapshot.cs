@@ -44,7 +44,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 5, 22, 59, 17, 74, DateTimeKind.Local).AddTicks(4274));
+                        .HasDefaultValue(new DateTime(2023, 4, 10, 20, 0, 33, 180, DateTimeKind.Local).AddTicks(6799));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");
@@ -62,12 +62,21 @@ namespace EuroBankAPI.Migrations
                     b.HasData(
                         new
                         {
-                            AccountId = new Guid("362697f8-fca6-4337-bb49-a89f9bb92b94"),
+                            AccountId = new Guid("9561d9b1-ef1b-4f1c-bc1e-90c371aaa083"),
                             AccountCreationStatusId = 1,
                             AccountTypeId = 1,
                             Balance = 10000.0,
                             CustomerId = "CustomerEurobank",
-                            DateCreated = new DateTime(2023, 4, 5, 0, 0, 0, 0, DateTimeKind.Local)
+                            DateCreated = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local)
+                        },
+                        new
+                        {
+                            AccountId = new Guid("b7cc3ef8-141c-4484-9f4a-edb10492e8fa"),
+                            AccountCreationStatusId = 1,
+                            AccountTypeId = 1,
+                            Balance = 10000.0,
+                            CustomerId = "CustomerEurobank2",
+                            DateCreated = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -181,9 +190,9 @@ namespace EuroBankAPI.Migrations
 
                     b.Property<string>("PanNumber")
                         .IsRequired()
-                        .HasMaxLength(15)
+                        .HasMaxLength(10)
                         .IsUnicode(true)
-                        .HasColumnType("nvarchar(15)");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
@@ -217,8 +226,22 @@ namespace EuroBankAPI.Migrations
                             CustomerId = "CustomerEurobank",
                             Address = "Chennai",
                             CustomerCreationStatusId = 1,
-                            DOB = new DateTime(2023, 4, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            DOB = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
                             EmailId = "Customer@gmail.com",
+                            Firstname = "Customer",
+                            Lastname = "Eurobank",
+                            PanNumber = "LBKTIOPNHW",
+                            PasswordHash = new byte[] { 44, 99, 229, 133, 22, 236, 120, 175, 219, 152, 102, 76, 191, 184, 5, 210, 222, 80, 252, 24, 134, 150, 254, 124, 199, 232, 88, 65, 129, 80, 143, 236, 94, 220, 203, 124, 200, 224, 105, 183, 16, 104, 192, 211, 33, 206, 166, 253, 119, 119, 32, 175, 117, 134, 114, 84, 157, 9, 16, 202, 173, 221, 141, 74 },
+                            PasswordSalt = new byte[] { 225, 123, 252, 79, 109, 166, 111, 44, 27, 233, 234, 50, 0, 12, 173, 77, 152, 172, 62, 38, 219, 131, 215, 151, 221, 90, 80, 30, 226, 39, 228, 104, 40, 181, 194, 174, 237, 170, 214, 85, 222, 187, 127, 210, 134, 245, 13, 214, 99, 82, 146, 169, 226, 220, 155, 47, 202, 125, 112, 131, 93, 154, 135, 109, 127, 84, 144, 69, 242, 12, 42, 98, 229, 215, 163, 211, 136, 61, 199, 51, 217, 93, 222, 120, 128, 107, 82, 84, 229, 143, 75, 219, 143, 111, 76, 130, 199, 54, 91, 128, 211, 7, 158, 2, 218, 17, 120, 228, 219, 157, 195, 160, 5, 211, 24, 118, 193, 190, 85, 228, 103, 103, 16, 255, 218, 166, 132, 175 },
+                            Phone = "4242424242"
+                        },
+                        new
+                        {
+                            CustomerId = "CustomerEurobank2",
+                            Address = "Chennai",
+                            CustomerCreationStatusId = 1,
+                            DOB = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
+                            EmailId = "Customer2@gmail.com",
                             Firstname = "Customer",
                             Lastname = "Eurobank",
                             PanNumber = "LBKTIOPNHW",
@@ -303,8 +326,17 @@ namespace EuroBankAPI.Migrations
                     b.HasData(
                         new
                         {
-                            EmployeeId = new Guid("680f9d9b-d916-42af-b707-a97a38d8d170"),
+                            EmployeeId = new Guid("0da8d9e0-7eb8-4cab-ad60-218b642ea868"),
                             EmailId = "Employee@gmail.com",
+                            Firstname = "Employee",
+                            Lastname = "Eurobank",
+                            PasswordHash = new byte[] { 46, 174, 31, 247, 57, 63, 66, 164, 207, 113, 131, 15, 82, 113, 122, 13, 36, 124, 231, 245, 181, 92, 209, 142, 7, 222, 70, 40, 140, 162, 44, 12, 140, 20, 147, 79, 22, 23, 97, 208, 240, 158, 11, 61, 147, 12, 227, 103, 3, 229, 255, 102, 92, 145, 214, 246, 103, 146, 135, 128, 55, 28, 8, 98 },
+                            PasswordSalt = new byte[] { 168, 229, 206, 135, 94, 168, 32, 135, 189, 238, 81, 242, 210, 36, 152, 93, 38, 215, 53, 239, 193, 3, 107, 66, 172, 176, 29, 237, 202, 117, 7, 81, 147, 73, 195, 73, 80, 124, 84, 66, 70, 55, 197, 49, 121, 196, 83, 181, 0, 174, 75, 17, 16, 34, 56, 70, 123, 104, 86, 115, 222, 49, 208, 188, 185, 203, 90, 38, 186, 195, 45, 248, 246, 231, 73, 126, 243, 142, 13, 144, 169, 224, 192, 204, 68, 171, 198, 183, 214, 167, 87, 155, 201, 22, 15, 44, 232, 231, 85, 10, 249, 70, 75, 140, 149, 149, 89, 109, 229, 252, 46, 53, 249, 57, 168, 28, 117, 39, 92, 153, 80, 69, 115, 197, 232, 39, 135, 241 }
+                        },
+                        new
+                        {
+                            EmployeeId = new Guid("eb8ecb27-d048-4970-98bc-add3764dcf63"),
+                            EmailId = "Employee2@gmail.com",
                             Firstname = "Employee",
                             Lastname = "Eurobank",
                             PasswordHash = new byte[] { 46, 174, 31, 247, 57, 63, 66, 164, 207, 113, 131, 15, 82, 113, 122, 13, 36, 124, 231, 245, 181, 92, 209, 142, 7, 222, 70, 40, 140, 162, 44, 12, 140, 20, 147, 79, 22, 23, 97, 208, 240, 158, 11, 61, 147, 12, 227, 103, 3, 229, 255, 102, 92, 145, 214, 246, 103, 146, 135, 128, 55, 28, 8, 98 },
