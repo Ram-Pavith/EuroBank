@@ -24,7 +24,6 @@ builder.Services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(b
 builder.Services.AddControllers();
 
 //AuthService Injection
-builder.Services.AddSingleton<ICacheService,ResponseCacheService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBusinessService, BusinessService>();
@@ -57,11 +56,11 @@ builder.Host.UseSerilog();
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(EuroBankAPI.DTOs.Mapper));
 //Redis
-builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
-{
-    var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
-    return ConnectionMultiplexer.Connect(options);
-});
+//builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+//{
+//    var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
+//    return ConnectionMultiplexer.Connect(options);
+//});
 
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

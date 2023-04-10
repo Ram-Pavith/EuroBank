@@ -28,7 +28,8 @@ namespace EuroBankAPI.Controllers
 
 
         [HttpPost("CreateAccount")]
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -44,7 +44,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 8, 14, 0, 51, 259, DateTimeKind.Local).AddTicks(3106));
+                        .HasDefaultValue(new DateTime(2023, 4, 10, 19, 57, 6, 38, DateTimeKind.Local).AddTicks(8447));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");
@@ -62,21 +62,21 @@ namespace EuroBankAPI.Migrations
                     b.HasData(
                         new
                         {
-                            AccountId = new Guid("261b8f92-1cc0-4c99-9647-75a783db437b"),
+                            AccountId = new Guid("f78c6e80-c8d9-443b-a487-dcba9e2487b4"),
                             AccountCreationStatusId = 1,
                             AccountTypeId = 1,
                             Balance = 10000.0,
                             CustomerId = "CustomerEurobank",
-                            DateCreated = new DateTime(2023, 4, 8, 0, 0, 0, 0, DateTimeKind.Local)
+                            DateCreated = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local)
                         },
                         new
                         {
-                            AccountId = new Guid("2000a053-cb8a-4b60-8f3e-bee5dd22d256"),
+                            AccountId = new Guid("a5ce572d-0c9f-462a-bf6e-747436a32c7d"),
                             AccountCreationStatusId = 1,
                             AccountTypeId = 1,
                             Balance = 10000.0,
                             CustomerId = "CustomerEurobank2",
-                            DateCreated = new DateTime(2023, 4, 8, 0, 0, 0, 0, DateTimeKind.Local)
+                            DateCreated = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -215,7 +215,8 @@ namespace EuroBankAPI.Migrations
                     b.HasIndex(new[] { "CustomerId" }, "CustomerId")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "EmailId" }, "EmailId");
+                    b.HasIndex(new[] { "EmailId" }, "EmailId")
+                        .IsUnique();
 
                     b.ToTable("Customers");
 
@@ -225,7 +226,7 @@ namespace EuroBankAPI.Migrations
                             CustomerId = "CustomerEurobank",
                             Address = "Chennai",
                             CustomerCreationStatusId = 1,
-                            DOB = new DateTime(2023, 4, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            DOB = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
                             EmailId = "Customer@gmail.com",
                             Firstname = "Customer",
                             Lastname = "Eurobank",
@@ -239,7 +240,7 @@ namespace EuroBankAPI.Migrations
                             CustomerId = "CustomerEurobank2",
                             Address = "Chennai",
                             CustomerCreationStatusId = 1,
-                            DOB = new DateTime(2023, 4, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            DOB = new DateTime(2023, 4, 10, 0, 0, 0, 0, DateTimeKind.Local),
                             EmailId = "Customer2@gmail.com",
                             Firstname = "Customer",
                             Lastname = "Eurobank",
@@ -314,16 +315,18 @@ namespace EuroBankAPI.Migrations
                     b.HasKey("EmployeeId");
 
                     b.HasIndex(new[] { "EmailId" }, "EmailId")
+                        .IsUnique()
                         .HasDatabaseName("EmailId1");
 
-                    b.HasIndex(new[] { "EmployeeId" }, "EmployeeId");
+                    b.HasIndex(new[] { "EmployeeId" }, "EmployeeId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
 
                     b.HasData(
                         new
                         {
-                            EmployeeId = new Guid("76cd09e5-1692-45e8-8a8f-261910eb1537"),
+                            EmployeeId = new Guid("d671fd95-fc55-45cf-b5d4-d9127bccdaa9"),
                             EmailId = "Employee@gmail.com",
                             Firstname = "Employee",
                             Lastname = "Eurobank",
@@ -332,7 +335,7 @@ namespace EuroBankAPI.Migrations
                         },
                         new
                         {
-                            EmployeeId = new Guid("ed738909-4791-4676-9347-ebb00f958632"),
+                            EmployeeId = new Guid("385709e2-1a34-44ba-aee8-8af83f4982d5"),
                             EmailId = "Employee2@gmail.com",
                             Firstname = "Employee",
                             Lastname = "Eurobank",
