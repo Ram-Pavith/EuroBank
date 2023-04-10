@@ -48,8 +48,8 @@ namespace EuroBankAPI.Controllers
                     return BadRequest("Employee already exists with the same email id, try with another email id");
                 }
                 _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employeeDTO.PasswordHash = passwordHash;
-                employeeDTO.PasswordSalt = passwordSalt;
+                employee.PasswordHash = passwordHash;
+                employee.PasswordSalt = passwordSalt;
                 
                 await _uw.Employees.CreateAsync(employee);
                 return employee;
@@ -318,41 +318,6 @@ namespace EuroBankAPI.Controllers
                 }
                 List<CustomerDTO> CustomersDTOs = _mapper.Map<List<CustomerDTO>>(Customers);
                 return CustomersDTOs;
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpPut("ResetPassword")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email,string Password)
-        {
-            try
-            {
-                Employee employee = await _uw.Employees.GetAsync(x => x.EmailId == Email);
-                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employee.PasswordHash = passwordHash;
-                employee.PasswordSalt = passwordSalt;
-                await _uw.Employees.UpdateAsync(employee);
-                _uw.Save();
-
-                EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
-                return employeeDTO;
             }
             catch (DbUpdateException ex)
             {
