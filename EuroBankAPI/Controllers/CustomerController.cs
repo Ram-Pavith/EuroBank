@@ -74,6 +74,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDetailsDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
+            UserAuthResponseDTO response;
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);

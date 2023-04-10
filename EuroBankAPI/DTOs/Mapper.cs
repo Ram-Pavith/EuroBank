@@ -17,7 +17,6 @@ namespace EuroBankAPI.DTOs
             CreateMap<CustomerCreationStatus, CustomerCreationStatusDTO>().ReverseMap();
             CreateMap<CustomerRegisterDTO, CustomerDTO>();
             CreateMap<CustomerDTO, CustomerDetailsDTO>().ReverseMap();
-
             //Transaction Mapper
             CreateMap<Transaction, TransactionDTO>().ReverseMap();
             CreateMap<RefTransactionStatus,RefTransactionStatusDTO>().ReverseMap();
