@@ -324,43 +324,9 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPut("ResetPassword")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomerDetailsDTO>> ResetPassword(string Email, string Password)
-        {
-            try
-            {
-                Customer customer = await _uw.Customers.GetAsync(x => x.EmailId == Email);
-                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                customer.PasswordHash = passwordHash;
-                customer.PasswordSalt = passwordSalt;
-                await _uw.Customers.UpdateAsync(customer);
-                _uw.Save();
-                var customerDTO = _mapper.Map<CustomerDTO>(customer); 
-                var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(customerDTO);
-                return customerDetailsDTO;
-
-            }
-            catch (DbUpdateException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+        
         [HttpDelete("RemoveCustomer")]
-       // [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)

@@ -24,7 +24,7 @@ builder.Services.AddDbContext<EuroBankContext>(options => options.UseSqlServer(b
 builder.Services.AddControllers();
 
 //AuthService Injection
-builder.Services.AddSingleton<ICacheService,ResponseCacheService>();
+//builder.Services.AddSingleton<ICacheService,ResponseCacheService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IBusinessService, BusinessService>();
@@ -48,20 +48,20 @@ builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationSt
 // Serilog DB Logging
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
 //File Logging
-/*Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/EuroBankLogs.log", rollingInterval: RollingInterval.Month)
-    .CreateLogger();*/
+    .CreateLogger();
 builder.Host.UseSerilog();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(EuroBankAPI.DTOs.Mapper));
 //Redis
-builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+/*builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
 {
     var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
     return ConnectionMultiplexer.Connect(options);
-});
+});*/
 
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
