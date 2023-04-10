@@ -26,7 +26,7 @@ namespace EuroBankAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("Withdraw")]
+        [HttpGet("Withdraw")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -134,7 +134,7 @@ namespace EuroBankAPI.Controllers
 
             }
         }
-        [HttpPost("Deposit")]
+        [HttpGet("Deposit")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -217,7 +217,7 @@ namespace EuroBankAPI.Controllers
                 }
             }
         }
-        [HttpPost("Transfer")]
+        [HttpGet("Transfer")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
