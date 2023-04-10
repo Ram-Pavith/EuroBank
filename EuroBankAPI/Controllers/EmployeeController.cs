@@ -23,13 +23,11 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        private readonly ICacheService _cacheService;
-        public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService,ICacheService cacheService) { 
+        public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService) { 
             _uw= uw;
             _logger= logger;
             _mapper= mapper;
             _authService= authService;
-            _cacheService= cacheService;
         }
 
         [HttpPost("EmployeeRegister")]

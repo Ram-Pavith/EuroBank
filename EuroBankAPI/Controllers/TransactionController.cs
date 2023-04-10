@@ -30,7 +30,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int refPaymentMethodId)
         {
             if(amount<0)
             {
@@ -76,22 +76,39 @@ namespace EuroBankAPI.Controllers
                     //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
-                    transaction.ServiceId = serviceId;
+                    transaction.ServiceId = 1;
                     transaction.RefTransactionTypeId = 2;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
-                    transaction.RefPaymentMethodId = 1;
+                    transaction.RefPaymentMethodId = refPaymentMethodId;
                     await _uw.Transactions.CreateAsync(transaction);
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
-                    statement.Date = DateTime.Today;
-                    var service = await _uw.Services.GetAsync(x=>x.ServiceId == serviceId);
-                    statement.Narration = "Deposit using "+service.ServiceName.ToString()+" of " + amount.ToString() + " Rupees To "+AccountExists.AccountId.ToString() ;
-                    statement.RefNo = "Deposit of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                    statement.Deposit = amount;
-                    statement.Withdrawal = 0;
-                    statement.ValueDate = DateTime.Today;
+                    statement.Date = DateTime.Now;
+                    var paymentMethods = await _uw.RefPaymentMethods.GetAsync(x=>x.PaymentMethodCode == refPaymentMethodId);
+                    statement.Narration = "Withdrawal using "+paymentMethods.PaymentMethodName.ToString()+" of " + amount.ToString() + " Rupees from "+AccountExists.AccountId.ToString() ;
+                    statement.RefNo = "Withdrawal of "+ amount.ToString() + " from " + AccountExists.AccountId.ToString();
+                    statement.Deposit = 0;
+                    statement.Withdrawal = amount;
+
+                    /*If, Transaction date is less than 1 hr from the closing hours of the bank (i.e)., 4:00 PM 
+                        --> Value Date = Transaction Date
+                      Else,
+                        --> ValueDate = Next Day
+                     */
+                    DateTime ClosingTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day, 16, 0, 0);
+                    var diffOfDates = ClosingTime - transaction.DateOfTransaction;
+                    if (Math.Abs(diffOfDates.Hours) < 1)
+                    {
+                        statement.ValueDate = DateTime.Now.AddDays(1);
+                    }
+                    else
+                    {
+                        statement.ValueDate = DateTime.Now;
+                    }                    
+                    
+                    
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
@@ -121,7 +138,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
+        public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int refPayMethodId)
         {
             if (amount < 0)
             {
@@ -160,21 +177,21 @@ namespace EuroBankAPI.Controllers
                     //transaction initialising
                     transaction.CounterPartyId = counterPartyExists.CounterPartyId;
                     transaction.AccountId = AccountExists.AccountId;
-                    transaction.ServiceId = serviceId;
+                    transaction.ServiceId = 1;
                     transaction.RefTransactionTypeId = 1;
                     transaction.DateOfTransaction = DateTime.Now;
                     transaction.AmountOfTransaction = amount;
-                    transaction.RefPaymentMethodId = 1;
+                    transaction.RefPaymentMethodId = refPayMethodId;
                     await _uw.Transactions.CreateAsync(transaction);
-                    var service = await _uw.Services.GetAsync(x => x.ServiceId == serviceId);
+                    var paymentMethod = await _uw.RefPaymentMethods.GetAsync(x => x.PaymentMethodCode == refPayMethodId);
                     //statement inialising
                     var statement = new Statement();
                     statement.AccountId = AccountExists.AccountId;
                     statement.Date = DateTime.Today;
-                    statement.Narration = "Withdrawal using " + service.ServiceName.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
-                    statement.RefNo = "Withdrawal of " + amount.ToString() + " from " + AccountExists.AccountId.ToString();
-                    statement.Deposit = 0;
-                    statement.Withdrawal = amount;
+                    statement.Narration = "Deposit using " + paymentMethod.PaymentMethodName.ToString() + " of " + amount.ToString() + " Rupees To " + AccountExists.AccountId.ToString();
+                    statement.RefNo = "Deposit of " + amount.ToString() + " to " + AccountExists.AccountId.ToString();
+                    statement.Deposit = amount;
+                    statement.Withdrawal = 0;
                     statement.ValueDate = DateTime.Today;
                     statement.ClosingBalance = AccountExists.Balance;
                     await _uw.Statements.CreateAsync(statement);

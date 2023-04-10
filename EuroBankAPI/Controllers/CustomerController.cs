@@ -326,7 +326,7 @@ namespace EuroBankAPI.Controllers
 
         
         [HttpDelete("RemoveCustomer")]
-       // [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)
