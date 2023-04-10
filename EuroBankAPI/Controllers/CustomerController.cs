@@ -40,6 +40,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<UserAuthResponseDTO>> CustomerAuthorize(CustomerLoginDTO customerLogin)
         {
+            _logger.LogInformation("CustomerAuthorization method is called");
             UserAuthResponseDTO response;
             try
             {
@@ -52,18 +53,22 @@ namespace EuroBankAPI.Controllers
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -74,6 +79,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDetailsDTO>> CustomerLogin(CustomerLoginDTO customerLogin)
         {
+            _logger.LogInformation("CustomerLogin method is called");
             try
             {
                 var request = _mapper.Map<UserAuthLoginDTO>(customerLogin);
@@ -85,23 +91,28 @@ namespace EuroBankAPI.Controllers
                 else
                 {
                     var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
+                    _logger.LogInformation("Customer logged in successfully");
                     return customerDetailsDTO;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
 
@@ -114,6 +125,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDetailsDTO>> GetCustomerById(string CustomerId)
         {
+            _logger.LogInformation("Details of the customer of Id is "+CustomerId+"is called");
             try
             {
                 var Customer = await _uw.Customers.GetAsync(x=>x.CustomerId == CustomerId);
@@ -124,23 +136,28 @@ namespace EuroBankAPI.Controllers
                 else
                 {
                     var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(Customer);
+                    _logger.LogInformation("Details of the customer of Id is " + CustomerId + "is got successfully");
                     return customerDetailsDTO;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -154,6 +171,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<AccountDTO>>> getCustomerAccounts(string CustomerId)
         {
+            _logger.LogInformation("Account details of the customer of Id is " + CustomerId + "is called");
             try
             {
                 var CustomerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
@@ -165,23 +183,28 @@ namespace EuroBankAPI.Controllers
                 {
                     IEnumerable<Account> customerAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
                     List<AccountDTO> AccountsDTO = _mapper.Map<List<AccountDTO>>(customerAccounts);
+                    _logger.LogInformation("Account details of the customer of Id is " + CustomerId + "is got successfully");
                     return AccountsDTO;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -193,6 +216,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AccountDTO>> GetAccount(Guid AccountId)
         {
+            _logger.LogInformation("Account details of AccountId " + AccountId + "is called");
             try
             {
                 //Checking is account exist
@@ -204,23 +228,28 @@ namespace EuroBankAPI.Controllers
                 else
                 {
                     AccountDTO targetAccountDTO = _mapper.Map<AccountDTO>(targetAccount);
+                    _logger.LogInformation("Account details of AccountId " + AccountId + "is got successfully");
                     return targetAccountDTO;
                 }
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -232,6 +261,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<StatementDTO>>> GetCustomerStatement(string CustomerId, DateTime? from_date, DateTime? to_date)
         {
+            _logger.LogInformation("GetCustomerStatement method is called");
             try
             {
                 List<Statement> statementCustomer = new List<Statement>();
@@ -261,23 +291,28 @@ namespace EuroBankAPI.Controllers
                     }
                 }
                 var statementCustomerDTO = _mapper.Map<List<StatementDTO>>(statementCustomer);
+                _logger.LogInformation("CustomerStatement of "+CustomerId+" from "+from_date+ "to"+ to_date);
                 return statementCustomerDTO;
 
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -287,9 +322,11 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<TransactionDTO>>> ViewAllTransaction(string CustomerId)
         {
+            _logger.LogInformation("View All transactions method is called");
             var targetAccounts = await _uw.Accounts.GetAllAsync(x => x.CustomerId == CustomerId);
             if (targetAccounts == null)
             {
+                _logger.LogError("Customer not found");
                 return BadRequest("Customer not found");
             }
             List<Transaction> Transactions = new ();
@@ -302,23 +339,27 @@ namespace EuroBankAPI.Controllers
                 }
 
                 List<TransactionDTO> TransactionDTOs = _mapper.Map<List<TransactionDTO>>(Transactions);
-
+                _logger.LogInformation("ViewAllTransactions of the Customer of CustomerId: " + CustomerId + " is got successfully");
                 return TransactionDTOs;
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -329,6 +370,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CustomerDetailsDTO>> ResetPassword(string Email, string Password)
         {
+            _logger.LogInformation($"Reset password: {Email} is called");
             try
             {
                 Customer customer = await _uw.Customers.GetAsync(x => x.EmailId == Email);
@@ -339,23 +381,28 @@ namespace EuroBankAPI.Controllers
                 _uw.Save();
                 var customerDTO = _mapper.Map<CustomerDTO>(customer); 
                 var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(customerDTO);
+                _logger.LogInformation($"Password is reset for the mail id: {Email}");
                 return customerDetailsDTO;
 
             }
             catch (DbUpdateException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (NullReferenceException ex)
             {
+               _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -365,12 +412,15 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)
         {
+            _logger.LogInformation("DeleteEmployee method is called");
+
             var customerExists = await _uw.Customers.GetAsync(x => x.CustomerId == CustomerId);
             if (customerExists == null)
             {
                 return BadRequest("Employee With the EmployeeId does not Exists");
             }
             await _uw.Customers.DeleteAsync(customerExists);
+            _logger.LogInformation($"{CustomerId} deleted");
             return Ok(customerExists);
         }
     }

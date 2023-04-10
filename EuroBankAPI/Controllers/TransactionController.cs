@@ -19,6 +19,7 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<TransactionController> _logger;
         private readonly IMapper _mapper;
 
+
         public TransactionController(IUnitOfWork uw, IMapper mapper, ILogger<TransactionController> logger)
         {
             _uw = uw;
@@ -26,13 +27,15 @@ namespace EuroBankAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("Withdraw")]
+        [HttpGet("Withdraw")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Withdraw(Guid AccountId, double amount, int serviceId)
         {
-            if(amount<0)
+            _logger.LogInformation("Withdraw in AccountId " + AccountId + " is done");
+
+            if (amount<0)
             {
                 return BadRequest("Amount to withdraw should a positive value, did you mean to Deposit amount?");
             }
@@ -45,8 +48,10 @@ namespace EuroBankAPI.Controllers
             {
                 try
                 {
+
                     Transaction transaction = new();
                     //check for rule microservice
+
                     if (AccountExists.Balance > amount && amount<50000)
                     {
                         AccountExists.Balance -= amount;
@@ -108,29 +113,34 @@ namespace EuroBankAPI.Controllers
                 }
                 catch (DbUpdateException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (SqlException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (NullReferenceException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
 
             }
         }
-        [HttpPost("Deposit")]
+        [HttpGet("Deposit")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Deposit(Guid AccountId, double amount, int serviceId)
         {
+            _logger.LogInformation("Deposit to AccountId " + AccountId + " of amount"+amount +"is done");
             if (amount < 0)
             {
                 return BadRequest("Amount to Deposit should be a positive value, did you mean to Withdraw amount?");
@@ -143,10 +153,8 @@ namespace EuroBankAPI.Controllers
             else
             {
                 try
-                {
-                   
+                {   
                         Transaction transaction = new();
-
                         AccountExists.Balance += amount;
                         await _uw.Accounts.UpdateAsync(AccountExists);
                         CounterParty counterPartyExists = await _uw.CounterParties.GetAsync(x => x.CounterPartyId == AccountExists.AccountId);
@@ -193,33 +201,39 @@ namespace EuroBankAPI.Controllers
                     await _uw.Statements.CreateAsync(statement);
                     var refTransactionStatus = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == transaction.RefTransactionStatusId);
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
+
                     return refTransactionStatusDTO;
                 }
                 catch (DbUpdateException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (SqlException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (NullReferenceException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
             }
         }
-        [HttpPost("Transfer")]
+        [HttpGet("Transfer")]
         [Authorize(Roles = "Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RefTransactionStatusDTO>> Transfer(Guid Source_AccountId, Guid Target_AccountId, double amount, int serviceId)
         {
+            _logger.LogInformation("Transfer method is being called");
             if (Source_AccountId == Target_AccountId)
             {
                 return BadRequest("Source AccountId and the Counter Party AccountId should be different");
@@ -290,22 +304,27 @@ namespace EuroBankAPI.Controllers
                     var refTransactionStatusDTO = _mapper.Map<RefTransactionStatusDTO>(refTransactionStatus);
                     //RefTransactionStatus obj = await _uw.RefTransactionStatuses.GetAsync(x => x.TransactionStatusCode == Transaction.RefTransactionStatusId);
                     //RefTransactionStatusDTO objDTO = _mapper.Map<RefTransactionStatusDTO>(obj);
+                    _logger.LogInformation("Transfer of " + amount + " is done from " + Source_AccountId + " to " + Target_AccountId + " is done");
                     return refTransactionStatusDTO;
                 }
                 catch (DbUpdateException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (SqlException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (NullReferenceException ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message);
                     return BadRequest(ex.Message);
                 }
             }
@@ -318,6 +337,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<TransactionDTO>> GetTransactionById(Guid TransactionId)
         {
+            _logger.LogInformation("Transaction details of transactionId " + TransactionId + " is done");
             var transaction = await _uw.Transactions.GetAsync(x => x.TransactionId == TransactionId);
             if(transaction == null)
             {

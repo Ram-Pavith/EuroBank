@@ -34,6 +34,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult SendEmail(EmailDTO Request)
         {
+            _logger.LogInformation("Send Email method is called");
             try
             {
                 _emailService.SendEmail(Request);
@@ -41,6 +42,7 @@ namespace EuroBankAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             
@@ -53,6 +55,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<RuleStatus>> EvaluateMinBalance(Guid AccountId, double Amount)
         {
+            _logger.LogInformation("Evaluate Mininmum balance method is called");
             var accountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
             var ruleStatus = new RuleStatus();
             if (accountExists == null)
@@ -65,6 +68,7 @@ namespace EuroBankAPI.Controllers
             if(accountExists.Balance > minBalance && remainingBalance>minBalance)
             {
                 ruleStatus = new RuleStatus() { RuleStatusId = 1,Status = "Minimum Balance Sufficient"};
+
                 return ruleStatus;
             }
             if(accountExists.Balance>Amount && remainingBalance >= 0 && remainingBalance < minBalance) 
@@ -80,6 +84,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EvaluateServiceCharges()
         {
+            _logger.LogInformation("Evaluate service Charges method is called");
             var accounts = await _uw.Accounts.GetAllAsync();
             foreach(var acc in accounts)
             {
