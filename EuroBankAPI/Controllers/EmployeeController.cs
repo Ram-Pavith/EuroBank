@@ -23,14 +23,11 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger<EmployeeController> _logger;
         private readonly IMapper _mapper;
         private readonly IAuthService _authService;
-        static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(EmployeeController));
-
         public EmployeeController(IUnitOfWork uw,ILogger<EmployeeController> logger ,IMapper mapper,IAuthService authService) { 
             _uw= uw;
             _logger= logger;
             _mapper= mapper;
             _authService= authService;
-            
         }
 
         [HttpPost("EmployeeRegister")]
@@ -51,8 +48,8 @@ namespace EuroBankAPI.Controllers
                     return BadRequest("Employee already exists with the same email id, try with another email id");
                 }
                 _authService.CreatePasswordHash(employeeRegisterDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employeeDTO.PasswordHash = passwordHash;
-                employeeDTO.PasswordSalt = passwordSalt;
+                employee.PasswordHash = passwordHash;
+                employee.PasswordSalt = passwordSalt;
                 
                 await _uw.Employees.CreateAsync(employee);
                 return employeeDTO;
@@ -379,46 +376,22 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPut("ResetPassword")]
+        [HttpGet("AllAccountPages")]
+        //[Authorize(Roles = "Employee,Customer")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<EmployeeDTO>> ResetPassword(string Email, string Password)
+        public async Task<ActionResult<int>> AllAccountPages(int pageSize)
         {
-            _logger.LogInformation($"Reset password: {Email} is called");
-            
-            try
-            {
-                Employee employee = await _uw.Employees.GetAsync(x => x.EmailId == Email);
-                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                employee.PasswordHash = passwordHash;
-                employee.PasswordSalt = passwordSalt;
-                await _uw.Employees.UpdateAsync(employee);
-                _uw.Save();
-
-                EmployeeDTO employeeDTO = _mapper.Map<EmployeeDTO>(employee);
-                _logger.LogInformation($"Password is reset for the mail id: {Email}");
-                return employeeDTO;
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
+            decimal count = await _uw.Accounts.CountAsync();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
+        }
+        
+        [HttpGet("AllTransactionPages")]
+        //[Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> AllTransactionPages(int pageSize)
+        {
+            decimal count = await _uw.Transactions.CountAsync();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
         }
 
         [HttpDelete("RemoveEmployee")]

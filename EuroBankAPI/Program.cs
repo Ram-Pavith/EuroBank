@@ -49,20 +49,20 @@ builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationSt
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
 
 //File Logging
-/*Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/EuroBankLogs.log", rollingInterval: RollingInterval.Month)
-    .CreateLogger();*/
+    .CreateLogger();
 builder.Host.UseSerilog();
 
 //AutoMapper
 builder.Services.AddAutoMapper(typeof(EuroBankAPI.DTOs.Mapper));
 //Redis
-//builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
-//{
-//    var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
-//    return ConnectionMultiplexer.Connect(options);
-//});
+/*builder.Services.AddSingleton<IConnectionMultiplexer>(c =>
+{
+    var options = ConfigurationOptions.Parse(builder.Configuration.GetConnectionString("Redis"));
+    return ConnectionMultiplexer.Connect(options);
+});*/
 
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

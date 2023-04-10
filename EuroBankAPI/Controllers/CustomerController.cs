@@ -365,49 +365,9 @@ namespace EuroBankAPI.Controllers
         }
 
 
-        [HttpPut("ResetPassword")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomerDetailsDTO>> ResetPassword(string Email, string Password)
-        {
-            _logger.LogInformation($"Reset password: {Email} is called");
-            try
-            {
-                Customer customer = await _uw.Customers.GetAsync(x => x.EmailId == Email);
-                _authService.CreatePasswordHash(Password, out byte[] passwordHash, out byte[] passwordSalt);
-                customer.PasswordHash = passwordHash;
-                customer.PasswordSalt = passwordSalt;
-                await _uw.Customers.UpdateAsync(customer);
-                _uw.Save();
-                var customerDTO = _mapper.Map<CustomerDTO>(customer); 
-                var customerDetailsDTO = _mapper.Map<CustomerDetailsDTO>(customerDTO);
-                _logger.LogInformation($"Password is reset for the mail id: {Email}");
-                return customerDetailsDTO;
-
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (NullReferenceException ex)
-            {
-               _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex.Message);
-            }
-        }
+        
         [HttpDelete("RemoveCustomer")]
-       // [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Customer>> DeleteCustomer(string CustomerId)

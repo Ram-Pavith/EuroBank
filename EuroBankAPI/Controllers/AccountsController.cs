@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Castle.Core.Resource;
 using EuroBankAPI.DTOs;
+using EuroBankAPI.Helpers;
 using EuroBankAPI.Models;
 using EuroBankAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
@@ -194,6 +195,27 @@ namespace EuroBankAPI.Controllers
             return transactionsDTO;
             
         }
+
+        [HttpGet("AccountPages")]
+        [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> AccountPages(int pageSize)
+        {
+            decimal count = await _uw.Accounts.CountAsync();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
+        }
+
+        [HttpGet("AccountTransactionPages")]
+        [Authorize(Roles = "Employee,Customer")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> AccountTransactionPages(int pageSize,Guid accountId)
+        {
+            var accountTransactions = await _uw.Transactions.GetAllAsync(x => x.AccountId == accountId);
+            decimal count = accountTransactions.Count();
+            return Convert.ToInt32(Math.Ceiling((decimal)(count / pageSize)));
+        }
+
+
 
     }
 }
