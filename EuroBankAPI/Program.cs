@@ -47,10 +47,10 @@ builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationSt
 // Serilog DB Logging
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
 //File Logging
-/*Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("Logs/EuroBankLogs.log", rollingInterval: RollingInterval.Month)
-    .CreateLogger();*/
+    .CreateLogger();
 builder.Host.UseSerilog();
 
 //AutoMapper
