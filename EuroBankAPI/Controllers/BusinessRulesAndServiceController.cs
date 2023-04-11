@@ -24,7 +24,7 @@ namespace EuroBankAPI.Controllers
         private readonly IAuthService _authService;
         public BusinessRulesAndServiceController(IEmailService emailService, ILogger<BusinessRulesAndServiceController> logger, IConfiguration config, IUnitOfWork uw,IBusinessService businessService,IMapper mapper,IAuthService authService) {
             _emailService = emailService;
-            logger = _logger;
+            _logger = logger;
             _config = config;
             _uw = uw;
             _businessService = businessService;
