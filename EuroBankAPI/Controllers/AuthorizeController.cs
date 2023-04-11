@@ -13,6 +13,7 @@ namespace EuroBankAPI.Controllers
     [ApiController]
     public class AuthorizeController : ControllerBase
     {
+        private readonly ILogger _logger;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         public AuthorizeController(IAuthService authService,IMapper mapper)
@@ -24,6 +25,7 @@ namespace EuroBankAPI.Controllers
         [HttpPost("RegisterAuth")]
         public async Task<ActionResult<UserAuth>> RegisterUser(UserAuthLoginDTO request)
         {
+            _logger.LogInformation("Register User in the Autherization controller is called");
             var response = await _authService.RegisterUser(request);
             return Ok(response);
         }

@@ -44,7 +44,7 @@ namespace EuroBankAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2023, 4, 5, 22, 59, 17, 74, DateTimeKind.Local).AddTicks(4274));
+                        .HasDefaultValue(new DateTime(2023, 4, 6, 12, 32, 28, 870, DateTimeKind.Local).AddTicks(7277));
 
                     b.HasKey("AccountId")
                         .HasName("PK_Account");
@@ -62,12 +62,12 @@ namespace EuroBankAPI.Migrations
                     b.HasData(
                         new
                         {
-                            AccountId = new Guid("362697f8-fca6-4337-bb49-a89f9bb92b94"),
+                            AccountId = new Guid("3c8509ff-8855-48b5-84b3-46dd69e9d568"),
                             AccountCreationStatusId = 1,
                             AccountTypeId = 1,
                             Balance = 10000.0,
                             CustomerId = "CustomerEurobank",
-                            DateCreated = new DateTime(2023, 4, 5, 0, 0, 0, 0, DateTimeKind.Local)
+                            DateCreated = new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Local)
                         });
                 });
 
@@ -206,8 +206,7 @@ namespace EuroBankAPI.Migrations
                     b.HasIndex(new[] { "CustomerId" }, "CustomerId")
                         .IsUnique();
 
-                    b.HasIndex(new[] { "EmailId" }, "EmailId")
-                        .IsUnique();
+                    b.HasIndex(new[] { "EmailId" }, "EmailId");
 
                     b.ToTable("Customers");
 
@@ -217,7 +216,7 @@ namespace EuroBankAPI.Migrations
                             CustomerId = "CustomerEurobank",
                             Address = "Chennai",
                             CustomerCreationStatusId = 1,
-                            DOB = new DateTime(2023, 4, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            DOB = new DateTime(2023, 4, 6, 0, 0, 0, 0, DateTimeKind.Local),
                             EmailId = "Customer@gmail.com",
                             Firstname = "Customer",
                             Lastname = "Eurobank",
@@ -292,18 +291,16 @@ namespace EuroBankAPI.Migrations
                     b.HasKey("EmployeeId");
 
                     b.HasIndex(new[] { "EmailId" }, "EmailId")
-                        .IsUnique()
                         .HasDatabaseName("EmailId1");
 
-                    b.HasIndex(new[] { "EmployeeId" }, "EmployeeId")
-                        .IsUnique();
+                    b.HasIndex(new[] { "EmployeeId" }, "EmployeeId");
 
                     b.ToTable("Employees");
 
                     b.HasData(
                         new
                         {
-                            EmployeeId = new Guid("680f9d9b-d916-42af-b707-a97a38d8d170"),
+                            EmployeeId = new Guid("02246199-66c4-408c-9d0d-84581888baf8"),
                             EmailId = "Employee@gmail.com",
                             Firstname = "Employee",
                             Lastname = "Eurobank",

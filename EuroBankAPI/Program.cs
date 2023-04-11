@@ -47,6 +47,7 @@ builder.Services.AddScoped<ICustomerCreationStatusRepository, CustomerCreationSt
 //Serilog Logger Setup
 // Serilog DB Logging
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).Enrich.FromLogContext().CreateLogger();
+
 //File Logging
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -115,6 +116,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors(x => x
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        );
 
 app.UseHttpsRedirection();
 
