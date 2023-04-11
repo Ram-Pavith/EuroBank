@@ -38,6 +38,7 @@ namespace EuroBankAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> SendEmail(EmailDTO Request, string Role)
         {
+            _logger.LogInformation("Send Email method is called");
             try
             {
                 if (Role == "Employee")
@@ -68,6 +69,7 @@ namespace EuroBankAPI.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
             
@@ -121,7 +123,7 @@ namespace EuroBankAPI.Controllers
         }
 
         [HttpPost("EvaluateMinBalance")]
-        [Authorize(Roles ="Customer,Employee")]
+        //[Authorize(Roles ="Customer,Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -129,6 +131,7 @@ namespace EuroBankAPI.Controllers
         {
             try
             {
+                _logger.LogInformation("Evaluate Mininmum balance method is called");
                 var accountExists = await _uw.Accounts.GetAsync(x => x.AccountId == AccountId);
                 var ruleStatus = new RuleStatus();
                 if (accountExists == null)
@@ -156,13 +159,15 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpPost("EvaluateServiceCharges")]
+        [HttpGet("EvaluateServiceCharges")]
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> EvaluateServiceCharges()
+        public async Task<ActionResult<int>> EvaluateServiceCharges()
         {
             try
             {
+                            _logger.LogInformation("Evaluate service Charges method is called");
+                var count = 0;
                 var accounts = await _uw.Accounts.GetAllAsync();
                 foreach (var acc in accounts)
                 {
@@ -170,9 +175,10 @@ namespace EuroBankAPI.Controllers
                     {
                         acc.Balance -= _businessService.ServiceCharges(acc.AccountTypeId);
                         await _uw.Accounts.UpdateAsync(acc);
+                        count++;
                     }
                 }
-                return Ok();
+                return count;
             }
             catch(Exception ex)
             {
