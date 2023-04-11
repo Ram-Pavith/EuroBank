@@ -16,10 +16,11 @@ namespace EuroBankAPI.Controllers
         private readonly ILogger _logger;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
-        public AuthorizeController(IAuthService authService,IMapper mapper)
+        public AuthorizeController(IAuthService authService,IMapper mapper,ILogger<AuthorizeController> logger)
         {
             _mapper = mapper;
             _authService = authService;
+            _logger = logger;
 
         }
         [HttpPost("RegisterAuth")]
