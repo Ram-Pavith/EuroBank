@@ -73,22 +73,6 @@ namespace EuroBankAPI.Controllers
             }
         }
 
-        [HttpGet("GetCustomerByCustomerId")]
-        [Authorize(Roles = "Employee")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CustomerDTO>>> GetCustomerByCustomerId(string customerId)
-        {
-            var customer = await _uw.Employees.GetCustomerByCustomerId(customerId);
-            if(customer == null)
-            {
-                return NotFound();
-            }
-
-            List<CustomerDTO> customerDTO = _mapper.Map<List<CustomerDTO>>(customer);
-            return customerDTO;
-        }
-
         [HttpPost("CustomerLogin")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -339,7 +339,7 @@ namespace EuroBankAPI.Controllers
         [Authorize(Roles = "Employee")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<CustomerDetailsDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
+        public async Task<ActionResult<IEnumerable<CustomerDTO>>> GetAllCustomers(int PageSize = 0, int PageNumber = 1)
         {
             _logger.LogInformation("GetAllCustomers method is called ");
             IEnumerable<Customer> Customers;

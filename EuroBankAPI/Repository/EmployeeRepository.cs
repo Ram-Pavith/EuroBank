@@ -26,11 +26,5 @@ namespace EuroBankAPI.Repository
             return res;
         }
 
-        public async Task<IQueryable<Customer>> GetCustomerByCustomerId(string customerId)
-        {
-            var res = _db.Customers.FromSqlRaw($"exec GetCustomerByCustomerId @customerId='{customerId}'");
-            return res;
-        }
-
     }
 }
