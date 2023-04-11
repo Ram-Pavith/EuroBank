@@ -21,12 +21,13 @@ namespace EuroBankAPI.Controllers
         private readonly IUnitOfWork _uw;
         private readonly IMapper _mapper;
         private readonly IAccountRepository _accountRepo;
-        private readonly ILogger _logger;
-        public AccountsController(IUnitOfWork uw, IMapper mapper, IAccountRepository _accRepo)
+        private readonly ILogger<AccountsController> _logger;
+        public AccountsController(IUnitOfWork uw, IMapper mapper, IAccountRepository _accRepo,ILogger<AccountsController> logger )
         {
             _uw = uw;
             _mapper = mapper;
             _accountRepo = _accRepo;
+            _logger = logger;
         }
 
 
